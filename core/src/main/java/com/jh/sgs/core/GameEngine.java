@@ -16,19 +16,21 @@ import java.util.*;
 @Log4j2
 public class GameEngine implements Runnable {
     @Getter
-    CardManage cardManage;
-    IdentityManage identityManage;
+    private CardManage cardManage;
     @Getter
-    GeneralManage generalManage;
-    PlayerManage playerManage;
+    private IdentityManage identityManage;
     @Getter
-    InteractiveMachine interactiveMachine;
-    GameProcess gameProcess;
+    private GeneralManage generalManage;
+    private PlayerManage playerManage;
+    @Getter
+    private InteractiveMachine interactiveMachine;
+    private GameProcess gameProcess;
+    private RoundMange roundMange;
 
 
     @Setter
     @Getter
-    MessageReceipt messageReceipt;
+    private MessageReceipt messageReceipt;
 
     @Setter
     BasicData basicData = new DataBaseBasicData("jdbc:mysql://localhost:3306/sgs", "root", "123456");
@@ -51,6 +53,9 @@ public class GameEngine implements Runnable {
         init();
         gameProcess = new GameProcess(playerManage.players.values());
         gameProcess.begin();
+        log.info("回合前置完成，进入回合");
+        roundMange = new RoundMange(gameProcess.getDesk());
+        roundMange.begin();
     }
 
 
@@ -66,90 +71,6 @@ public class GameEngine implements Runnable {
         generalManage = new GeneralManage(basicData.getGenerals());
         cardManage = new CardManage(basicData.getCards());
     }
-
-    class GameProcess {
-
-        Desk desk;
-
-        GameProcess(Collection<OriginalPlayer> players) {
-            CompletePlayer[] array = players.stream().map(CompletePlayer::new).toArray(value -> new CompletePlayer[players.size()]);
-            desk = new Desk(array);
-        }
-
-        void begin() {
-            distributeIdentity();
-            selectGeneral();
-            setBlood();
-            originalHandCard();
-            System.out.println("系统完成");
-        }
-
-        private void originalHandCard() {
-            desk.foreach(completePlayer -> completePlayer.getHandCard().addAll(cardManage.obtainCard(4)));
-
-        }
-
-        private void selectGeneral() {
-            log.info("选择武将");
-            messageReceipt.global("选择武将");
-            CompletePlayer[] chair = desk.getChair();
-            for (int i = 0; i < chair.length; i++) {
-                int finalI = i;
-                interactiveMachine.addEvent(i, new Interactive() {
-
-                    int step = 0;
-
-                    @Override
-                    public void setGeneral(General general) {
-                        desk.get(finalI).setGeneral(general);
-                        step++;
-                    }
-
-                    @Override
-                    public List<General> getSelectableGeneral() {
-                        return generalManage.getAll();
-                    }
-
-
-                    @Override
-                    public boolean complete() {
-                        return step == 1;
-                    }
-                });
-            }
-            interactiveMachine.lock();
-        }
-
-        /**
-         * 设置初始血量
-         */
-        private void setBlood() {
-            desk.foreach(completePlayer -> {
-                if (completePlayer.getIdentity() == Identity.ZG) {
-                    completePlayer.setBlood(completePlayer.getGeneral().getBlood() + 1);
-                    desk.setIndex(completePlayer);
-                } else {
-                    completePlayer.setBlood(completePlayer.getGeneral().getBlood());
-                }
-            });
-        }
-
-        /**
-         * 分配身份;
-         */
-        private void distributeIdentity() {
-            List<Identity> distribute = identityManage.distribute();
-            if (distribute.size() != desk.size()) throw new SgsException("身份个数与实际不符");
-            Iterator<Identity> iterator = distribute.iterator();
-            desk.foreach(completePlayer -> completePlayer.setIdentity(iterator.next()));
-        }
-
-        //***************************
-
-
-        //***************************
-    }
-
 
     class PlayerManage {
         Map<String, OriginalPlayer> players;
