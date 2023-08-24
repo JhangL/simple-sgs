@@ -1,8 +1,10 @@
 package com.jh.sgs.core;
 
+import com.alibaba.fastjson2.JSON;
 import com.jh.sgs.GameLauncher;
 import com.jh.sgs.exception.SgsException;
-import com.jh.sgs.interfaces.Interactive;
+import com.jh.sgs.interfaces.Interactiveable;
+import com.jh.sgs.interfaces.ShowStatus;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -10,18 +12,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class InteractiveMachine {
+public class InteractiveMachine implements ShowStatus {
 
     private AtomicInteger lockNum = new AtomicInteger();
     @Getter
     private boolean bockBool;
     private List<InteractiveEvent> interactiveEvents = new LinkedList<>();
 
-    public void addEvent(int player, Interactive interactive) {
+    public void addEvent(int player, Interactiveable interactiveable) {
         if (Thread.currentThread().getThreadGroup() != GameLauncher.threadGroup) throw new SgsException("非游戏组线程调用");
         //todo 回调
         lockNum.getAndIncrement();
-        interactiveEvents.add(new InteractiveEvent(player, interactive, this));
+        interactiveEvents.add(new InteractiveEvent(player, interactiveable, this));
     }
 
     void subEvent(InteractiveEvent event) {
@@ -33,12 +35,24 @@ public class InteractiveMachine {
     public void lock() {
         if (Thread.currentThread().getThreadGroup() != GameLauncher.threadGroup) throw new SgsException("非游戏组线程调用");
         bockBool = true;
+        GameEngine gameEngine = ContextManage.gameEngine();
+        new Thread(new ThreadGroup("player"),() -> {
+            ContextManage.setContext(gameEngine);
+            ContextManage.messageReceipt().system(new ArrayList<>(interactiveEvents));
+            ContextManage.setContext(null);
+        }).start();
         while (lockNum.get() != 0) ;
         bockBool = false;
     }
 
 
-    public List<InteractiveEvent> getInteractiveEvents() {
-        return new ArrayList<>(interactiveEvents);
+
+    @Override
+    public String getStatus() {
+        return "{" +
+                "\"bockBool\":" + bockBool +
+                ", \"interactiveEvents\":" + JSON.toJSONString(interactiveEvents) +
+                '}';
     }
+
 }

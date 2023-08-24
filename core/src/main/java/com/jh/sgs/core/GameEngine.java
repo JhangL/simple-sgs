@@ -2,19 +2,19 @@ package com.jh.sgs.core;
 
 
 import com.jh.sgs.data.DataBaseBasicData;
-import com.jh.sgs.exception.SgsException;
 import com.jh.sgs.interfaces.BasicData;
-import com.jh.sgs.interfaces.Interactive;
 import com.jh.sgs.interfaces.MessageReceipt;
-import com.jh.sgs.pojo.*;
+import com.jh.sgs.interfaces.ShowStatus;
+import com.jh.sgs.pojo.OriginalPlayer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 @Log4j2
-public class GameEngine implements Runnable {
+public class GameEngine implements Runnable , ShowStatus {
     @Getter
     private CardManage cardManage;
     @Getter
@@ -24,8 +24,9 @@ public class GameEngine implements Runnable {
     private PlayerManage playerManage;
     @Getter
     private InteractiveMachine interactiveMachine;
+    @Getter
     private GameProcess gameProcess;
-    private RoundMange roundMange;
+    private RoundManage roundMange;
 
 
     @Setter
@@ -48,20 +49,29 @@ public class GameEngine implements Runnable {
 
     @Override
     public void run() {
+        log.info("初始化系统");
         ContextManage.setContext(this);
         check();
         init();
+        log.info("系统初始化完成");
+        log.info("开局");
         gameProcess = new GameProcess(playerManage.players.values());
         gameProcess.begin();
         log.info("回合前置完成，进入回合");
-        roundMange = new RoundMange(gameProcess.getDesk());
+        roundMange = new RoundManage(gameProcess.getDesk());
+        roundMange.init();
         roundMange.begin();
     }
 
 
     private void check() {
-        if (messageReceipt == null) log.warn("未使用回调消息");
-        if (playerNum < 4 || playerNum > 10) log.warn("人数不支持");
+        if (messageReceipt == null) log.warn("回调消息：无");
+        else log.info("回调消息："+messageReceipt.name());
+        if (playerNum < 4 || playerNum > 10) {
+            log.warn(playerNum+"人数不支持");
+            shutDown();
+        }
+        else log.info("人数："+playerNum);
     }
 
     private void init() {
@@ -71,6 +81,19 @@ public class GameEngine implements Runnable {
         generalManage = new GeneralManage(basicData.getGenerals());
         cardManage = new CardManage(basicData.getCards());
     }
+
+    @Override
+    public String getStatus() {
+        return "{" +
+                "\"cardManage\":" + cardManage.getStatus() +
+                ", \"identityManage\":" + identityManage.getStatus() +
+                ", \"interactiveMachine\":" + interactiveMachine.getStatus() +
+                ", \"gameProcess\":" + gameProcess.getStatus() +
+                ", \"roundMange\":" + "\"roundMange\"" +
+                ", \"playerNum\":" + playerNum +
+                '}';
+    }
+
 
     class PlayerManage {
         Map<String, OriginalPlayer> players;
@@ -83,6 +106,10 @@ public class GameEngine implements Runnable {
                 players.put(id, new OriginalPlayer(id));
             }
         }
+    }
 
+    void shutDown(){
+        log.info("系统关闭");
+        Thread.currentThread().interrupt();
     }
 }

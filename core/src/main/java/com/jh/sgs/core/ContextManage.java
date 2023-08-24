@@ -3,9 +3,9 @@ package com.jh.sgs.core;
 import com.jh.sgs.interfaces.MessageReceipt;
 
 public class ContextManage {
-    private static ThreadLocal<GameEngine> gameEngineThreadLocal;
+    private static final ThreadLocal<GameEngine> gameEngineThreadLocal= new ThreadLocal<>() ;
     public static void setContext(GameEngine gameEngine){
-        gameEngineThreadLocal=gameEngine;
+        gameEngineThreadLocal.set(gameEngine);
     }
     public static GameEngine gameEngine(){
         return gameEngineThreadLocal.get();
@@ -21,5 +21,8 @@ public class ContextManage {
     }
     public static MessageReceipt messageReceipt(){
         return gameEngineThreadLocal.get().getMessageReceipt();
+    }
+    public static Desk desk(){
+        return gameEngineThreadLocal.get().getGameProcess().getDesk();
     }
 }

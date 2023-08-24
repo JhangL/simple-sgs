@@ -1,16 +1,17 @@
 package com.jh.sgs.core;
 
+import com.alibaba.fastjson2.JSON;
 import com.jh.sgs.exception.SgsException;
+import com.jh.sgs.interfaces.ShowStatus;
 import com.jh.sgs.pojo.CompletePlayer;
-import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-public class Desk {
+public class Desk implements ShowStatus {
 
-    @Getter
     private CompletePlayer[] chair;
 
     private boolean[] onDesk;
@@ -32,6 +33,13 @@ public class Desk {
         return chair.length;
     }
 
+    public void foreach(BiConsumer<Integer, ? super CompletePlayer> action) {
+        for (int i = 0, chairLength = chair.length; i < chairLength; i++) {
+            CompletePlayer t = chair[i];
+            action.accept(i, t);
+        }
+    }
+
     public void foreach(Consumer<? super CompletePlayer> action) {
         for (CompletePlayer t : chair) {
             action.accept(t);
@@ -48,36 +56,81 @@ public class Desk {
         }
     }
 
+    public int index() {
+        return index % size();
+    }
+
+    public int index(CompletePlayer completePlayer) {
+        if (get() == completePlayer) return index % size();
+        for (int i = 0, chairLength = chair.length; i < chairLength; i++) {
+            CompletePlayer player = chair[i];
+            if (player == completePlayer) return i;
+        }
+        throw new SgsException("玩家并非处于此桌");
+    }
+
     public CompletePlayer get() {
         return chair[index % size()];
     }
+
     public CompletePlayer get(int index) {
         return chair[index];
     }
 
-    public CompletePlayer next() {
+    public int next() {
         ++index;
+        return index();
+    }
+
+    public CompletePlayer nextPlayer() {
+        next();
         return get();
     }
 
-    public CompletePlayer nextOnDesk() {
+    public int nextOnDesk() {
         do {
             ++index;
         } while (!onDesk[index % size()]);
+        return index();
+    }
+
+    public CompletePlayer nextOnDeskPlayer() {
+        nextOnDesk();
         return get();
     }
 
-    public CompletePlayer previous() {
+    public int previous() {
         if (index == 0) index = size();
         --index;
+        return index();
+    }
+
+    public CompletePlayer previousPlayer() {
+        previous();
         return get();
     }
 
-    public CompletePlayer previousOnDesk() {
+    public int previousOnDesk() {
         do {
             if (index == 0) index = size();
             --index;
         } while (!onDesk[index % size()]);
+        return index();
+    }
+
+    public CompletePlayer previousOnDeskPlayer() {
+        previousOnDesk();
         return get();
     }
+
+
+    @Override
+    public String getStatus() {
+        return "{" +
+                "\"chair\":" + JSON.toJSONString(chair) +
+                ", \"onDesk\":" + JSON.toJSONString(onDesk) +
+                ", \"index\":" + index +
+                '}';
+    }
+
 }
