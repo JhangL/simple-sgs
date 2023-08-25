@@ -1,12 +1,10 @@
 package com.jh.sgs.core;
 
-import com.jh.sgs.exception.SgsException;
-import com.jh.sgs.interfaces.Interactiveable;
-import com.jh.sgs.interfaces.ShowStatus;
-import com.jh.sgs.pojo.CompletePlayer;
-import com.jh.sgs.pojo.General;
-import com.jh.sgs.pojo.IdentityEnum;
-import com.jh.sgs.pojo.OriginalPlayer;
+import com.jh.sgs.core.exception.SgsApiException;
+import com.jh.sgs.core.exception.SgsException;
+import com.jh.sgs.core.interfaces.Interactiveable;
+import com.jh.sgs.core.interfaces.ShowStatus;
+import com.jh.sgs.core.pojo.*;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -49,14 +47,17 @@ public class GameProcess implements ShowStatus {
 
     private void selectGeneral() {
         ContextManage.messageReceipt().global("选择武将");
-        desk.foreach((integer, completePlayer) -> ContextManage.interactiveMachine().addEvent(integer, new Interactiveable() {
+        desk.foreach((integer, completePlayer) -> ContextManage.interactiveMachine().addEvent(integer,"请选择武将", new Interactiveable() {
 
             int step = 0;
 
             @Override
-            public void setGeneral(General general) {
-                ContextManage.generalManage().setGeneral(completePlayer, general);
-                log.info(integer+"选择武将"+general);
+            public void setGeneral(int id) {
+                General general = Util.collectionCollectAndCheckId(selectableGeneral(), id);
+                if (general==null)throw new SgsApiException("给定id并非原数据id");
+                completePlayer.setCompleteGeneral(new CompleteGeneral());
+                completePlayer.getCompleteGeneral().setGeneral(general);
+                log.debug(integer+"选择武将"+general);
                 step++;
             }
 
@@ -66,13 +67,8 @@ public class GameProcess implements ShowStatus {
             }
 
             @Override
-            public String message() {
-                return "请选择武将";
-            }
-
-            @Override
             public void cancel() {
-                setGeneral(selectableGeneral().get(0));
+                setGeneral(selectableGeneral().get(0).getId());
             }
 
             @Override
@@ -81,9 +77,8 @@ public class GameProcess implements ShowStatus {
                 return step == 1;
             }
         }));
-
-
         ContextManage.interactiveMachine().lock();
+        desk.foreach(completePlayer -> ContextManage.generalManage().setGeneral(completePlayer));
     }
 
     /**
@@ -93,10 +88,10 @@ public class GameProcess implements ShowStatus {
         ContextManage.messageReceipt().global("设置体力");
         desk.foreach(completePlayer -> {
             if (completePlayer.getIdentity() == IdentityEnum.ZG) {
-                completePlayer.setBlood(completePlayer.getGeneral().getBlood() + 1);
+                completePlayer.setBlood(completePlayer.getCompleteGeneral().getGeneral().getBlood() + 1);
                 desk.setIndex(completePlayer);
             } else {
-                completePlayer.setBlood(completePlayer.getGeneral().getBlood());
+                completePlayer.setBlood(completePlayer.getCompleteGeneral().getGeneral().getBlood());
             }
         });
     }

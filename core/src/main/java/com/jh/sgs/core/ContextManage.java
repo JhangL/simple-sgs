@@ -1,6 +1,6 @@
 package com.jh.sgs.core;
 
-import com.jh.sgs.interfaces.MessageReceipt;
+import com.jh.sgs.core.interfaces.MessageReceipt;
 
 public class ContextManage {
     private static final ThreadLocal<GameEngine> gameEngineThreadLocal= new ThreadLocal<>() ;

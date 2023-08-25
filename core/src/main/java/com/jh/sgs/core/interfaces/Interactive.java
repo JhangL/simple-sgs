@@ -1,15 +1,15 @@
-package com.jh.sgs.interfaces;
+package com.jh.sgs.core.interfaces;
 
-import com.jh.sgs.exception.SgsApiException;
-import com.jh.sgs.pojo.Card;
-import com.jh.sgs.pojo.General;
+import com.jh.sgs.core.exception.SgsApiException;
+import com.jh.sgs.core.pojo.Card;
+import com.jh.sgs.core.pojo.General;
 
 import java.util.List;
 
 public interface Interactive{
 
 
-    default void setGeneral(General general) throws SgsApiException {
+    default void setGeneral(int id) throws SgsApiException {
         throw SgsApiException.ffwsx;
     }
 
@@ -24,13 +24,13 @@ public interface Interactive{
     }
 
 
-    default void discardCard(List<Card> cards) {
+    default void discardCard(int[] ids) {
         throw SgsApiException.ffwsx;
     }
     default void cancelPlayCard() {
         throw SgsApiException.ffwsx;
     }
 
-    String message();
+//    String message();
 //    int getPlayer();
 }

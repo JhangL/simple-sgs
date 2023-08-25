@@ -1,4 +1,4 @@
-package com.jh.sgs.pojo;
+package com.jh.sgs.core.pojo;
 
 public class OriginalPlayer {
     private String id;

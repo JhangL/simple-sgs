@@ -1,13 +1,13 @@
-package com.jh.sgs;
+package com.jh.sgs.core;
 
-import com.jh.sgs.core.GameEngine;
-import com.jh.sgs.interfaces.MessageReceipt;
-import com.jh.sgs.interfaces.ShowStatus;
+import com.jh.sgs.core.interfaces.MessageReceipt;
+import com.jh.sgs.core.interfaces.ShowStatus;
 import lombok.Getter;
 
+import static com.jh.sgs.core.GameEngine.threadGroup;
+import static com.jh.sgs.core.GameEngine.threadName;
+
 public class GameLauncher {
-    public static final ThreadGroup threadGroup = new ThreadGroup("game");
-    public static final String threadName = "game";
 
     @Getter
     private GameEngine gameEngine;

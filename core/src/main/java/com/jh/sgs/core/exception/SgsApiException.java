@@ -1,4 +1,4 @@
-package com.jh.sgs.exception;
+package com.jh.sgs.core.exception;
 
 public class SgsApiException extends RuntimeException{
 

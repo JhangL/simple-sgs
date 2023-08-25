@@ -1,11 +1,11 @@
 package com.jh.sgs.core;
 
 
-import com.jh.sgs.data.DataBaseBasicData;
-import com.jh.sgs.interfaces.BasicData;
-import com.jh.sgs.interfaces.MessageReceipt;
-import com.jh.sgs.interfaces.ShowStatus;
-import com.jh.sgs.pojo.OriginalPlayer;
+import com.jh.sgs.core.data.DataBaseBasicData;
+import com.jh.sgs.core.interfaces.BasicData;
+import com.jh.sgs.core.interfaces.MessageReceipt;
+import com.jh.sgs.core.interfaces.ShowStatus;
+import com.jh.sgs.core.pojo.OriginalPlayer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -15,6 +15,9 @@ import java.util.Map;
 
 @Log4j2
 public class GameEngine implements Runnable , ShowStatus {
+    public static final ThreadGroup threadGroup = new ThreadGroup("game");
+    public static final String threadName = "game";
+
     @Getter
     private CardManage cardManage;
     @Getter
@@ -38,10 +41,10 @@ public class GameEngine implements Runnable , ShowStatus {
 
     int playerNum;
 
-    public GameEngine() {
+    GameEngine() {
     }
 
-    public GameEngine(MessageReceipt messageReceipt, int playerNum) {
+    GameEngine(MessageReceipt messageReceipt, int playerNum) {
         this.messageReceipt = messageReceipt;
         this.playerNum = playerNum;
     }

@@ -1,9 +1,9 @@
 package com.jh.sgs.core;
 
 import com.alibaba.fastjson2.JSON;
-import com.jh.sgs.exception.SgsException;
-import com.jh.sgs.interfaces.ShowStatus;
-import com.jh.sgs.pojo.CompletePlayer;
+import com.jh.sgs.core.exception.SgsException;
+import com.jh.sgs.core.interfaces.ShowStatus;
+import com.jh.sgs.core.pojo.CompletePlayer;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -18,7 +18,7 @@ public class Desk implements ShowStatus {
 
     private int index;
 
-    public Desk(CompletePlayer[] chair) {
+    Desk(CompletePlayer[] chair) {
         this.chair = chair;
         onDesk = new boolean[chair.length];
         Arrays.fill(onDesk, true);

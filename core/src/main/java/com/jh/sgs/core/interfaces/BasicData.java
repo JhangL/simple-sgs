@@ -1,7 +1,7 @@
-package com.jh.sgs.interfaces;
+package com.jh.sgs.core.interfaces;
 
-import com.jh.sgs.pojo.Card;
-import com.jh.sgs.pojo.General;
+import com.jh.sgs.core.pojo.Card;
+import com.jh.sgs.core.pojo.General;
 
 import java.util.List;
 import java.util.Map;

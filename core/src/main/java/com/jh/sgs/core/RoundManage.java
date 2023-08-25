@@ -11,14 +11,14 @@ public class RoundManage {
 
     private RoundProcess[] roundProcesses;
 
-    public RoundManage(Desk desk) {
+    RoundManage(Desk desk) {
         this.desk = desk;
         desktop = new Desktop();
         roundProcesses = new RoundProcess[desk.size()];
     }
 
     public void init() {
-        desk.foreach((integer, completePlayer) -> roundProcesses[integer] = completePlayer.getGeneral().getBaseGeneral().roundProcess(completePlayer));
+        desk.foreach((integer, completePlayer) -> roundProcesses[integer] = completePlayer.getCompleteGeneral().getBaseGeneral().roundProcess(completePlayer));
     }
 
     public void begin() {

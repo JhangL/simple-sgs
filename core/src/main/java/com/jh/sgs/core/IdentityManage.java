@@ -1,8 +1,8 @@
 package com.jh.sgs.core;
 
 import com.alibaba.fastjson2.JSON;
-import com.jh.sgs.interfaces.ShowStatus;
-import com.jh.sgs.pojo.IdentityEnum;
+import com.jh.sgs.core.interfaces.ShowStatus;
+import com.jh.sgs.core.pojo.IdentityEnum;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -12,7 +12,7 @@ import java.util.Map;
 public class IdentityManage implements ShowStatus {
     Map<String, Integer> usingIdentity;
 
-    public IdentityManage(Map<String, Integer> map) {
+    IdentityManage(Map<String, Integer> map) {
         usingIdentity = map;
     }
 

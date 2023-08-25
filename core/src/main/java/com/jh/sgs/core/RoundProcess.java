@@ -1,19 +1,20 @@
 package com.jh.sgs.core;
 
-import com.jh.sgs.exception.SgsException;
-import com.jh.sgs.interfaces.Interactiveable;
-import com.jh.sgs.pojo.Card;
-import com.jh.sgs.pojo.CompletePlayer;
+import com.jh.sgs.core.exception.SgsException;
+import com.jh.sgs.core.interfaces.Interactiveable;
+import com.jh.sgs.core.pojo.Card;
+import com.jh.sgs.core.pojo.CompletePlayer;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static com.jh.sgs.core.ContextManage.*;
 
 
 @Log4j2
-public class RoundProcess{
+public class RoundProcess {
     CompletePlayer completePlayer;
     int playerIndex;
 
@@ -21,42 +22,44 @@ public class RoundProcess{
         this.completePlayer = completePlayer;
         playerIndex = desk().index(completePlayer);
     }
-    void process(){
-        log.info(playerIndex+"回合");
-        messageReceipt().global(playerIndex+"回合");
-        messageReceipt().global(playerIndex+"开始阶段");
+
+    void process() {
+        log.info(playerIndex + "回合");
+        messageReceipt().global(playerIndex + "回合");
+        messageReceipt().global(playerIndex + "开始阶段");
         start();
-        messageReceipt().global(playerIndex+"判定阶段");
+        messageReceipt().global(playerIndex + "判定阶段");
         decide();
-        messageReceipt().global(playerIndex+"摸牌阶段");
+        messageReceipt().global(playerIndex + "摸牌阶段");
         obtainCard();
-        messageReceipt().global(playerIndex+"出牌阶段");
+        messageReceipt().global(playerIndex + "出牌阶段");
         playCard();
-        messageReceipt().global(playerIndex+"弃牌阶段");
+        messageReceipt().global(playerIndex + "弃牌阶段");
         discardCard();
-        messageReceipt().global(playerIndex+"结束阶段");
+        messageReceipt().global(playerIndex + "结束阶段");
         end();
     }
 
-    void start(){
+    void start() {
 
     }
 
-    void decide(){
+    void decide() {
 
     }
 
-    void obtainCard(){
-        completePlayer.getHandCard().addAll( cardManage().obtainCard(2));
+    void obtainCard() {
+        completePlayer.getHandCard().addAll(cardManage().obtainCard(2));
     }
-    void playCard(){
+
+    void playCard() {
         final boolean[] playWhile = {true};
-        while (playWhile[0]){
-            interactiveMachine().addEvent(playerIndex, new Interactiveable() {
+        while (playWhile[0]) {
+            interactiveMachine().addEvent(playerIndex, "请出牌", new Interactiveable() {
                 @Override
                 public void cancelPlayCard() {
                     log.debug("取消出牌");
-                    playWhile[0] =false;
+                    playWhile[0] = false;
                 }
 
                 @Override
@@ -69,58 +72,57 @@ public class RoundProcess{
                     log.debug("完成出牌阶段");
                     return true;
                 }
-
-                @Override
-                public String message() {
-                    return "请出牌";
-                }
             });
             interactiveMachine().lock();
         }
 
     }
-    void discardCard(){
+
+    void discardCard() {
         int i = completePlayer.getHandCard().size() - completePlayer.getBlood();
-        if (i>0){
-            interactiveMachine().addEvent(playerIndex, new Interactiveable() {
-                boolean c=false;
+        if (i > 0) {
+            interactiveMachine().addEvent(playerIndex, "请弃" + i + "张牌", new Interactiveable() {
+                boolean c = false;
+
                 @Override
                 public List<Card> handCard() {
-                    return new ArrayList<>(completePlayer.getHandCard());
+                    return Util.collectionCloneToList(completePlayer.getHandCard());
                 }
 
                 @Override
-                public void discardCard(List<Card> cards) {
-                    if (cards.size()!=i) throw new SgsException("弃牌数与要求数不符");
-                    if (!completePlayer.getHandCard().containsAll(cards)) throw new SgsException("所指定的牌并非原数据本身");
-                    cards.forEach(completePlayer.getHandCard()::remove);
+                public void discardCard(int[] ids) {
+                    if (ids.length != i) throw new SgsException("弃牌数与要求数不符");
+                    Set<Card> handCard = completePlayer.getHandCard();
+                    ArrayList<Card> cards;
+                    if (!Util.collectionCollectAndCheckIds(handCard, ids, cards = new ArrayList<>()))
+                        throw new SgsException("存在给定id并非原数据id");
+                    cards.forEach(handCard::remove);
                     ContextManage.cardManage().recoveryCard(cards);
-                    log.debug(i+"弃牌:"+cards);
-                    c=true;
+                    log.debug(i + "弃牌:" + cards);
+                    c = true;
                 }
 
                 @Override
                 public void cancel() {
-
-                    discardCard(handCard().subList(0,i));
-
+                    List<Card> cards = handCard();
+                    int[] ints = new int[i];
+                    for (int j = 0, intsLength = ints.length; j < intsLength; j++) {
+                        ints[j] = cards.get(j).getId();
+                    }
+                    discardCard(ints);
                 }
 
                 @Override
                 public boolean complete() {
-                    log.debug(i+"成功弃牌");
+                    log.debug(i + "成功弃牌");
                     return c;
-                }
-
-                @Override
-                public String message() {
-                    return "请弃"+i+"张牌";
                 }
             });
             interactiveMachine().lock();
         }
     }
-    void end(){
+
+    void end() {
 
     }
 }

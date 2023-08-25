@@ -1,11 +1,11 @@
-package com.jh.sgs.data;
+package com.jh.sgs.core.data;
 
-import com.jh.sgs.interfaces.BasicData;
-import com.jh.sgs.pojo.Card;
-import com.jh.sgs.pojo.General;
+import com.jh.sgs.core.interfaces.BasicData;
+import com.jh.sgs.core.pojo.Card;
+import com.jh.sgs.core.pojo.General;
 import lombok.extern.log4j.Log4j2;
 
-import java.io.*;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;

@@ -1,23 +1,21 @@
 package com.jh.sgs;
 
+import com.jh.sgs.core.Util;
+import com.jh.sgs.core.pojo.Card;
+
 import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 public class Test {
     public static void main(String[] args) {
 
-
-        Set<String> strings = new HashSet<>();
-        strings.add("1");
-        strings.add("2");
-        strings.add("3");
-        strings.add("4");
-        ArrayList<Object> objects = new ArrayList<>();
-        objects.add("3");
-        objects.add("4");
-        System.out.println(strings.containsAll(objects));
-        System.out.println(strings.removeAll(objects));
-        System.out.println(strings);
+        ArrayList<Card> cards = new ArrayList<>();
+        Card card = new Card();
+        cards.add(card);
+        card.setId(1);
+        List<Card> cards1 = Util.collectionCloneToList(cards);
+        cards1.get(0).setId(3);
+        System.out.println(cards.get(0)==cards1.get(0));
+        System.out.println(cards.containsAll(cards1));
     }
 }

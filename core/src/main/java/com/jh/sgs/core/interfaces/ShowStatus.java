@@ -1,4 +1,4 @@
-package com.jh.sgs.interfaces;
+package com.jh.sgs.core.interfaces;
 
 public interface ShowStatus {
 

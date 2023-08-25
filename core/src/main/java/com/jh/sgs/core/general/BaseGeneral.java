@@ -1,7 +1,7 @@
-package com.jh.sgs.general;
+package com.jh.sgs.core.general;
 
 import com.jh.sgs.core.RoundProcess;
-import com.jh.sgs.pojo.CompletePlayer;
+import com.jh.sgs.core.pojo.CompletePlayer;
 
 public abstract class BaseGeneral {
 

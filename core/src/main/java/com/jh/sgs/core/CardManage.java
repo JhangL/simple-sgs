@@ -1,8 +1,8 @@
 package com.jh.sgs.core;
 
 import com.alibaba.fastjson2.JSON;
-import com.jh.sgs.interfaces.ShowStatus;
-import com.jh.sgs.pojo.Card;
+import com.jh.sgs.core.interfaces.ShowStatus;
+import com.jh.sgs.core.pojo.Card;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +13,7 @@ public class CardManage implements ShowStatus {
     List<Card> usingCards;
     List<Card> usedCards;
 
-    public CardManage(List<Card> cards) {
+    CardManage(List<Card> cards) {
         usingCards = new LinkedList<>();
         usingCards.addAll(cards);
         usedCards = new ArrayList<>();

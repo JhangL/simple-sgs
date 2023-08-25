@@ -1,8 +1,8 @@
-package com.jh.sgs.pojo;
+package com.jh.sgs.core.pojo;
 
-import com.jh.sgs.exception.SgsApiException;
-import com.jh.sgs.general.BaseGeneral;
-import com.jh.sgs.general.Test1General;
+import com.jh.sgs.core.exception.SgsApiException;
+import com.jh.sgs.core.general.BaseGeneral;
+import com.jh.sgs.core.general.Test1General;
 
 public enum GeneralEnum {
 

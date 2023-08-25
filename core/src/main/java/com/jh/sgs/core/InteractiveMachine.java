@@ -1,10 +1,9 @@
 package com.jh.sgs.core;
 
 import com.alibaba.fastjson2.JSON;
-import com.jh.sgs.GameLauncher;
-import com.jh.sgs.exception.SgsException;
-import com.jh.sgs.interfaces.Interactiveable;
-import com.jh.sgs.interfaces.ShowStatus;
+import com.jh.sgs.core.exception.SgsException;
+import com.jh.sgs.core.interfaces.Interactiveable;
+import com.jh.sgs.core.interfaces.ShowStatus;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -19,28 +18,31 @@ public class InteractiveMachine implements ShowStatus {
     private boolean bockBool;
     private List<InteractiveEvent> interactiveEvents = new LinkedList<>();
 
-    public void addEvent(int player, Interactiveable interactiveable) {
-        if (Thread.currentThread().getThreadGroup() != GameLauncher.threadGroup) throw new SgsException("非游戏组线程调用");
+    InteractiveMachine() {
+    }
+
+    public void addEvent(int player,String message, Interactiveable interactiveable) {
+        if (Thread.currentThread().getThreadGroup() != GameEngine.threadGroup) throw new SgsException("非游戏组线程调用");
         //todo 回调
         lockNum.getAndIncrement();
-        interactiveEvents.add(new InteractiveEvent(player, interactiveable, this));
+        interactiveEvents.add(new InteractiveEvent(player, message,interactiveable));
     }
 
     void subEvent(InteractiveEvent event) {
-        if (Thread.currentThread().getThreadGroup()== GameLauncher.threadGroup) throw new SgsException("游戏组线程调用");
+        if (Thread.currentThread().getThreadGroup()== GameEngine.threadGroup) throw new SgsException("游戏组线程调用");
         interactiveEvents.remove(event);
         lockNum.getAndDecrement();
     }
 
     public void lock() {
-        if (Thread.currentThread().getThreadGroup() != GameLauncher.threadGroup) throw new SgsException("非游戏组线程调用");
+        if (Thread.currentThread().getThreadGroup() != GameEngine.threadGroup) throw new SgsException("非游戏组线程调用");
         bockBool = true;
         GameEngine gameEngine = ContextManage.gameEngine();
         new Thread(new ThreadGroup("player"),() -> {
             ContextManage.setContext(gameEngine);
             ContextManage.messageReceipt().system(new ArrayList<>(interactiveEvents));
             ContextManage.setContext(null);
-        }).start();
+        },"player").start();
         while (lockNum.get() != 0) ;
         bockBool = false;
     }

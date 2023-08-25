@@ -1,9 +1,10 @@
 package com.jh.sgs;
 
+import com.jh.sgs.core.GameLauncher;
 import com.jh.sgs.core.InteractiveEvent;
-import com.jh.sgs.exception.SgsApiException;
-import com.jh.sgs.interfaces.MessageReceipt;
-import com.jh.sgs.interfaces.ShowStatus;
+import com.jh.sgs.core.exception.SgsApiException;
+import com.jh.sgs.core.interfaces.MessageReceipt;
+import com.jh.sgs.core.interfaces.ShowStatus;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.FileWriter;
@@ -35,7 +36,7 @@ public class Main {
                     } catch (InterruptedException e) {
 
                     }
-                    log.debug(interactiveEvent.getInteractiveable().message());
+                    log.debug(interactiveEvent.getMessage());
                     interactiveEvent.cancel();
 
                 }
@@ -47,7 +48,6 @@ public class Main {
             }
         }, 5);
         Thread.sleep(500);
-
         Scanner scaner = new Scanner(System.in);
         while (true) {
             System.out.println("[1111] 查看状态");

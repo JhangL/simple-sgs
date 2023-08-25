@@ -1,4 +1,4 @@
-package com.jh.sgs.pojo;
+package com.jh.sgs.core.pojo;
 
 import lombok.Data;
 
@@ -12,7 +12,7 @@ public class CompletePlayer {
 
     private OriginalPlayer originalPlayer;
 
-    private General general;
+    private CompleteGeneral completeGeneral;
     private IdentityEnum identity;
 
     private int maxBlood;
