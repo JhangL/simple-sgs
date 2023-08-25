@@ -2,9 +2,11 @@ package com.jh.sgs.core.pojo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
-@Data
+@ToString(callSuper = true)
+@Data()
 public class Card extends ID implements Cloneable{
     private int nameId;
     private String num;

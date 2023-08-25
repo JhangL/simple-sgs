@@ -1,10 +1,12 @@
 package com.jh.sgs.core;
 
 
+import com.alibaba.fastjson2.JSON;
 import com.jh.sgs.core.data.DataBaseBasicData;
 import com.jh.sgs.core.interfaces.BasicData;
 import com.jh.sgs.core.interfaces.MessageReceipt;
-import com.jh.sgs.core.interfaces.ShowStatus;
+import com.jh.sgs.core.interfaces.MessageRequest;
+import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.OriginalPlayer;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,10 +16,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Log4j2
-public class GameEngine implements Runnable , ShowStatus {
+public class GameEngine implements Runnable ,MessageRequest {
     public static final ThreadGroup threadGroup = new ThreadGroup("game");
     public static final String threadName = "game";
-
     @Getter
     private CardManage cardManage;
     @Getter
@@ -29,6 +30,7 @@ public class GameEngine implements Runnable , ShowStatus {
     private InteractiveMachine interactiveMachine;
     @Getter
     private GameProcess gameProcess;
+    @Getter
     private RoundManage roundMange;
 
 
@@ -85,17 +87,6 @@ public class GameEngine implements Runnable , ShowStatus {
         cardManage = new CardManage(basicData.getCards());
     }
 
-    @Override
-    public String getStatus() {
-        return "{" +
-                "\"cardManage\":" + cardManage.getStatus() +
-                ", \"identityManage\":" + identityManage.getStatus() +
-                ", \"interactiveMachine\":" + interactiveMachine.getStatus() +
-                ", \"gameProcess\":" + gameProcess.getStatus() +
-                ", \"roundMange\":" + "\"roundMange\"" +
-                ", \"playerNum\":" + playerNum +
-                '}';
-    }
 
 
     class PlayerManage {
@@ -114,5 +105,33 @@ public class GameEngine implements Runnable , ShowStatus {
     void shutDown(){
         log.info("系统关闭");
         Thread.currentThread().interrupt();
+    }
+
+    @Override
+    public String getAll() {
+        return "{" +
+                "\"cardManage\":" + cardManage.getStatus() +
+                ", \"identityManage\":" + identityManage.getStatus() +
+                ", \"interactiveMachine\":" + interactiveMachine.getStatus() +
+                ", \"gameProcess\":" + gameProcess.getStatus() +
+                ", \"roundMange\":" + "\"roundMange\"" +
+                ", \"playerNum\":" + playerNum +
+                '}';
+    }
+
+    @Override
+    public String getPlayer(int id) {
+        CompletePlayer completePlayer = gameProcess.getDesk().get(id);
+        return JSON.toJSONString(completePlayer);
+    }
+
+    @Override
+    public int getUsingCardNum() {
+        return cardManage.getUsingCardsNum();
+    }
+
+    @Override
+    public int getUsedCardNum() {
+        return cardManage.getUsedCardsNum();
     }
 }

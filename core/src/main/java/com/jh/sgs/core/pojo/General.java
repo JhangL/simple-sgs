@@ -2,8 +2,10 @@ package com.jh.sgs.core.pojo;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 @Data
 public class General extends ID implements Cloneable{
 

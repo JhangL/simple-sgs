@@ -25,4 +25,10 @@ public class ContextManage {
     public static Desk desk(){
         return gameEngineThreadLocal.get().getGameProcess().getDesk();
     }
+    public static Desktop.Stack desktopStack(){
+        return gameEngineThreadLocal.get().getRoundMange().getDesktopStack();
+    }
+    public static Desktop desktop(){
+        return gameEngineThreadLocal.get().getRoundMange().getDesktopStack().peek();
+    }
 }

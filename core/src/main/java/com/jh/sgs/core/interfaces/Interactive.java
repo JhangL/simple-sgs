@@ -30,6 +30,9 @@ public interface Interactive{
     default void cancelPlayCard() {
         throw SgsApiException.ffwsx;
     }
+    default void playCard(int id) {
+        throw SgsApiException.ffwsx;
+    }
 
 //    String message();
 //    int getPlayer();

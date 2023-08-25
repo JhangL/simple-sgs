@@ -1,8 +1,11 @@
 package com.jh.sgs.core;
 
 import com.alibaba.fastjson2.JSON;
+import com.jh.sgs.core.card.BaseCard;
 import com.jh.sgs.core.interfaces.ShowStatus;
 import com.jh.sgs.core.pojo.Card;
+import com.jh.sgs.core.pojo.CardEnum;
+import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +30,7 @@ public class CardManage implements ShowStatus {
         usedCards.clear();
     }
 
-    List<Card> obtainCard(int num) {
+    public List<Card> obtainCard(int num) {
         if (usingCards.size() < num) shuffle();
         ArrayList<Card> cards = new ArrayList<>();
         for (int i = 0; i < num; i++) {
@@ -36,14 +39,29 @@ public class CardManage implements ShowStatus {
         return cards;
     }
 
-    void recoveryCard(List<Card> cards){
+    public void recoveryCard(List<Card> cards) {
         usedCards.addAll(cards);
+    }
+
+    public void recoveryCard(@NonNull Card card) {
+        usedCards.add(card);
+    }
+
+    public BaseCard getBaseCard(Card card) {
+        return CardEnum.getById(card.getNameId()).baseCard;
+    }
+
+    public int getUsedCardsNum() {
+        return usedCards.size();
+    }
+    public int getUsingCardsNum() {
+        return usingCards.size();
     }
 
     @Override
     public String getStatus() {
         return "{" +
-                "\"usingCards\":" + JSON.toJSONString(usingCards)  +
+                "\"usingCards\":" + JSON.toJSONString(usingCards) +
                 ", \"usedCards\":" + JSON.toJSONString(usedCards) +
                 '}';
     }

@@ -1,5 +1,6 @@
 package com.jh.sgs.core;
 
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -7,13 +8,14 @@ public class RoundManage {
 
 
     private Desk desk;
-    private Desktop desktop;
+    @Getter
+    private Desktop.Stack desktopStack;
 
     private RoundProcess[] roundProcesses;
 
     RoundManage(Desk desk) {
         this.desk = desk;
-        desktop = new Desktop();
+        desktopStack = new Desktop.Stack();
         roundProcesses = new RoundProcess[desk.size()];
     }
 
@@ -38,10 +40,5 @@ public class RoundManage {
         }
     }
 
-
-    class Desktop {
-
-
-    }
 
 }

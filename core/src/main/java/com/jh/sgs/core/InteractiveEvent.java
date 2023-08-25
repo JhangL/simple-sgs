@@ -11,11 +11,12 @@ public class InteractiveEvent {
     @Getter
     private final int player;
     private boolean cancelLock = false;
+    private boolean lock = false;
     @Getter
     private final String message;
     private final Interactiveable interactiveable;
 
-    public InteractiveEvent(int player, String message, Interactiveable interactiveable) {
+    protected InteractiveEvent(int player, String message, Interactiveable interactiveable) {
         this.player = player;
         this.message = message;
         this.interactiveable = interactiveable;
@@ -25,21 +26,24 @@ public class InteractiveEvent {
      * 取消流程执行，系统自动执行给定流程。注意：当开始执行流程（执行{@link InteractiveEvent#interactive()}）后，无法取消流程
      */
     public void cancel() {
+        lock();
         if (cancelLock) throw new SgsApiException("已开始执行流程，无法取消");
         log.debug(player + "未执行操作,自动执行以下-->");
         interactiveable.cancel();
         log.debug(player + "自动执行完成-->");
         ContextManage.interactiveMachine().subEvent(this);
-
+        lock=true;
     }
 
     /**
      * 当所有流程执行结束后，执行此方法意味流程结束
      */
     public void complete() {
+        lock();
         if (!interactiveable.complete()) throw new SgsApiException("流程未完成");
         log.debug(player + "流程执行结束-->");
         ContextManage.interactiveMachine().subEvent(this);
+        lock=true;
     }
 
     /**
@@ -48,8 +52,14 @@ public class InteractiveEvent {
      * @return 执行流程的交互组件
      */
     public Interactive interactive() {
-        cancelLock = true;
-        log.debug(player + "开始执行流程-->");
+        lock();
+        if (!cancelLock){
+            cancelLock = true;
+            log.debug(player + "开始执行流程-->");
+        }
         return interactiveable;
+    }
+    private void lock(){
+        if (lock) throw new SgsApiException("已处理完成,不可再次执行");
     }
 }

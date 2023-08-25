@@ -20,6 +20,9 @@ public class Desk implements ShowStatus {
 
     Desk(CompletePlayer[] chair) {
         this.chair = chair;
+        for (int i = 0; i < chair.length; i++) {
+            chair[0].setId(i);
+        }
         onDesk = new boolean[chair.length];
         Arrays.fill(onDesk, true);
     }

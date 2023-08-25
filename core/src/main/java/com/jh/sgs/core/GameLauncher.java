@@ -1,7 +1,7 @@
 package com.jh.sgs.core;
 
 import com.jh.sgs.core.interfaces.MessageReceipt;
-import com.jh.sgs.core.interfaces.ShowStatus;
+import com.jh.sgs.core.interfaces.MessageRequest;
 import lombok.Getter;
 
 import static com.jh.sgs.core.GameEngine.threadGroup;
@@ -28,14 +28,14 @@ public class GameLauncher {
         thread.start();
     }
 
-    public static ShowStatus run(MessageReceipt messageReceipt, int playerNum) {
+    public static MessageRequest run(MessageReceipt messageReceipt, int playerNum) {
         GameLauncher gameLauncher = new GameLauncher(messageReceipt, playerNum);
         gameLauncher.start();
 
        return gameLauncher.getGameEngine();
     }
 
-    public static ShowStatus run() {
+    public static MessageRequest run() {
         GameLauncher gameLauncher = new GameLauncher();
         gameLauncher.start();
         return gameLauncher.getGameEngine();

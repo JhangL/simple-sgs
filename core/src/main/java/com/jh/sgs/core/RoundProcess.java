@@ -20,7 +20,7 @@ public class RoundProcess {
 
     public RoundProcess(CompletePlayer completePlayer) {
         this.completePlayer = completePlayer;
-        playerIndex = desk().index(completePlayer);
+        playerIndex = completePlayer.getId();
     }
 
     void process() {
@@ -56,10 +56,31 @@ public class RoundProcess {
         final boolean[] playWhile = {true};
         while (playWhile[0]) {
             interactiveMachine().addEvent(playerIndex, "请出牌", new Interactiveable() {
+
+                boolean cancel;
+                boolean play;
+
                 @Override
                 public void cancelPlayCard() {
                     log.debug("取消出牌");
                     playWhile[0] = false;
+                    cancel = true;
+                }
+
+                @Override
+                public List<Card> handCard() {
+                    return Util.collectionCloneToList(completePlayer.getHandCard());
+                }
+
+                @Override
+                public void playCard(int id) {
+                    Set<Card> handCard = completePlayer.getHandCard();
+                    Card card = Util.collectionCollectAndCheckId(handCard, id);
+                    if (card == null) throw new SgsException("给定id并非原数据id");
+                    ContextManage.desktopStack().create(completePlayer,card);
+                    handCard.remove(card);
+                    log.debug(playerIndex + "出牌:" + card);
+                    play = true;
                 }
 
                 @Override
@@ -74,6 +95,7 @@ public class RoundProcess {
                 }
             });
             interactiveMachine().lock();
+            desktopStack().remove();
         }
 
     }
@@ -98,7 +120,7 @@ public class RoundProcess {
                         throw new SgsException("存在给定id并非原数据id");
                     cards.forEach(handCard::remove);
                     ContextManage.cardManage().recoveryCard(cards);
-                    log.debug(i + "弃牌:" + cards);
+                    log.debug(playerIndex + "弃牌:" + cards);
                     c = true;
                 }
 

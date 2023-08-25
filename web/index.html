@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>sgs测试</title>
+</head>
+<body>
+    <p>牌堆数量：</p>
+    <p id="usingCards"></p>
+    <p>弃牌堆数量：</p>
+    <p id="usedCards"></p>
+
+</body>
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+    $.getJSON("tsconfig.json")
+        .then(function(data) {
+            // 当 JSON 文件加载成功后的回调函数
+            let cardManage = data.cardManage;
+            $("#usedCards").text(cardManage.usingCards.length);
+
+            document.write("弃牌堆数量："+cardManage.usedCards.length)
+            document.write(data.aaa)
+        })
+        .fail(function(error) {
+            // 当 JSON 文件加载失败后的回调函数
+            console.error("Failed to load JSON file:", error);
+        });
+</script>
+</html>
