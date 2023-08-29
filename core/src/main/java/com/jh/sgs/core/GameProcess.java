@@ -1,8 +1,7 @@
 package com.jh.sgs.core;
 
-import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.exception.SgsException;
-import com.jh.sgs.core.interfaces.Interactiveable;
+import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.interfaces.ShowStatus;
 import com.jh.sgs.core.pojo.*;
 import lombok.Getter;
@@ -52,9 +51,13 @@ public class GameProcess implements ShowStatus {
             int step = 0;
 
             @Override
+            public InteractiveEnum type() {
+                return InteractiveEnum.XZYX;
+            }
+
+            @Override
             public void setGeneral(int id) {
                 General general = Util.collectionCollectAndCheckId(selectableGeneral(), id);
-                if (general==null)throw new SgsApiException("给定id并非原数据id");
                 completePlayer.setCompleteGeneral(new CompleteGeneral());
                 completePlayer.getCompleteGeneral().setGeneral(general);
                 log.debug(integer+"选择武将"+general);
@@ -72,9 +75,9 @@ public class GameProcess implements ShowStatus {
             }
 
             @Override
-            public boolean complete() {
-                log.debug(integer+"完成武将选择");
-                return step == 1;
+            public InteractiveEvent.CompleteEnum  complete() {
+//                log.debug(integer+"完成武将选择");
+                return step == 1? InteractiveEvent.CompleteEnum.COMPLETE: InteractiveEvent.CompleteEnum.NOEXECUTE;
             }
         }));
         ContextManage.interactiveMachine().lock();
@@ -93,6 +96,7 @@ public class GameProcess implements ShowStatus {
             } else {
                 completePlayer.setBlood(completePlayer.getCompleteGeneral().getGeneral().getBlood());
             }
+            completePlayer.setMaxBlood(completePlayer.getBlood());
         });
     }
 

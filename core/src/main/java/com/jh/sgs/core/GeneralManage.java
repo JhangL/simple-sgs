@@ -6,6 +6,7 @@ import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.General;
 import com.jh.sgs.core.pojo.GeneralEnum;
 
+import java.lang.reflect.Constructor;
 import java.util.List;
 
 public class GeneralManage {
@@ -19,12 +20,15 @@ public class GeneralManage {
         return allGeneral;
     }
 
-    public void setGeneral(CompletePlayer completePlayer)  {
+    public void setGeneral(CompletePlayer completePlayer) {
         GeneralEnum byId = GeneralEnum.getById(completePlayer.getCompleteGeneral().getGeneral().getId());
         try {
-            BaseGeneral baseGeneral = byId.aClass.newInstance();
+            Class[] parameterTypes = {CompletePlayer.class};
+            //根据参数类型获取相应的构造函数
+            Constructor<? extends BaseGeneral> constructor = byId.aClass.getConstructor(parameterTypes);
+            BaseGeneral baseGeneral = constructor.newInstance(completePlayer);
             completePlayer.getCompleteGeneral().setBaseGeneral(baseGeneral);
-        } catch (InstantiationException | IllegalAccessException e) {
+        } catch (Exception e) {
             throw new SgsException(e.getMessage());
         }
     }

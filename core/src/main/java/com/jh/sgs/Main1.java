@@ -36,7 +36,7 @@ public class Main1 {
                     } catch (InterruptedException ignored) {
 
                     }
-                    log.debug(interactiveEvent.getMessage());
+                    System.out.println(interactiveEvent.getMessage());
                     if (!"请出牌".equals(interactiveEvent.getMessage())) {
                         interactiveEvent.cancel();
                         continue;
@@ -44,12 +44,17 @@ public class Main1 {
                     System.out.println(interactiveEvent.interactive().handCard());
                     if (interactiveEvent.interactive().handCard().stream().anyMatch(card -> {
                         int nameId = card.getNameId();
-                        return nameId >= 27 && nameId <= 32;
+//                        return nameId >= 16 && nameId <= 32||nameId==6;
+                        return nameId==6;
                     })) {
 
                         Scanner scaner = new Scanner(System.in);
                         while (true) {
                             int i = scaner.nextInt();
+                            if (i==1000) {
+                                interactiveEvent.interactive().cancelPlayCard();
+                                break;
+                            }
                             try {
                                 interactiveEvent.interactive().playCard(i);
                                 break;

@@ -1,8 +1,7 @@
 package com.jh.sgs.core;
 
-import com.alibaba.fastjson2.JSON;
 import com.jh.sgs.core.exception.SgsException;
-import com.jh.sgs.core.interfaces.Interactiveable;
+import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.interfaces.ShowStatus;
 import lombok.Getter;
 
@@ -53,7 +52,6 @@ public class InteractiveMachine implements ShowStatus {
     public String getStatus() {
         return "{" +
                 "\"bockBool\":" + bockBool +
-                ", \"interactiveEvents\":" + JSON.toJSONString(interactiveEvents) +
                 '}';
     }
 

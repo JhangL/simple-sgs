@@ -1,8 +1,8 @@
 package com.jh.sgs.core;
 
 import com.jh.sgs.core.exception.SgsApiException;
-import com.jh.sgs.core.interfaces.Interactive;
-import com.jh.sgs.core.interfaces.Interactiveable;
+import com.jh.sgs.core.interactive.Interactive;
+import com.jh.sgs.core.interactive.Interactiveable;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -10,7 +10,6 @@ import lombok.extern.log4j.Log4j2;
 public class InteractiveEvent {
     @Getter
     private final int player;
-    private boolean cancelLock = false;
     private boolean lock = false;
     @Getter
     private final String message;
@@ -23,16 +22,15 @@ public class InteractiveEvent {
     }
 
     /**
-     * 取消流程执行，系统自动执行给定流程。注意：当开始执行流程（执行{@link InteractiveEvent#interactive()}）后，无法取消流程
+     * 取消流程执行，系统自动执行给定流程。注意：当开始执行流程（执行{@link InteractiveEvent#interactive()}内部实质操作）后，无法取消流程
      */
     public void cancel() {
         lock();
-        if (cancelLock) throw new SgsApiException("已开始执行流程，无法取消");
+        if (interactiveable.complete()!=CompleteEnum.NOEXECUTE) throw new SgsApiException("已开始执行流程，无法取消");
         log.debug(player + "未执行操作,自动执行以下-->");
         interactiveable.cancel();
         log.debug(player + "自动执行完成-->");
-        ContextManage.interactiveMachine().subEvent(this);
-        lock=true;
+        complete();
     }
 
     /**
@@ -40,7 +38,7 @@ public class InteractiveEvent {
      */
     public void complete() {
         lock();
-        if (!interactiveable.complete()) throw new SgsApiException("流程未完成");
+        if (interactiveable.complete()!=CompleteEnum.COMPLETE) throw new SgsApiException("流程未完成");
         log.debug(player + "流程执行结束-->");
         ContextManage.interactiveMachine().subEvent(this);
         lock=true;
@@ -53,13 +51,18 @@ public class InteractiveEvent {
      */
     public Interactive interactive() {
         lock();
-        if (!cancelLock){
-            cancelLock = true;
+        if (interactiveable.complete()==CompleteEnum.NOEXECUTE){
             log.debug(player + "开始执行流程-->");
         }
         return interactiveable;
     }
     private void lock(){
         if (lock) throw new SgsApiException("已处理完成,不可再次执行");
+    }
+
+    public enum CompleteEnum{
+        COMPLETE,
+        PROGRESS,
+        NOEXECUTE
     }
 }

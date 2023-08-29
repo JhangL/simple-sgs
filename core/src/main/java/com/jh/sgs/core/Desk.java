@@ -6,7 +6,6 @@ import com.jh.sgs.core.interfaces.ShowStatus;
 import com.jh.sgs.core.pojo.CompletePlayer;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
@@ -20,20 +19,21 @@ public class Desk implements ShowStatus {
 
     Desk(CompletePlayer[] chair) {
         this.chair = chair;
-        for (int i = 0; i < chair.length; i++) {
-            chair[0].setId(i);
-        }
+        for (int i = 0; i < chair.length; i++) chair[i].setId(i);
         onDesk = new boolean[chair.length];
         Arrays.fill(onDesk, true);
     }
 
-    private void check() {
-        HashSet<Object> objects = new HashSet<>(Arrays.asList(chair));
-        if (objects.size() != chair.length) throw new SgsException("存在重复数据");
-    }
-
     public int size() {
         return chair.length;
+    }
+
+    public int sizeOnDesk() {
+        int a = 0;
+        for (boolean b : onDesk) {
+            if (b) a++;
+        }
+        return a;
     }
 
     public void foreach(BiConsumer<Integer, ? super CompletePlayer> action) {
@@ -44,9 +44,41 @@ public class Desk implements ShowStatus {
     }
 
     public void foreach(Consumer<? super CompletePlayer> action) {
-        for (CompletePlayer t : chair) {
+        Arrays.stream(chair).forEach(action);
+    }
+
+    public void foreachOnDeskNoPlayer(int player, Consumer<? super CompletePlayer> action) {
+        for (int i = 0; i < chair.length; i++) {
+            if (!onDesk[i]) continue;
+            if (i == player) continue;
+            CompletePlayer t = chair[i];
             action.accept(t);
         }
+    }
+
+    /**
+     * 遍历在场玩家并附加与查询玩家的相对距离（不包括查询玩家）
+     * @param player 查询玩家位置
+     * @param action 遍历方法器【距离，玩家类】
+     */
+    public void foreachHaveDistanceOnDeskNoPlayer(int player, BiConsumer<Integer, ? super CompletePlayer> action) {
+        int[] ints = new int[sizeOnDesk()];
+        int playerIndex=-1;
+        //将在场的玩家位置放到临时数组里去计算距离，并保存查询玩家在临时数组的位置;
+        for (int i = 0,j=0; i < chair.length ; i++) {
+            if (onDesk[i]) {
+                ints[j]=i;
+                if (i==player) playerIndex=j;
+                j++;
+            }
+        }
+        //将整理完的数组遍历，根据查询玩家的临时数组位置，计算相对距离
+        for (int i = 0, intsLength = ints.length; i < intsLength; i++) {
+            if (i==playerIndex)continue;
+            //公式（a查询玩家，b被查询玩家，s人数）：b>a: b-a,a-(b-c)找最小，b<a: a-b,b+c-a 找最小
+            action.accept(i>playerIndex?Math.min(i-playerIndex,playerIndex-(i-ints.length)):Math.min(playerIndex-i,i+i-ints.length-playerIndex),chair[ints[i]]);
+        }
+
     }
 
     public void setIndex(CompletePlayer t) {
@@ -130,7 +162,7 @@ public class Desk implements ShowStatus {
     @Override
     public String getStatus() {
         return "{" +
-                "\"chair\":" + JSON.toJSONString(chair) +
+                "\"chair\":" + "JSON.toJSONString(chair)" +
                 ", \"onDesk\":" + JSON.toJSONString(onDesk) +
                 ", \"index\":" + index +
                 '}';

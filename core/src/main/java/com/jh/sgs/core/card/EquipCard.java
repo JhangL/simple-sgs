@@ -1,22 +1,25 @@
 package com.jh.sgs.core.card;
 
 import com.jh.sgs.core.ContextManage;
+import com.jh.sgs.core.RoundManage;
+import com.jh.sgs.core.Util;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.EquipCardEnum;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public abstract class EquipCard extends ExecutableCard {
+public abstract class EquipCard extends BaseCard implements Executable{
 
     @Override
     public void execute() {
-        CompletePlayer completePlayer = ContextManage.desktop().getCompletePlayer();
+        CompletePlayer completePlayer = Util.getDesktopMainPlayer();
         int id = completePlayer.getId();
         Card card = completePlayer.getEquipCard()[equipType().ordinal()];
-        // todo 换装备，涉及失牌
         if (card != null) {
             completePlayer.getEquipCard()[equipType().ordinal()] = null;
+            //调用失去牌事件
+            ContextManage.roundManage().loseCard(id,id,card, RoundManage.EQUIP_CARD);
             log.debug(id + "换下装备牌" + card);
             ContextManage.cardManage().recoveryCard(card);
         }

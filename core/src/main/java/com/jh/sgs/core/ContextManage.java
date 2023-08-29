@@ -31,4 +31,7 @@ public class ContextManage {
     public static Desktop desktop(){
         return gameEngineThreadLocal.get().getRoundMange().getDesktopStack().peek();
     }
+    public static RoundManage roundManage(){
+        return gameEngineThreadLocal.get().getRoundMange();
+    }
 }

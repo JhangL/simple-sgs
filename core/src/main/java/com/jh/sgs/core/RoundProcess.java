@@ -1,9 +1,11 @@
 package com.jh.sgs.core;
 
 import com.jh.sgs.core.exception.SgsException;
-import com.jh.sgs.core.interfaces.Interactiveable;
+import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
+import com.jh.sgs.core.pojo.InteractiveEnum;
+import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
@@ -15,8 +17,10 @@ import static com.jh.sgs.core.ContextManage.*;
 
 @Log4j2
 public class RoundProcess {
-    CompletePlayer completePlayer;
-    int playerIndex;
+    @Getter
+    private CompletePlayer completePlayer;
+    @Getter
+    private int playerIndex;
 
     public RoundProcess(CompletePlayer completePlayer) {
         this.completePlayer = completePlayer;
@@ -68,6 +72,11 @@ public class RoundProcess {
                 }
 
                 @Override
+                public InteractiveEnum type() {
+                    return InteractiveEnum.CP;
+                }
+
+                @Override
                 public List<Card> handCard() {
                     return Util.collectionCloneToList(completePlayer.getHandCard());
                 }
@@ -76,11 +85,11 @@ public class RoundProcess {
                 public void playCard(int id) {
                     Set<Card> handCard = completePlayer.getHandCard();
                     Card card = Util.collectionCollectAndCheckId(handCard, id);
-                    if (card == null) throw new SgsException("给定id并非原数据id");
-                    ContextManage.desktopStack().create(completePlayer,card);
+                    ContextManage.desktopStack().create(playerIndex,card);
                     handCard.remove(card);
                     log.debug(playerIndex + "出牌:" + card);
                     play = true;
+                    playWhile[0]=true;
                 }
 
                 @Override
@@ -89,13 +98,13 @@ public class RoundProcess {
                 }
 
                 @Override
-                public boolean complete() {
-                    log.debug("完成出牌阶段");
-                    return true;
+                public InteractiveEvent.CompleteEnum complete() {
+//                    log.debug("完成出牌阶段");
+                    return cancel||play? InteractiveEvent.CompleteEnum.COMPLETE: InteractiveEvent.CompleteEnum.NOEXECUTE;
                 }
             });
             interactiveMachine().lock();
-            desktopStack().remove();
+            if (playWhile[0]) desktopStack().remove();
         }
 
     }
@@ -107,17 +116,25 @@ public class RoundProcess {
                 boolean c = false;
 
                 @Override
+                public InteractiveEnum type() {
+                    return InteractiveEnum.QP;
+                }
+
+                @Override
+                public int discardNum() {
+                    return i;
+                }
+
+                @Override
                 public List<Card> handCard() {
                     return Util.collectionCloneToList(completePlayer.getHandCard());
                 }
 
                 @Override
-                public void discardCard(int[] ids) {
+                public void disCard(int[] ids) {
                     if (ids.length != i) throw new SgsException("弃牌数与要求数不符");
                     Set<Card> handCard = completePlayer.getHandCard();
-                    ArrayList<Card> cards;
-                    if (!Util.collectionCollectAndCheckIds(handCard, ids, cards = new ArrayList<>()))
-                        throw new SgsException("存在给定id并非原数据id");
+                    ArrayList<Card> cards = Util.collectionCollectAndCheckIds(handCard, ids);
                     cards.forEach(handCard::remove);
                     ContextManage.cardManage().recoveryCard(cards);
                     log.debug(playerIndex + "弃牌:" + cards);
@@ -131,13 +148,13 @@ public class RoundProcess {
                     for (int j = 0, intsLength = ints.length; j < intsLength; j++) {
                         ints[j] = cards.get(j).getId();
                     }
-                    discardCard(ints);
+                    disCard(ints);
                 }
 
                 @Override
-                public boolean complete() {
-                    log.debug(i + "成功弃牌");
-                    return c;
+                public InteractiveEvent.CompleteEnum complete() {
+//                    log.debug(i + "成功弃牌");
+                    return c? InteractiveEvent.CompleteEnum.COMPLETE: InteractiveEvent.CompleteEnum.NOEXECUTE;
                 }
             });
             interactiveMachine().lock();
