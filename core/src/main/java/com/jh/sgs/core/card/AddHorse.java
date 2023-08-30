@@ -7,4 +7,9 @@ public class AddHorse extends EquipCard{
     EquipCardEnum equipType() {
         return EquipCardEnum.ADD_HORSE;
     }
+
+    @Override
+    String getName() {
+        return "+1马";
+    }
 }

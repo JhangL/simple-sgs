@@ -1,4 +1,4 @@
 package com.jh.sgs.core.card;
 
-public class Tao {
+public class Tao extends BaseCard {
 }

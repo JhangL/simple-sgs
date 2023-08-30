@@ -48,12 +48,13 @@ public class CardManage implements ShowStatus {
     }
 
     public BaseCard getBaseCard(Card card) {
-        return CardEnum.getById(card.getNameId()).baseCard;
+        return CardEnum.getById(card.getNameId()).getBaseCard();
     }
 
     public int getUsedCardsNum() {
         return usedCards.size();
     }
+
     public int getUsingCardsNum() {
         return usingCards.size();
     }

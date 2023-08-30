@@ -1,4 +1,4 @@
 package com.jh.sgs.core.card;
 
-public class Shan {
+public class Shan extends BaseCard{
 }

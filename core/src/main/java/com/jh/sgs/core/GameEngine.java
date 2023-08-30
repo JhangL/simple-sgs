@@ -1,13 +1,13 @@
 package com.jh.sgs.core;
 
 
-import com.alibaba.fastjson2.JSON;
 import com.jh.sgs.core.data.DataBaseBasicData;
 import com.jh.sgs.core.interfaces.BasicData;
 import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.interfaces.MessageRequest;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.OriginalPlayer;
+import com.jh.sgs.core.pojo.ShowPlayer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -122,7 +122,7 @@ public class GameEngine implements Runnable ,MessageRequest {
     @Override
     public String getPlayer(int id) {
         CompletePlayer completePlayer = gameProcess.getDesk().get(id);
-        return JSON.toJSONString(completePlayer);
+        return new ShowPlayer(completePlayer).toString();
     }
 
     @Override

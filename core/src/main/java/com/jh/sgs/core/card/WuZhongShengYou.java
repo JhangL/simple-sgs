@@ -11,6 +11,11 @@ import java.util.List;
 @Log4j2
 public class WuZhongShengYou extends OneSilkbagCard{
     @Override
+    String getName() {
+        return "无中生有";
+    }
+
+    @Override
     int getPlayer() {
         return ContextManage.desktop().getPlayer();
     }

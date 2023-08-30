@@ -2,12 +2,21 @@ package com.jh.sgs.core.pojo;
 
 import com.jh.sgs.core.card.*;
 import com.jh.sgs.core.exception.SgsApiException;
+import lombok.Getter;
 
 public enum CardEnum {
 
+    SHA(1,new Sha()),
+    SHAN(2,new Shan()),
+    TAO(3,new Tao()),
     GUO_HE_CHAI_QIAO(5,new GuoHeChaiQiao()),
     SHUN_SHOU_QIAN_YANG(6,new ShunShouQianYang()),
     WU_ZHONG_SHENG_YOU(7,new WuZhongShengYou()),
+    WU_XIE_KE_JI(9,new WuXieKeJi()),
+    NAN_MAN_RU_QIN(10,new NanManRuQin()),
+    WAN_JIAN_QI_FA(11,new WanJianQiFa()),
+    TAO_YUAN_JIE_YI(12,new TaoYuanJieYi()),
+    WU_GU_FENG_DENG(13,new WuGuFengDeng()),
     ZHU_GE_LIAN_NU(16,new ZhuGeLianNu()),
     QING_HONG_JIAN(17,new QingHongJian()),
     CI_XIONG_SHUANG_GU_JIAN(18,new CiXiongShuangGuJian()),
@@ -26,8 +35,10 @@ public enum CardEnum {
     DI_LU(31,new AddHorse()),
     JUE_YING(32,new AddHorse());
 
-    public final int id;
-    public final BaseCard baseCard;
+    @Getter
+    private final int id;
+    @Getter
+    private final BaseCard baseCard;
 
     CardEnum(int id, BaseCard baseCard) {
         this.id = id;

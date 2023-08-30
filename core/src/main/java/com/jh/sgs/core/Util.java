@@ -1,6 +1,6 @@
 package com.jh.sgs.core;
 
-import com.jh.sgs.core.exception.SgsException;
+import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.ID;
 
@@ -10,15 +10,21 @@ import java.util.stream.Collectors;
 
 public class Util {
 
-
     public static <A extends Cloneable> List<A> collectionCloneToList(Collection<A> t) {
-        return t.stream().map(a -> {
+        return collectionCloneToList(t, false);
+    }
+
+    public static <A extends Cloneable> List<A> collectionCloneToList(Collection<A> t, boolean shuffle) {
+        List<A> clone = t.stream().map(a -> {
             try {
                 return (A) a.getClass().getDeclaredMethod("clone").invoke(a);
             } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
                 throw new RuntimeException(e);
             }
         }).collect(Collectors.toList());
+        if (shuffle) Collections.shuffle(clone);
+        return clone;
+
     }
 
     public static <A extends Cloneable> List<A> arrayCloneToList(A[] t) {
@@ -39,7 +45,7 @@ public class Util {
         if (ids.length == as.size()) {
             return as;
         } else {
-            throw new SgsException("存在给定id并非原数据id");
+            throw new SgsApiException("存在给定id并非原数据id");
         }
     }
 
@@ -48,7 +54,7 @@ public class Util {
         for (A a : beCheck) {
             if (id == a.getId()) as = a;
         }
-        if (as == null) throw new SgsException("给定id并非原数据id");
+        if (as == null) throw new SgsApiException("给定id并非原数据id");
         return as;
     }
 
@@ -58,7 +64,7 @@ public class Util {
             if (a == null) continue;
             if (id == a.getId()) as = a;
         }
-        if (as == null) throw new SgsException("给定id并非原数据id");
+        if (as == null) throw new SgsApiException("给定id并非原数据id");
         return as;
     }
 

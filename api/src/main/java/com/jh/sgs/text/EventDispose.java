@@ -38,6 +38,7 @@ public class EventDispose {
 //            case QP: return qp(interactive);
             case GHCQSSQYXZP: return ghcqssqyxzp(interactive);
             case XZMB: return xzmb(interactive);
+//            case WGFDXZP: return wgfdxzp(interactive);
             default:
                 System.out.println("系统未实现此事件");
                 return false;
@@ -55,7 +56,7 @@ public class EventDispose {
 
     private boolean cp(CP cp) {
         println("手牌：" + cp.handCard());
-        println("输入对应手牌id{5,6,7,16--32实现了}（-1取消出牌）");
+        println("输入对应手牌id（-1取消出牌）");
         while (true) {
             int i = StartGame.inputer.inputInt();
             if (i == Inputer.CANCAL) return false;
@@ -64,7 +65,7 @@ public class EventDispose {
                 try {
                     cp.playCard(i);
                 } catch (SgsApiException e) {
-                    e.printStackTrace();
+                    System.err.println(e.getMessage());
                     continue;
                 }
             }
@@ -108,6 +109,15 @@ public class EventDispose {
         if (i == Inputer.CANCAL) return false;
         if (i == -1) xzmb.cancelTargetPlayer();
         else xzmb.setTargetPlayer(i);
+        return true;
+    }
+
+    private boolean wgfdxzp(WGFDXZP wgfdxzp){
+        println("可选择牌:"+wgfdxzp.targetCard());
+        println("输入对应牌id");
+        int i = StartGame.inputer.inputInt();
+        if (i == Inputer.CANCAL) return false;
+        wgfdxzp.setCard(i);
         return true;
     }
 

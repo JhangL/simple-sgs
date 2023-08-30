@@ -13,6 +13,8 @@ public abstract class EquipCard extends BaseCard implements Executable{
 
     @Override
     public void execute() {
+        log.debug("执行{}-->",getName());
+        ContextManage.messageReceipt().global(ContextManage.desktop().getPlayer() +"装备"+ContextManage.desktop().getCard());
         CompletePlayer completePlayer = Util.getDesktopMainPlayer();
         int id = completePlayer.getId();
         Card card = completePlayer.getEquipCard()[equipType().ordinal()];
@@ -25,6 +27,7 @@ public abstract class EquipCard extends BaseCard implements Executable{
         }
         completePlayer.getEquipCard()[equipType().ordinal()] = ContextManage.desktop().getCard();
         log.debug(id + "装备装备牌" + ContextManage.desktop().getCard());
+        ContextManage.messageReceipt().global(ContextManage.desktop().getPlayer() +"完成装备"+ContextManage.desktop().getCard());
     }
 
     abstract EquipCardEnum equipType();

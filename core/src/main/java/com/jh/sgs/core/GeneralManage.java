@@ -1,6 +1,6 @@
 package com.jh.sgs.core;
 
-import com.jh.sgs.core.exception.SgsException;
+import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.general.BaseGeneral;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.General;
@@ -29,7 +29,7 @@ public class GeneralManage {
             BaseGeneral baseGeneral = constructor.newInstance(completePlayer);
             completePlayer.getCompleteGeneral().setBaseGeneral(baseGeneral);
         } catch (Exception e) {
-            throw new SgsException(e.getMessage());
+            throw new SgsRuntimeException(e.getMessage());
         }
     }
 

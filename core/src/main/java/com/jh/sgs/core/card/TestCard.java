@@ -5,4 +5,9 @@ public class TestCard extends BaseCard implements Executable{
     public void execute() {
 
     }
+
+    @Override
+    String getName() {
+        return "test";
+    }
 }

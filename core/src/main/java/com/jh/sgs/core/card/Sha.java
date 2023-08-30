@@ -1,4 +1,4 @@
 package com.jh.sgs.core.card;
 
-public class Sha {
+public class Sha extends BaseCard{
 }

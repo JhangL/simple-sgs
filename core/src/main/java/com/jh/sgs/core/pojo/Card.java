@@ -10,6 +10,8 @@ public class Card extends ID implements Cloneable, ShowStatus {
     private int nameId;
     private String num;
     private int suit;
+    private String name;
+    private String remark;
 
     @Override
     public Card clone() {
@@ -22,7 +24,7 @@ public class Card extends ID implements Cloneable, ShowStatus {
 
     @Override
     public String toString() {
-        return getId() + " @" + getStatus();
+        return getId() + " " + getStatus();
     }
 
     @Override
@@ -30,6 +32,6 @@ public class Card extends ID implements Cloneable, ShowStatus {
         if (suit == -1) {
             return "隐藏";
         }
-        return nameId + SuitEnum.getByIndex(suit).getName() + num;
+        return  SuitEnum.getByIndex(suit).getName() + num+name;
     }
 }

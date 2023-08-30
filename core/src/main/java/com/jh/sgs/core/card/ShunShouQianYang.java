@@ -4,6 +4,7 @@ import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.InteractiveEvent;
 import com.jh.sgs.core.RoundManage;
 import com.jh.sgs.core.Util;
+import com.jh.sgs.core.exception.DesktopErrorException;
 import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.pojo.Card;
@@ -19,9 +20,13 @@ import java.util.stream.Collectors;
 
 @Log4j2
 public class ShunShouQianYang extends OneSilkbagCard {
+    @Override
+    String getName() {
+        return "顺手牵羊";
+    }
 
     @Override
-    int getPlayer() {
+    int getPlayer() throws DesktopErrorException {
         //获取一格内的目标
         List<CompletePlayer> target = ContextManage.roundManage().findTarget(ContextManage.desktop().getPlayer(), ContextManage.desktop().getCard(), 1);
         //过滤没手牌的人
@@ -35,6 +40,7 @@ public class ShunShouQianYang extends OneSilkbagCard {
         ContextManage.interactiveMachine().addEvent(ContextManage.desktop().getPlayer(), "请选择目标", new Interactiveable() {
 
             boolean a = false;
+            boolean b = false;
 
             @Override
             public InteractiveEnum type() {
@@ -58,6 +64,7 @@ public class ShunShouQianYang extends OneSilkbagCard {
             public void cancelTargetPlayer() {
                 targetPlayer[0] = null;
                 log.debug("取消选择目标");
+                b=true;
             }
 
             @Override
@@ -68,11 +75,11 @@ public class ShunShouQianYang extends OneSilkbagCard {
             @Override
             public InteractiveEvent.CompleteEnum  complete() {
 //                log.debug("完成目标选择");
-                return a? InteractiveEvent.CompleteEnum.COMPLETE: InteractiveEvent.CompleteEnum.NOEXECUTE;
+                return a||b? InteractiveEvent.CompleteEnum.COMPLETE: InteractiveEvent.CompleteEnum.NOEXECUTE;
             }
         });
         ContextManage.interactiveMachine().lock();
-        if (targetPlayer[0] == null) throw new SgsApiException("未选择目标");
+        if (targetPlayer[0] == null) throw new DesktopErrorException("未选择目标");
         return targetPlayer[0];
     }
 
@@ -94,11 +101,13 @@ public class ShunShouQianYang extends OneSilkbagCard {
 
             @Override
             public List<Card> handCard() {
-                List<Card> cards = Util.collectionCloneToList(player1.getHandCard());
+                List<Card> cards = Util.collectionCloneToList(player1.getHandCard(),true);
                 for (Card card : cards) {
                     card.setNum(null);
                     card.setSuit(-1);
                     card.setNameId(-1);
+                    card.setName(null);
+                    card.setRemark(null);
                 }
                 return cards;
             }

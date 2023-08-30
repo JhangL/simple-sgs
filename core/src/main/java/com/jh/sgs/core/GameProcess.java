@@ -1,6 +1,6 @@
 package com.jh.sgs.core;
 
-import com.jh.sgs.core.exception.SgsException;
+import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.interfaces.ShowStatus;
 import com.jh.sgs.core.pojo.*;
@@ -106,7 +106,7 @@ public class GameProcess implements ShowStatus {
     private void distributeIdentity() {
         ContextManage.messageReceipt().global("分配身份");
         List<IdentityEnum> distribute = ContextManage.gameEngine().getIdentityManage().distribute();
-        if (distribute.size() != desk.size()) throw new SgsException("身份个数与实际不符");
+        if (distribute.size() != desk.size()) throw new SgsRuntimeException("身份个数与实际不符");
         Iterator<IdentityEnum> iterator = distribute.iterator();
         desk.foreach(completePlayer -> completePlayer.setIdentity(iterator.next()));
     }

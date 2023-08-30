@@ -25,4 +25,9 @@ public enum InteractiveEnum {
      */
     GHCQSSQYXZP,
 
+    /**
+     * 五谷丰登选择牌
+     */
+    WGFDXZP
+
 }

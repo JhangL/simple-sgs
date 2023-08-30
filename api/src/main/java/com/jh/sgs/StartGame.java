@@ -8,8 +8,11 @@ import com.jh.sgs.text.TextMessageReceipt;
 import java.io.IOException;
 
 public class StartGame {
-    public static Inputer inputer=new Inputer(System.in,-1);
+    public static Inputer inputer = new Inputer(System.in, -1);
+    public static MessageRequest messageRequest;
+    public static int playerNum=5;
+
     public static void main(String[] args) throws IOException, InterruptedException {
-        MessageRequest run = GameLauncher.run(new TextMessageReceipt(), 5);
+        messageRequest = GameLauncher.run(new TextMessageReceipt(), playerNum);
     }
 }

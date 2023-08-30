@@ -1,6 +1,7 @@
 package com.jh.sgs.core;
 
-import com.jh.sgs.core.exception.SgsException;
+import com.jh.sgs.core.exception.DesktopException;
+import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
@@ -85,11 +86,11 @@ public class RoundProcess {
                 public void playCard(int id) {
                     Set<Card> handCard = completePlayer.getHandCard();
                     Card card = Util.collectionCollectAndCheckId(handCard, id);
-                    ContextManage.desktopStack().create(playerIndex,card);
+                    ContextManage.desktopStack().create(playerIndex, card);
                     handCard.remove(card);
                     log.debug(playerIndex + "出牌:" + card);
                     play = true;
-                    playWhile[0]=true;
+                    playWhile[0] = true;
                 }
 
                 @Override
@@ -100,11 +101,17 @@ public class RoundProcess {
                 @Override
                 public InteractiveEvent.CompleteEnum complete() {
 //                    log.debug("完成出牌阶段");
-                    return cancel||play? InteractiveEvent.CompleteEnum.COMPLETE: InteractiveEvent.CompleteEnum.NOEXECUTE;
+                    return cancel || play ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
                 }
             });
             interactiveMachine().lock();
-            if (playWhile[0]) desktopStack().remove();
+            if (playWhile[0]) {
+                try {
+                    desktopStack().remove();
+                } catch (DesktopException e) {
+                    throw new RuntimeException("系统错误");
+                }
+            }
         }
 
     }
@@ -132,7 +139,7 @@ public class RoundProcess {
 
                 @Override
                 public void disCard(int[] ids) {
-                    if (ids.length != i) throw new SgsException("弃牌数与要求数不符");
+                    if (ids.length != i) throw new SgsApiException("弃牌数与要求数不符");
                     Set<Card> handCard = completePlayer.getHandCard();
                     ArrayList<Card> cards = Util.collectionCollectAndCheckIds(handCard, ids);
                     cards.forEach(handCard::remove);
@@ -154,7 +161,7 @@ public class RoundProcess {
                 @Override
                 public InteractiveEvent.CompleteEnum complete() {
 //                    log.debug(i + "成功弃牌");
-                    return c? InteractiveEvent.CompleteEnum.COMPLETE: InteractiveEvent.CompleteEnum.NOEXECUTE;
+                    return c ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
                 }
             });
             interactiveMachine().lock();

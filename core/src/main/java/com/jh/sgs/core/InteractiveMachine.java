@@ -1,6 +1,6 @@
 package com.jh.sgs.core;
 
-import com.jh.sgs.core.exception.SgsException;
+import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.interfaces.ShowStatus;
 import lombok.Getter;
@@ -21,20 +21,19 @@ public class InteractiveMachine implements ShowStatus {
     }
 
     public void addEvent(int player,String message, Interactiveable interactiveable) {
-        if (Thread.currentThread().getThreadGroup() != GameEngine.threadGroup) throw new SgsException("非游戏组线程调用");
-        //todo 回调
+        if (Thread.currentThread().getThreadGroup() != GameEngine.threadGroup) throw new SgsRuntimeException("非游戏组线程调用");
         lockNum.getAndIncrement();
         interactiveEvents.add(new InteractiveEvent(player, message,interactiveable));
     }
 
     void subEvent(InteractiveEvent event) {
-        if (Thread.currentThread().getThreadGroup()== GameEngine.threadGroup) throw new SgsException("游戏组线程调用");
+        if (Thread.currentThread().getThreadGroup()== GameEngine.threadGroup) throw new SgsRuntimeException("游戏组线程调用");
         interactiveEvents.remove(event);
         lockNum.getAndDecrement();
     }
 
     public void lock() {
-        if (Thread.currentThread().getThreadGroup() != GameEngine.threadGroup) throw new SgsException("非游戏组线程调用");
+        if (Thread.currentThread().getThreadGroup() != GameEngine.threadGroup) throw new SgsRuntimeException("非游戏组线程调用");
         bockBool = true;
         GameEngine gameEngine = ContextManage.gameEngine();
         new Thread(new ThreadGroup("player"),() -> {
@@ -42,7 +41,13 @@ public class InteractiveMachine implements ShowStatus {
             ContextManage.messageReceipt().system(new ArrayList<>(interactiveEvents));
             ContextManage.setContext(null);
         },"player").start();
-        while (lockNum.get() != 0) ;
+        while (lockNum.get() != 0) {
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        };
         bockBool = false;
     }
 
