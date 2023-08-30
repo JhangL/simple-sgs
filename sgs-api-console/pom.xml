@@ -10,7 +10,7 @@
     </parent>
 
     <groupId>com.jh.sgs</groupId>
-    <artifactId>api</artifactId>
+    <artifactId>sgs-api-console</artifactId>
     <packaging>jar</packaging>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -30,7 +30,7 @@
         </dependency>
         <dependency>
             <groupId>com.jh.sgs</groupId>
-            <artifactId>core</artifactId>
+            <artifactId>sgs-core</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
