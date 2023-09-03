@@ -30,20 +30,20 @@ public class WuGuFengDeng extends MoreSilkbagCard {
     @Override
     public void end() {
         ContextManage.messageReceipt().global(getName() + ":剩余的牌" + cards);
-        ContextManage.desktop().getProcessCards().addAll(cards);
+        ContextManage.executeCardDesktop().getProcessCards().addAll(cards);
     }
 
     @Override
     List<CompletePlayer> getPlayer() {
         List<CompletePlayer> completePlayers = new ArrayList<>();
         completePlayers.add(Util.getDesktopMainPlayer());
-        completePlayers.addAll(ContextManage.roundManage().findTarget(ContextManage.desktop().getPlayer(), ContextManage.desktop().getCard()));
+        completePlayers.addAll(ContextManage.roundManage().findTarget(ContextManage.executeCardDesktop().getPlayer(), ContextManage.executeCardDesktop().getCard()));
         return completePlayers;
     }
 
     @Override
     void effect(CompletePlayer completePlayer) {
-        int mainPlayer = ContextManage.desktop().getPlayer();
+        int mainPlayer = ContextManage.executeCardDesktop().getPlayer();
         log.debug("{}：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, completePlayer);
         //todo 五谷丰登摸牌时，可能需要重新修改逻辑，当前事件执行人并不是卡牌执行事件的发起者
         final Card[] card = new Card[1];

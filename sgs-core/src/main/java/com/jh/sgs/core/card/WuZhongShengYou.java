@@ -17,7 +17,7 @@ public class WuZhongShengYou extends OneSilkbagCard{
 
     @Override
     int getPlayer() {
-        return ContextManage.desktop().getPlayer();
+        return ContextManage.executeCardDesktop().getPlayer();
     }
 
     @Override

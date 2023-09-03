@@ -1,6 +1,7 @@
 package com.jh.sgs.core;
 
 import com.jh.sgs.core.exception.DesktopException;
+import com.jh.sgs.core.exception.DesktopRefuseException;
 import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.pojo.Card;
@@ -53,7 +54,17 @@ public class RoundProcess {
     }
 
     void decide() {
-
+        List<Card> decideCard = getCompletePlayer().getDecideCard();
+        while (!decideCard.isEmpty()){
+            Card card = decideCard.get(0);
+            desktopStack().create(new DecideCardDesktop(playerIndex,card));
+            decideCard.remove(0);
+            try {
+                desktopStack().remove();
+            } catch (DesktopRefuseException e) {
+                throw new RuntimeException("系统错误");
+            }
+        }
     }
 
     void obtainCard() {
@@ -64,10 +75,10 @@ public class RoundProcess {
         Card[] cards = new Card[]{null};
         do {
             cards[0] = null;
-            interactiveMachine().addEvent(ContextManage.roundManage().playCard(playerIndex, "请出牌", cards, Desktop::initCheck));
+            interactiveMachine().addEvent(ContextManage.roundManage().playCard(playerIndex, "请出牌", cards, ExecuteCardDesktop::initCheck));
             interactiveMachine().lock();
             if (cards[0] != null) {
-                desktopStack().create(playerIndex, cards[0]);
+                desktopStack().create(new ExecuteCardDesktop(playerIndex, cards[0]));
                 try {
                     desktopStack().remove();
                 } catch (DesktopException e) {

@@ -19,12 +19,12 @@ public class WanJianQiFa extends MoreSilkbagCard {
 
     @Override
     List<CompletePlayer> getPlayer() {
-        return ContextManage.roundManage().findTarget(ContextManage.desktop().getPlayer(), ContextManage.desktop().getCard());
+        return ContextManage.roundManage().findTarget(ContextManage.executeCardDesktop().getPlayer(), ContextManage.executeCardDesktop().getCard());
     }
 
     @Override
     void effect(CompletePlayer completePlayer) throws DesktopException {
-        int mainPlayer = ContextManage.desktop().getPlayer();
+        int mainPlayer = ContextManage.executeCardDesktop().getPlayer();
         log.debug("{}：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, completePlayer.getId());
         //todo 万箭齐发响应时，可能需要重新修改逻辑，当前事件执行人并不是卡牌执行事件的发起者，响应需要闪，需要添加技能等监听处理
         Card[] playWhile = new Card[1];
@@ -35,9 +35,9 @@ public class WanJianQiFa extends MoreSilkbagCard {
         ContextManage.interactiveMachine().lock();
         if (playWhile[0] == null) {
             completePlayer.setBlood(completePlayer.getBlood() - 1);
-            ContextManage.roundManage().subBlood(mainPlayer, completePlayer.getId(), ContextManage.desktop().getCard(), 1);
+            ContextManage.roundManage().subBlood(mainPlayer, completePlayer.getId(), ContextManage.executeCardDesktop().getCard(), 1);
         }else {
-            ContextManage.desktop().getProcessCards().add(playWhile[0]);
+            ContextManage.executeCardDesktop().getProcessCards().add(playWhile[0]);
         }
         log.debug("{}完成：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, completePlayer.getId());
     }

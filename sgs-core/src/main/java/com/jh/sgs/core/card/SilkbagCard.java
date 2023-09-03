@@ -9,11 +9,11 @@ public abstract class SilkbagCard extends BaseCard implements Executable{
     @Override
     public void execute() throws DesktopException {
         log.debug("执行{}-->",getName());
-        ContextManage.messageReceipt().global(ContextManage.desktop().getPlayer() +"使用"+ContextManage.desktop().getCard());
+        ContextManage.messageReceipt().global(ContextManage.executeCardDesktop().getPlayer() +"使用"+ContextManage.executeCardDesktop().getCard());
         begin();
         effect();
         end();
-        ContextManage.messageReceipt().global(ContextManage.desktop().getPlayer() +"完成使用"+ContextManage.desktop().getCard());
+        ContextManage.messageReceipt().global(ContextManage.executeCardDesktop().getPlayer() +"完成使用"+ContextManage.executeCardDesktop().getCard());
     }
 
     abstract public void begin();

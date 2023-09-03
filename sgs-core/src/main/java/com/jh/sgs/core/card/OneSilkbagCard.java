@@ -15,12 +15,12 @@ public abstract class OneSilkbagCard extends SilkbagCard {
     @Override
     public void effect() throws DesktopException {
         int player = getPlayer();
-        ContextManage.messageReceipt().global(ContextManage.desktop().getPlayer() +"将对"+player+"使用"+ContextManage.desktop().getCard());
+        ContextManage.messageReceipt().global(ContextManage.executeCardDesktop().getPlayer() +"将对"+player+"使用"+ContextManage.executeCardDesktop().getCard());
         ContextManage.roundManage().wxkjCheck();
 //        log.debug("{}：执行玩家：{}，被执行玩家：{}",getName() , ContextManage.desktop().getPlayer(), player);
         effect(player);
 //        log.debug("{}完成：执行玩家：{}，被执行玩家：{}",getName() , ContextManage.desktop().getPlayer(), player);
-        ContextManage.messageReceipt().global(ContextManage.desktop().getPlayer() +"完成对"+player+"使用"+ContextManage.desktop().getCard());
+        ContextManage.messageReceipt().global(ContextManage.executeCardDesktop().getPlayer() +"完成对"+player+"使用"+ContextManage.executeCardDesktop().getCard());
     }
 
     @Override

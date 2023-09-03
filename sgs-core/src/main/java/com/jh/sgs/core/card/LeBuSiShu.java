@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class LeBuSiShu extends DelaySilkbagCard {
     @Override
     boolean decideTerm(Card card) {
-        return card.getSuit() != SuitEnum.HONGT.ordinal();
+        return SuitEnum.HONGT!=SuitEnum.getByIndex(card.getSuit());
     }
 
     @Override
@@ -26,17 +26,16 @@ public class LeBuSiShu extends DelaySilkbagCard {
 
     @Override
     void decideFalse() {
-
     }
 
     @Override
     int getPlayer() throws DesktopErrorException {
         //获取目标
-        List<CompletePlayer> target = ContextManage.roundManage().findTarget(ContextManage.desktop().getPlayer(), ContextManage.desktop().getCard());
+        List<CompletePlayer> target = ContextManage.roundManage().findTarget(ContextManage.executeCardDesktop().getPlayer(), ContextManage.executeCardDesktop().getCard());
         //过滤有乐不思蜀的人
         List<CompletePlayer> collect = target.stream().filter(completePlayer -> completePlayer.getDecideCard().stream().noneMatch(card -> card.getNameId() == CardEnum.LE_BU_SI_SHU.getId())).collect(Collectors.toList());
         final Integer[] targetPlayer = new Integer[1];
-        ContextManage.interactiveMachine().addEvent(ContextManage.desktop().getPlayer(), "请选择目标", new Interactiveable() {
+        ContextManage.interactiveMachine().addEvent(ContextManage.executeCardDesktop().getPlayer(), "请选择目标", new Interactiveable() {
 
             boolean a = false;
             boolean b = false;
@@ -73,7 +72,6 @@ public class LeBuSiShu extends DelaySilkbagCard {
 
             @Override
             public InteractiveEvent.CompleteEnum complete() {
-                log.debug("完成目标选择");
                 return a || b ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
             }
         });
@@ -83,12 +81,7 @@ public class LeBuSiShu extends DelaySilkbagCard {
     }
 
     @Override
-    void effect(int player) {
-        int mainPlayer = ContextManage.desktop().getPlayer();
-        log.debug("{}：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, player);
-        CompletePlayer player1 = Util.getPlayer(player);
-        player1.getDecideCard().add(0, ContextManage.desktop().getCard());
-        ContextManage.desktop().useCard();
-        log.debug("{}完成：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, player);
+    String getName() {
+        return "乐不思蜀";
     }
 }

@@ -14,7 +14,7 @@ public abstract class EquipCard extends BaseCard implements Executable{
     @Override
     public void execute() {
         log.debug("执行{}-->",getName());
-        ContextManage.messageReceipt().global(ContextManage.desktop().getPlayer() +"装备"+ContextManage.desktop().getCard());
+        ContextManage.messageReceipt().global(ContextManage.executeCardDesktop().getPlayer() +"装备"+ContextManage.executeCardDesktop().getCard());
         CompletePlayer completePlayer = Util.getDesktopMainPlayer();
         int id = completePlayer.getId();
         Card card = completePlayer.getEquipCard()[equipType().ordinal()];
@@ -25,10 +25,10 @@ public abstract class EquipCard extends BaseCard implements Executable{
             log.debug(id + "换下装备牌" + card);
             ContextManage.cardManage().recoveryCard(card);
         }
-        completePlayer.getEquipCard()[equipType().ordinal()] = ContextManage.desktop().getCard();
-        ContextManage.desktop().useCard();
-        log.debug(id + "装备装备牌" + ContextManage.desktop().getCard());
-        ContextManage.messageReceipt().global(ContextManage.desktop().getPlayer() +"完成装备"+ContextManage.desktop().getCard());
+        completePlayer.getEquipCard()[equipType().ordinal()] = ContextManage.executeCardDesktop().getCard();
+        ContextManage.executeCardDesktop().useCard();
+        log.debug(id + "装备装备牌" + ContextManage.executeCardDesktop().getCard());
+        ContextManage.messageReceipt().global(ContextManage.executeCardDesktop().getPlayer() +"完成装备"+ContextManage.executeCardDesktop().getCard());
     }
 
     abstract EquipCardEnum equipType();

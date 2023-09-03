@@ -174,6 +174,12 @@ public class Desk implements ShowStatus {
         return get();
     }
 
+    public int nextOnDesk(int index) {
+        do {
+            ++index;
+        } while (!onDesk[index % size()]);
+        return index % size();
+    }
 
     @Override
     public String getStatus() {

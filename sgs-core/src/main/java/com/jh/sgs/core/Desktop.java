@@ -1,92 +1,55 @@
 package com.jh.sgs.core;
 
-import com.jh.sgs.core.card.BaseCard;
-import com.jh.sgs.core.card.Executable;
-import com.jh.sgs.core.exception.*;
-import com.jh.sgs.core.pojo.Card;
+import com.jh.sgs.core.exception.DesktopErrorException;
+import com.jh.sgs.core.exception.DesktopException;
+import com.jh.sgs.core.exception.DesktopRefuseException;
+import com.jh.sgs.core.exception.DesktopRelationalException;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @Log4j2
-public class Desktop {
+public abstract class Desktop {
     @Getter
     private final int player;
-    @Getter
-    private Card card;
-    @Getter
-    private boolean cardUsed;
-    @Getter
-    private List<Card> processCards = new ArrayList<>();
-    private Executable executable;
-    private boolean isCardExecute;
 
-    public Desktop(int player, Card card) {
+    public Desktop(int player) {
         this.player = player;
-        this.card = card;
-        isCardExecute = true;
-    }
-    public void useCard(){
-        if (cardUsed) throw new SgsRuntimeException("desktop牌已使用");
-        else cardUsed=true;
     }
 
-    private void initCheck() {
-        if (isCardExecute) {
-            BaseCard baseCard = ContextManage.cardManage().getBaseCard(card);
-            if (!(baseCard instanceof Executable)) throw new SgsApiException("该牌不可执行");
-            executable = (Executable) baseCard;
-        }
-    }
-
-    public static void initCheck(Card card) {
-        BaseCard baseCard = ContextManage.cardManage().getBaseCard(card);
-        if (!(baseCard instanceof Executable)) throw new SgsApiException("该牌不可执行");
-    }
 
     /**
      * 执行操作
      */
     private void start() throws DesktopRefuseException {
-        ContextManage.messageReceipt().global(player + "出牌" + card);
         try {
-            executable.execute();
+            execute();
         } catch (DesktopException e) {
             if (e instanceof DesktopRelationalException) {
-                log.debug("{} {}执行发出关联阻挡", player, card);
-                ContextManage.messageReceipt().global(player + "完成阻挡" + card);
+                log.debug("{} 执行发出关联阻挡", player);
+                ContextManage.messageReceipt().global(player + "完成阻挡" );
                 throw new DesktopRefuseException(e.getMessage());
             } else if (e instanceof DesktopRefuseException) {
-                log.debug("{} {}执行阻挡", player, card);
-                ContextManage.messageReceipt().global(player + "被阻挡" + card);
-//                refuse();
+                log.debug("{} 执行阻挡", player);
+                ContextManage.messageReceipt().global(player + "被阻挡" );
             } else if (e instanceof DesktopErrorException) {
-                ContextManage.messageReceipt().global(player + "出牌错误" + card);
+                ContextManage.messageReceipt().global(player + "执行错误" );
                 error();
+                return;
             }
         }
         end();
     }
 
-    private void end() {
-        ContextManage.messageReceipt().global(player + "完成出牌" + card);
-        if (!cardUsed) ContextManage.cardManage().recoveryCard(card);
-        ContextManage.cardManage().recoveryCard(processCards);
-    }
+    protected abstract void initCheck();
+    protected abstract void execute() throws DesktopException;
 
-    private void error() {
-        if (isCardExecute) {
+    protected abstract void end();
 
-            log.debug("{} {}执行出错，退牌", player, card);
-            Util.getPlayer(player).getHandCard().add(card);
-        }
-    }
+    protected abstract void error();
+
 
     public static class Stack extends java.util.Stack<Desktop> {
-        public void create(int player, Card card) {
-            Desktop desktop = new Desktop(player, card);
+        public void create(Desktop desktop) {
             desktop.initCheck();
             push(desktop);
         }
@@ -107,4 +70,6 @@ public class Desktop {
             }
         }
     }
+
+
 }

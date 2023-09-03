@@ -1,9 +1,11 @@
 package com.jh.sgs.core.card;
 
 import com.jh.sgs.core.ContextManage;
+import com.jh.sgs.core.Util;
 import com.jh.sgs.core.exception.DesktopException;
 import com.jh.sgs.core.exception.DesktopRefuseException;
 import com.jh.sgs.core.pojo.Card;
+import com.jh.sgs.core.pojo.CompletePlayer;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
@@ -18,6 +20,7 @@ public abstract class DelaySilkbagCard extends OneSilkbagCard implements Decidab
         } catch (DesktopRefuseException e) {
             log.debug("{}被阻挡", getName());
             decideFalse();
+            return;
         }
         List<Card> cards = ContextManage.cardManage().obtainCard(1);
         Card card = cards.get(0);
@@ -41,8 +44,19 @@ public abstract class DelaySilkbagCard extends OneSilkbagCard implements Decidab
     @Override
     public void effect() throws DesktopException {
         int player = getPlayer();
-        ContextManage.messageReceipt().global(ContextManage.desktop().getPlayer() + "将对" + player + "使用" + ContextManage.desktop().getCard());
+        ContextManage.messageReceipt().global(ContextManage.executeCardDesktop().getPlayer() + "将对" + player + "使用" + ContextManage.executeCardDesktop().getCard());
         effect(player);
-        ContextManage.messageReceipt().global(ContextManage.desktop().getPlayer() + "完成对" + player + "使用" + ContextManage.desktop().getCard());
+        ContextManage.messageReceipt().global(ContextManage.executeCardDesktop().getPlayer() + "完成对" + player + "使用" + ContextManage.executeCardDesktop().getCard());
     }
+
+    @Override
+    void effect(int player) {
+        int mainPlayer = ContextManage.executeCardDesktop().getPlayer();
+        log.debug("{}：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, player);
+        CompletePlayer player1 = Util.getPlayer(player);
+        player1.getDecideCard().add(0, ContextManage.executeCardDesktop().getCard());
+        ContextManage.executeCardDesktop().useCard();
+        log.debug("{}完成：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, player);
+    }
+
 }

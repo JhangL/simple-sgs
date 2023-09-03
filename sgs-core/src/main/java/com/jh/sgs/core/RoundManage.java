@@ -139,19 +139,16 @@ public class RoundManage {
         //无懈可击出牌
         Card[] playWhile = new Card[1];
         for (CompletePlayer completePlayer : completePlayers) {
-            ContextManage.interactiveMachine().addEvent(playCard(completePlayer.getId(), "是否使用无懈可击", playWhile, new Consumer<Card>() {
-                @Override
-                public void accept(Card card) {
-                    if (card.getNameId() != CardEnum.WU_XIE_KE_JI.getId())
-                        throw new SgsApiException("指定牌不为无懈可击");
-                    Desktop.initCheck(card);
-                }
+            ContextManage.interactiveMachine().addEvent(playCard(completePlayer.getId(), "是否使用无懈可击", playWhile, card -> {
+                if (card.getNameId() != CardEnum.WU_XIE_KE_JI.getId())
+                    throw new SgsApiException("指定牌不为无懈可击");
+                ExecuteCardDesktop.initCheck(card);
             }));
             ContextManage.interactiveMachine().lock();
             //新增desktop（无懈可击使用desktop传递异常）
             if (playWhile[0] != null) {
                 if (!completePlayers.isEmpty()) ContextManage.messageReceipt().global("使用无懈可击");
-                desktopStack.create(completePlayer.getId(), playWhile[0]);
+                desktopStack.create(new ExecuteCardDesktop(completePlayer.getId(), playWhile[0]));
                 desktopStack.remove();
                 break;
             }

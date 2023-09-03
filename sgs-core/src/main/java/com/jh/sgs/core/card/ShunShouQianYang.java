@@ -28,7 +28,7 @@ public class ShunShouQianYang extends OneSilkbagCard {
     @Override
     int getPlayer() throws DesktopErrorException {
         //获取一格内的目标
-        List<CompletePlayer> target = ContextManage.roundManage().findTarget(ContextManage.desktop().getPlayer(), ContextManage.desktop().getCard(), 1);
+        List<CompletePlayer> target = ContextManage.roundManage().findTarget(ContextManage.executeCardDesktop().getPlayer(), ContextManage.executeCardDesktop().getCard(), 1);
         //过滤没手牌的人
         List<CompletePlayer> collect = target.stream().filter(completePlayer -> {
             if (!completePlayer.getHandCard().isEmpty()) return true;
@@ -37,7 +37,7 @@ public class ShunShouQianYang extends OneSilkbagCard {
             return false;
         }).collect(Collectors.toList());
         final Integer[] targetPlayer = new Integer[1];
-        ContextManage.interactiveMachine().addEvent(ContextManage.desktop().getPlayer(), "请选择目标", new Interactiveable() {
+        ContextManage.interactiveMachine().addEvent(ContextManage.executeCardDesktop().getPlayer(), "请选择目标", new Interactiveable() {
 
             boolean a = false;
             boolean b = false;
@@ -85,7 +85,7 @@ public class ShunShouQianYang extends OneSilkbagCard {
 
     @Override
     void effect(int player) {
-        int mainPlayer = ContextManage.desktop().getPlayer();
+        int mainPlayer = ContextManage.executeCardDesktop().getPlayer();
         log.debug("顺手牵羊：执行玩家：{}，被执行玩家：{}",mainPlayer,player);
         CompletePlayer player1 = Util.getPlayer(player);
         final Card[] card = new Card[1];//选择卡牌

@@ -75,7 +75,7 @@ public class Util {
     }
 
     public static CompletePlayer getDesktopMainPlayer() {
-        return getPlayer(ContextManage.desktop().getPlayer());
+        return getPlayer(ContextManage.executeCardDesktop().getPlayer());
     }
 
     public static CompletePlayer getPlayer(int index) {

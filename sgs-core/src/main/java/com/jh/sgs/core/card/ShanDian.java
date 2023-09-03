@@ -5,37 +5,49 @@ import com.jh.sgs.core.Util;
 import com.jh.sgs.core.exception.DesktopErrorException;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
+import com.jh.sgs.core.pojo.SuitEnum;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
 public class ShanDian extends DelaySilkbagCard {
     @Override
     boolean decideTerm(Card card) {
+        if (SuitEnum.HEIT==SuitEnum.getByIndex(card.getSuit())) {
+            switch (card.getNum()) {
+                case "2":
+                case "3":
+                case "4":
+                case "5":
+                case "6":
+                case "7":
+                case "8":
+                case "9":
+                    return true;
+                default:
+                    return false;
+            }
+        }
         return false;
     }
 
     @Override
     void decideTrue() {
-
+        CompletePlayer player = Util.getPlayer(ContextManage.decideCardDesktop().getPlayer());
+        player.setBlood(player.getBlood() - 3);
+        ContextManage.roundManage().subBlood(-1, player.getId(), ContextManage.decideCardDesktop().getCard(), 3);
     }
 
     @Override
     void decideFalse() {
-
+        Card card = ContextManage.decideCardDesktop().getCard();
+        int i = ContextManage.desk().nextOnDesk(ContextManage.decideCardDesktop().getPlayer());
+        Util.getPlayer(i).getDecideCard().add(0, card);
+        ContextManage.decideCardDesktop().useCard();
     }
 
     @Override
     int getPlayer() throws DesktopErrorException {
-        return ContextManage.desktop().getPlayer();
+        return ContextManage.executeCardDesktop().getPlayer();
     }
 
-    @Override
-    void effect(int player) {
-        int mainPlayer = ContextManage.desktop().getPlayer();
-        log.debug("{}：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, player);
-        CompletePlayer player1 = Util.getPlayer(player);
-        player1.getDecideCard().add(0, ContextManage.desktop().getCard());
-        ContextManage.desktop().useCard();
-        log.debug("{}完成：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, player);
-    }
 }
