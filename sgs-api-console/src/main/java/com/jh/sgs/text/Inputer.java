@@ -38,7 +38,7 @@ public class Inputer {
                 a = Integer.parseInt(scanner.nextLine());
                 break;
             } catch (Exception e) {
-                e.printStackTrace();
+                System.err.println("请输入数字");
             }
         System.out.println("输入：" + a);
         if (a == SYSTEM) {
@@ -108,7 +108,7 @@ public class Inputer {
                         System.out.println("超出范围");
                         break;
                     }
-                    System.out.println(StartGame.messageRequest.getPlayer(i1));
+                    System.out.println(StartGame.messageRequest.getShowPlayer(i1));
                     break;
                 case 886:
                     System.exit(0);

@@ -34,4 +34,7 @@ public class ContextManage {
     public static RoundManage roundManage(){
         return gameEngineThreadLocal.get().getRoundMange();
     }
+    public static RoundProcess roundProcess(){
+        return gameEngineThreadLocal.get().getRoundMange().getRoundProcess();
+    }
 }

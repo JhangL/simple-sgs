@@ -1,4 +1,4 @@
-package com.jh.sgs.core.interfaces;
+package com.jh.sgs.core.roundevent;
 
 public interface OffenseEvent extends RoundEvent{
     int offense();

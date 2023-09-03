@@ -5,24 +5,28 @@ import com.jh.sgs.core.card.BaseCard;
 import com.jh.sgs.core.interfaces.ShowStatus;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CardEnum;
+import com.jh.sgs.core.pojo.FalseCard;
 import lombok.NonNull;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class CardManage implements ShowStatus {
     List<Card> usingCards;
     List<Card> usedCards;
+    Map<Integer, Map<String, String>> cardParameter;
 
-    CardManage(List<Card> cards) {
+    CardManage(List<Card> cards, Map<Integer, Map<String, String>> cardParameter) {
         usingCards = new LinkedList<>();
         usingCards.addAll(cards);
         usedCards = new ArrayList<>();
+        this.cardParameter = cardParameter;
+        for (Card usingCard : usingCards) {
+            Map<String, String> stringStringMap = cardParameter.get(usingCard.getNameId());
+            usingCard.setName(stringStringMap.get("name"));
+            usingCard.setRemark(stringStringMap.get("remark"));
+        }
         Collections.shuffle(usingCards);
     }
-
 
     void shuffle() {
         Collections.shuffle(usedCards);
@@ -40,10 +44,13 @@ public class CardManage implements ShowStatus {
     }
 
     public void recoveryCard(List<Card> cards) {
-        usedCards.addAll(cards);
+        for (Card card : cards) {
+            recoveryCard(card);
+        }
     }
 
     public void recoveryCard(@NonNull Card card) {
+        if (card instanceof FalseCard) card = ((FalseCard) card).getCard();
         usedCards.add(card);
     }
 
@@ -57,6 +64,10 @@ public class CardManage implements ShowStatus {
 
     public int getUsingCardsNum() {
         return usingCards.size();
+    }
+
+    public  Map<String, String> getCardParameter(int nameId) {
+        return cardParameter.get(nameId);
     }
 
     @Override

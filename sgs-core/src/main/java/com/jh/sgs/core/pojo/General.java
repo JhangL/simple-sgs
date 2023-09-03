@@ -13,6 +13,7 @@ public class General extends ID implements Cloneable{
     private String country;
     private int blood;
     private int[] skillIds;
+    private Skill[] skills;
 
     @Override
     public General clone() {

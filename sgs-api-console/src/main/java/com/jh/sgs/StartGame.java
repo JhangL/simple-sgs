@@ -10,7 +10,7 @@ import java.io.IOException;
 public class StartGame {
     public static Inputer inputer = new Inputer(System.in, -1);
     public static MessageRequest messageRequest;
-    public static int playerNum=5;
+    public static int playerNum=2;
 
     public static void main(String[] args) throws IOException, InterruptedException {
         messageRequest = GameLauncher.run(new TextMessageReceipt(), playerNum);

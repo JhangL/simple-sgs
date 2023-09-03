@@ -17,6 +17,8 @@ public enum CardEnum {
     WAN_JIAN_QI_FA(11,new WanJianQiFa()),
     TAO_YUAN_JIE_YI(12,new TaoYuanJieYi()),
     WU_GU_FENG_DENG(13,new WuGuFengDeng()),
+    LE_BU_SI_SHU(14,new LeBuSiShu()),
+    SHAN_DIAN(15,new ShanDian()),
     ZHU_GE_LIAN_NU(16,new ZhuGeLianNu()),
     QING_HONG_JIAN(17,new QingHongJian()),
     CI_XIONG_SHUANG_GU_JIAN(18,new CiXiongShuangGuJian()),

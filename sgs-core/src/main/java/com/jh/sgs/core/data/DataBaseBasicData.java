@@ -3,6 +3,7 @@ package com.jh.sgs.core.data;
 import com.jh.sgs.core.interfaces.BasicData;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.General;
+import com.jh.sgs.core.pojo.Skill;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.IOException;
@@ -61,19 +62,35 @@ public class DataBaseBasicData implements BasicData {
 
     @Override
     public List<Card> getCards() {
-        try (ResultSet resultSet = statement.executeQuery("select * from card a left join card_parameter c on a.name_id=c.id ")) {
+        try (ResultSet resultSet = statement.executeQuery("select * from card  ")) {
             ArrayList<Card> cards = new ArrayList<>();
             while (resultSet.next()) {
                 Card card = new Card();
-                card.setId(resultSet.getInt("a.id"));
+                card.setId(resultSet.getInt("id"));
                 card.setNum(resultSet.getString("num"));
-                card.setName(resultSet.getString("name"));
-                card.setRemark(resultSet.getString("remark"));
+//                card.setName(resultSet.getString("name"));
+//                card.setRemark(resultSet.getString("remark"));
                 card.setSuit(resultSet.getInt("suit"));
                 card.setNameId(resultSet.getInt("name_id"));
                 cards.add(card);
             }
             return cards;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Map<Integer, Map<String, String>> getCardParameter() {
+        try (ResultSet resultSet = statement.executeQuery("select * from card_parameter  ")) {
+            Map<Integer, Map<String, String>> map = new HashMap<>();
+            while (resultSet.next()) {
+                HashMap<String, String> stringStringHashMap = new HashMap<>();
+                stringStringHashMap.put("name", resultSet.getString("name"));
+                stringStringHashMap.put("remark", resultSet.getString("remark"));
+                map.put(resultSet.getInt("id"), stringStringHashMap);
+            }
+            return map;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -108,6 +125,11 @@ public class DataBaseBasicData implements BasicData {
                 general.setBlood(resultSet.getInt("blood"));
                 String[] skillIds = resultSet.getString("skill_ids").split(",");
                 general.setSkillIds(Arrays.stream(skillIds).mapToInt(Integer::parseInt).toArray());
+                general.setSkills(Arrays.stream(skillIds).map(s -> {
+                    Skill skill = new Skill();
+                    skill.setId(Integer.parseInt(s));
+                    return skill;
+                }).toArray(value -> new Skill[skillIds.length]));
                 generals.add(general);
             }
             return generals;

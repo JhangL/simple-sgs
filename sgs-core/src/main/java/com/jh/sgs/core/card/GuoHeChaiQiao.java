@@ -70,7 +70,7 @@ public class GuoHeChaiQiao extends OneSilkbagCard {
 
             @Override
             public InteractiveEvent.CompleteEnum complete() {
-                log.debug("完成目标选择");
+//                log.debug("完成目标选择");
                 return a || b ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
             }
         });

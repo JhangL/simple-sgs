@@ -21,9 +21,12 @@ public class InteractiveMachine implements ShowStatus {
     }
 
     public void addEvent(int player,String message, Interactiveable interactiveable) {
+        addEvent(new InteractiveEvent(player,message,interactiveable));
+    }
+    public void addEvent(InteractiveEvent interactiveEvent) {
         if (Thread.currentThread().getThreadGroup() != GameEngine.threadGroup) throw new SgsRuntimeException("非游戏组线程调用");
         lockNum.getAndIncrement();
-        interactiveEvents.add(new InteractiveEvent(player, message,interactiveable));
+        interactiveEvents.add(interactiveEvent);
     }
 
     void subEvent(InteractiveEvent event) {

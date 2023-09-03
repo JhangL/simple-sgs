@@ -5,6 +5,7 @@ import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
+import com.jh.sgs.core.pojo.EventLock;
 import com.jh.sgs.core.pojo.InteractiveEnum;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -22,7 +23,8 @@ public class RoundProcess {
     private CompletePlayer completePlayer;
     @Getter
     private int playerIndex;
-
+    @Getter
+    private final EventLock playCardBool =new EventLock();
     public RoundProcess(CompletePlayer completePlayer) {
         this.completePlayer = completePlayer;
         playerIndex = completePlayer.getId();
@@ -38,7 +40,8 @@ public class RoundProcess {
         messageReceipt().global(playerIndex + "摸牌阶段");
         obtainCard();
         messageReceipt().global(playerIndex + "出牌阶段");
-        playCard();
+        if(!playCardBool.isLock())playCard();
+        else messageReceipt().global(playerIndex + "跳过出牌阶段 "+playCardBool.getEvent());
         messageReceipt().global(playerIndex + "弃牌阶段");
         discardCard();
         messageReceipt().global(playerIndex + "结束阶段");
@@ -46,7 +49,7 @@ public class RoundProcess {
     }
 
     void start() {
-
+        playCardBool.setFalse("正常回合开始");
     }
 
     void decide() {
@@ -58,61 +61,20 @@ public class RoundProcess {
     }
 
     void playCard() {
-        final boolean[] playWhile = {true};
-        while (playWhile[0]) {
-            interactiveMachine().addEvent(playerIndex, "请出牌", new Interactiveable() {
-
-                boolean cancel;
-                boolean play;
-
-                @Override
-                public void cancelPlayCard() {
-                    log.debug("取消出牌");
-                    playWhile[0] = false;
-                    cancel = true;
-                }
-
-                @Override
-                public InteractiveEnum type() {
-                    return InteractiveEnum.CP;
-                }
-
-                @Override
-                public List<Card> handCard() {
-                    return Util.collectionCloneToList(completePlayer.getHandCard());
-                }
-
-                @Override
-                public void playCard(int id) {
-                    Set<Card> handCard = completePlayer.getHandCard();
-                    Card card = Util.collectionCollectAndCheckId(handCard, id);
-                    ContextManage.desktopStack().create(playerIndex, card);
-                    handCard.remove(card);
-                    log.debug(playerIndex + "出牌:" + card);
-                    play = true;
-                    playWhile[0] = true;
-                }
-
-                @Override
-                public void cancel() {
-                    cancelPlayCard();
-                }
-
-                @Override
-                public InteractiveEvent.CompleteEnum complete() {
-//                    log.debug("完成出牌阶段");
-                    return cancel || play ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
-                }
-            });
+        Card[] cards = new Card[]{null};
+        do {
+            cards[0] = null;
+            interactiveMachine().addEvent(ContextManage.roundManage().playCard(playerIndex, "请出牌", cards, Desktop::initCheck));
             interactiveMachine().lock();
-            if (playWhile[0]) {
+            if (cards[0] != null) {
+                desktopStack().create(playerIndex, cards[0]);
                 try {
                     desktopStack().remove();
                 } catch (DesktopException e) {
                     throw new RuntimeException("系统错误");
                 }
             }
-        }
+        } while (cards[0] != null);
 
     }
 

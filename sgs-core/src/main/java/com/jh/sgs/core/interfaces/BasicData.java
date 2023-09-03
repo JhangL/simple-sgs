@@ -17,6 +17,7 @@ public interface BasicData {
      * @return 卡牌数据
      */
     List<Card> getCards();
+    Map<Integer,Map<String,String>> getCardParameter();
 
     /**
      * 获取身份分配数据

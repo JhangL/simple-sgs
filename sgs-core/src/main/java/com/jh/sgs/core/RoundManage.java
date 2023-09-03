@@ -2,19 +2,22 @@ package com.jh.sgs.core;
 
 import com.jh.sgs.core.exception.DesktopRefuseException;
 import com.jh.sgs.core.exception.SgsApiException;
+import com.jh.sgs.core.general.BaseGeneral;
 import com.jh.sgs.core.interactive.Interactiveable;
-import com.jh.sgs.core.interfaces.DefenseEvent;
-import com.jh.sgs.core.interfaces.OffenseEvent;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CardEnum;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.InteractiveEnum;
+import com.jh.sgs.core.roundevent.ActiveSkillEvent;
+import com.jh.sgs.core.roundevent.DefenseEvent;
+import com.jh.sgs.core.roundevent.OffenseEvent;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 @Log4j2
 public class RoundManage {
@@ -28,6 +31,7 @@ public class RoundManage {
 
     private RoundRegistrar<OffenseEvent> offenseRegistrar = new RoundRegistrar<>();
     private RoundRegistrar<DefenseEvent> defenseRegistrar = new RoundRegistrar<>();
+    private RoundRegistrar<ActiveSkillEvent> activeSkillRegistrar = new RoundRegistrar<>();
 
 
     RoundManage(Desk desk) {
@@ -37,7 +41,18 @@ public class RoundManage {
     }
 
     public void init() {
-        desk.foreach((integer, completePlayer) -> roundProcesses[integer] = completePlayer.getCompleteGeneral().getBaseGeneral());
+        desk.foreach((integer, completePlayer) -> {
+            BaseGeneral baseGeneral = completePlayer.getCompleteGeneral().getBaseGeneral();
+            roundProcesses[integer] = baseGeneral;
+            //注册全局事件
+            if (baseGeneral instanceof ActiveSkillEvent) activeSkillRegistrar.addPlayerEvent(integer, (ActiveSkillEvent) baseGeneral);
+            if (baseGeneral instanceof OffenseEvent) offenseRegistrar.addPlayerEvent(integer, (OffenseEvent) baseGeneral);
+            if (baseGeneral instanceof DefenseEvent) defenseRegistrar.addPlayerEvent(integer, (DefenseEvent) baseGeneral);
+        });
+
+    }
+    public RoundProcess getRoundProcess(){
+        return roundProcesses[desk.index()];
     }
 
     public void begin() {
@@ -57,6 +72,60 @@ public class RoundManage {
         }
     }
 
+
+    public InteractiveEvent playCard(int player, String message, Card[] cards, Consumer<Card> action) {
+        CompletePlayer player1 = Util.getPlayer(player);
+        final Interactiveable[] interactiveable = {new Interactiveable() {
+
+            boolean cancel;
+            boolean play;
+
+            @Override
+            public void cancelPlayCard() {
+                log.debug("取消出牌");
+                cards[0] = null;
+                cancel = true;
+            }
+
+            @Override
+            public InteractiveEnum type() {
+                return InteractiveEnum.CP;
+            }
+
+            @Override
+            public List<Card> handCard() {
+                return Util.collectionCloneToList(player1.getHandCard());
+            }
+
+            @Override
+            public void playCard(int id) {
+                Set<Card> handCard = player1.getHandCard();
+                Card card = Util.collectionCollectAndCheckId(handCard, id);
+                //检查
+                action.accept(card);
+                handCard.remove(card);
+                log.debug(player + "出牌:" + card);
+                play = true;
+                cards[0] = card;
+            }
+
+            @Override
+            public void cancel() {
+                cancelPlayCard();
+            }
+
+            @Override
+            public InteractiveEvent.CompleteEnum complete() {
+//                    log.debug("完成出牌阶段");
+                return cancel || play ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
+            }
+        }};
+        //添加技能注册
+        activeSkillRegistrar.handlePlayer(player, activeSkillEvent -> interactiveable[0] = activeSkillEvent.addSkillOption(interactiveable[0]));
+
+        return new InteractiveEvent(player, message, interactiveable[0]);
+    }
+
     public void wxkjCheck() throws DesktopRefuseException {
         ArrayList<CompletePlayer> completePlayers = new ArrayList<>();
         //场上是否有无懈可击
@@ -68,61 +137,27 @@ public class RoundManage {
         });
         if (!completePlayers.isEmpty()) ContextManage.messageReceipt().global("等待使用无懈可击");
         //无懈可击出牌
-        boolean[] playWhile = new boolean[1];
+        Card[] playWhile = new Card[1];
         for (CompletePlayer completePlayer : completePlayers) {
-            ContextManage.interactiveMachine().addEvent(completePlayer.getId(), "是否使用无懈可击", new Interactiveable() {
-
-                boolean a, b;
-
+            ContextManage.interactiveMachine().addEvent(playCard(completePlayer.getId(), "是否使用无懈可击", playWhile, new Consumer<Card>() {
                 @Override
-                public List<Card> handCard() {
-                    return Util.collectionCloneToList(completePlayer.getHandCard());
-                }
-
-                @Override
-                public void cancelPlayCard() {
-                    log.debug("取消出牌");
-                    playWhile[0] = false;
-                    b = true;
-                }
-
-                @Override
-                public void playCard(int id) {
-                    Set<Card> handCard = completePlayer.getHandCard();
-                    Card card = Util.collectionCollectAndCheckId(handCard, id);
+                public void accept(Card card) {
                     if (card.getNameId() != CardEnum.WU_XIE_KE_JI.getId())
                         throw new SgsApiException("指定牌不为无懈可击");
-                    ContextManage.desktopStack().create(completePlayer.getId(), card);
-                    handCard.remove(card);
-                    log.debug(completePlayer.getId() + "出牌:" + card);
-                    a = true;
-                    playWhile[0] = true;
+                    Desktop.initCheck(card);
                 }
-
-                @Override
-                public void cancel() {
-                    cancelPlayCard();
-                }
-
-                @Override
-                public InteractiveEvent.CompleteEnum complete() {
-                    return a || b ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
-                }
-
-                @Override
-                public InteractiveEnum type() {
-                    return InteractiveEnum.CP;
-                }
-            });
+            }));
             ContextManage.interactiveMachine().lock();
             //新增desktop（无懈可击使用desktop传递异常）
-            if (playWhile[0]) {
+            if (playWhile[0] != null) {
                 if (!completePlayers.isEmpty()) ContextManage.messageReceipt().global("使用无懈可击");
+                desktopStack.create(completePlayer.getId(), playWhile[0]);
                 desktopStack.remove();
                 break;
             }
         }
-        if (!playWhile[0]) if (!completePlayers.isEmpty()) ContextManage.messageReceipt().global("不使用无懈可击");
+        if (playWhile[0] == null)
+            if (!completePlayers.isEmpty()) ContextManage.messageReceipt().global("不使用无懈可击");
     }
 
     /**

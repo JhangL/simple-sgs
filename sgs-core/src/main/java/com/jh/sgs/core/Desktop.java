@@ -17,6 +17,8 @@ public class Desktop {
     @Getter
     private Card card;
     @Getter
+    private boolean cardUsed;
+    @Getter
     private List<Card> processCards = new ArrayList<>();
     private Executable executable;
     private boolean isCardExecute;
@@ -25,6 +27,10 @@ public class Desktop {
         this.player = player;
         this.card = card;
         isCardExecute = true;
+    }
+    public void useCard(){
+        if (cardUsed) throw new SgsRuntimeException("desktop牌已使用");
+        else cardUsed=true;
     }
 
     private void initCheck() {
@@ -35,24 +41,29 @@ public class Desktop {
         }
     }
 
+    public static void initCheck(Card card) {
+        BaseCard baseCard = ContextManage.cardManage().getBaseCard(card);
+        if (!(baseCard instanceof Executable)) throw new SgsApiException("该牌不可执行");
+    }
+
     /**
      * 执行操作
      */
     private void start() throws DesktopRefuseException {
-        ContextManage.messageReceipt().global(player+"出牌"+card);
+        ContextManage.messageReceipt().global(player + "出牌" + card);
         try {
             executable.execute();
         } catch (DesktopException e) {
             if (e instanceof DesktopRelationalException) {
                 log.debug("{} {}执行发出关联阻挡", player, card);
-                ContextManage.messageReceipt().global(player+"完成阻挡"+card);
+                ContextManage.messageReceipt().global(player + "完成阻挡" + card);
                 throw new DesktopRefuseException(e.getMessage());
             } else if (e instanceof DesktopRefuseException) {
                 log.debug("{} {}执行阻挡", player, card);
-                ContextManage.messageReceipt().global(player+"被阻挡"+card);
+                ContextManage.messageReceipt().global(player + "被阻挡" + card);
 //                refuse();
             } else if (e instanceof DesktopErrorException) {
-                ContextManage.messageReceipt().global(player+"出牌错误"+card);
+                ContextManage.messageReceipt().global(player + "出牌错误" + card);
                 error();
             }
         }
@@ -60,8 +71,8 @@ public class Desktop {
     }
 
     private void end() {
-        ContextManage.messageReceipt().global(player+"完成出牌"+card);
-        ContextManage.cardManage().recoveryCard(card);
+        ContextManage.messageReceipt().global(player + "完成出牌" + card);
+        if (!cardUsed) ContextManage.cardManage().recoveryCard(card);
         ContextManage.cardManage().recoveryCard(processCards);
     }
 
@@ -72,12 +83,6 @@ public class Desktop {
             Util.getPlayer(player).getHandCard().add(card);
         }
     }
-//    private void refuse(){
-//        if (isCardExecute){
-//            log.debug("{} {}执行阻挡", player, card);
-//            ContextManage.cardManage().recoveryCard(card);
-//        }
-//    }
 
     public static class Stack extends java.util.Stack<Desktop> {
         public void create(int player, Card card) {

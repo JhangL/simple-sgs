@@ -28,6 +28,10 @@ public enum InteractiveEnum {
     /**
      * 五谷丰登选择牌
      */
-    WGFDXZP
+    WGFDXZP,
+    /**
+     * 赵云出牌
+     */
+    ZYCP
 
 }

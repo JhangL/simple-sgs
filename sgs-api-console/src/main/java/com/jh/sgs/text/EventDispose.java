@@ -21,6 +21,7 @@ public class EventDispose {
     public void dispose() {
         String message = interactiveEvent.getMessage();
         player = interactiveEvent.getPlayer();
+        println("自身状态："+StartGame.messageRequest.getPlayer(player));
         println(message);
         if (analyse(interactiveEvent.interactive())) {
             interactiveEvent.complete();
@@ -32,17 +33,56 @@ public class EventDispose {
     private boolean analyse(Interactive interactive) {
         InteractiveEnum type = interactive.type();
         switch (type) {
-//            case XZYX: return xzyx(interactive);
+            case XZYX:
+                return xzyx(interactive);
             case CP:
                 return cp(interactive);
 //            case QP: return qp(interactive);
-            case GHCQSSQYXZP: return ghcqssqyxzp(interactive);
-            case XZMB: return xzmb(interactive);
+            case GHCQSSQYXZP:
+                return ghcqssqyxzp(interactive);
+            case XZMB:
+                return xzmb(interactive);
+            case ZYCP:
+                return zycp(interactive);
 //            case WGFDXZP: return wgfdxzp(interactive);
             default:
                 System.out.println("系统未实现此事件");
                 return false;
         }
+    }
+
+    private boolean zycp(ZYCP zycp) {
+        println("手牌：" + zycp.handCard());
+        println("技能：" + zycp.showSkill());
+        boolean sk = false;
+        while (true) {
+            println("输入对应手牌id" + (!sk ? "(1000+技能id)" : "(龙胆开启)") + "（-1取消出牌）");
+            int i = StartGame.inputer.inputInt();
+            if (i == Inputer.CANCAL) return false;
+            if (i == -1) {
+                zycp.cancelPlayCard();
+                break;
+            }
+            if (i >= 1000) {
+                try {
+                    zycp.setSkill(i - 1000);
+                } catch (SgsApiException e) {
+                    System.err.println(e.getMessage());
+                    continue;
+                }
+                sk = !sk;
+                continue;
+            }
+            try {
+                zycp.playCard(i);
+            } catch (SgsApiException e) {
+                System.err.println(e.getMessage());
+                continue;
+            }
+
+            break;
+        }
+        return true;
     }
 
     private boolean xzyx(XZYX xzyx) {
@@ -112,8 +152,8 @@ public class EventDispose {
         return true;
     }
 
-    private boolean wgfdxzp(WGFDXZP wgfdxzp){
-        println("可选择牌:"+wgfdxzp.targetCard());
+    private boolean wgfdxzp(WGFDXZP wgfdxzp) {
+        println("可选择牌:" + wgfdxzp.targetCard());
         println("输入对应牌id");
         int i = StartGame.inputer.inputInt();
         if (i == Inputer.CANCAL) return false;

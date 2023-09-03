@@ -72,7 +72,7 @@ public class GameEngine implements Runnable ,MessageRequest {
     private void check() {
         if (messageReceipt == null) log.warn("回调消息：无");
         else log.info("回调消息："+messageReceipt.name());
-        if (playerNum < 4 || playerNum > 10) {
+        if ( playerNum!=2 &&(playerNum < 4 || playerNum > 10)) {
             log.warn(playerNum+"人数不支持");
             shutDown();
         }
@@ -84,7 +84,7 @@ public class GameEngine implements Runnable ,MessageRequest {
         interactiveMachine = new InteractiveMachine();
         identityManage = new IdentityManage(basicData.getIdentity(playerNum));
         generalManage = new GeneralManage(basicData.getGenerals());
-        cardManage = new CardManage(basicData.getCards());
+        cardManage = new CardManage(basicData.getCards(),basicData.getCardParameter());
     }
 
 
@@ -105,6 +105,12 @@ public class GameEngine implements Runnable ,MessageRequest {
     void shutDown(){
         log.info("系统关闭");
         Thread.currentThread().interrupt();
+        try {
+            Thread.currentThread().join();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
@@ -121,6 +127,11 @@ public class GameEngine implements Runnable ,MessageRequest {
 
     @Override
     public String getPlayer(int id) {
+        return gameProcess.getDesk().get(id).toString();
+    }
+
+    @Override
+    public String getShowPlayer(int id) {
         CompletePlayer completePlayer = gameProcess.getDesk().get(id);
         return new ShowPlayer(completePlayer).toString();
     }
