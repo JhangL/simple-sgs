@@ -1,4 +1,4 @@
-package com.jh.sgs.core.pojo;
+package com.jh.sgs.core.enums;
 
 /**
  * 交互枚举，在com.jh.sgs.core.interactive包下有同名接口，用于分辨交互事件
@@ -29,9 +29,21 @@ public enum InteractiveEnum {
      * 五谷丰登选择牌
      */
     WGFDXZP,
+
     /**
      * 赵云出牌
      */
-    ZYCP
+    ZYCP,
+
+    /**
+     * 是否
+     */
+    TOF,
+    /**
+     * 贯石斧
+     */
+    GSF,
+
+    XZP,
 
 }

@@ -1,16 +1,22 @@
 package com.jh.sgs.core;
 
+import com.jh.sgs.core.card.BaseCard;
+import com.jh.sgs.core.card.Loseable;
+import com.jh.sgs.core.desktop.Desktop;
+import com.jh.sgs.core.desktop.ExecuteCardDesktop;
+import com.jh.sgs.core.enums.CardEnum;
+import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.DesktopRefuseException;
 import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.general.BaseGeneral;
 import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.pojo.Card;
-import com.jh.sgs.core.pojo.CardEnum;
 import com.jh.sgs.core.pojo.CompletePlayer;
-import com.jh.sgs.core.pojo.InteractiveEnum;
+import com.jh.sgs.core.pojo.ShowPlayer;
 import com.jh.sgs.core.roundevent.ActiveSkillEvent;
 import com.jh.sgs.core.roundevent.DefenseEvent;
 import com.jh.sgs.core.roundevent.OffenseEvent;
+import com.jh.sgs.core.roundevent.RoundEvent;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -18,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @Log4j2
 public class RoundManage {
@@ -44,15 +51,33 @@ public class RoundManage {
         desk.foreach((integer, completePlayer) -> {
             BaseGeneral baseGeneral = completePlayer.getCompleteGeneral().getBaseGeneral();
             roundProcesses[integer] = baseGeneral;
-            //注册全局事件
-            if (baseGeneral instanceof ActiveSkillEvent) activeSkillRegistrar.addPlayerEvent(integer, (ActiveSkillEvent) baseGeneral);
-            if (baseGeneral instanceof OffenseEvent) offenseRegistrar.addPlayerEvent(integer, (OffenseEvent) baseGeneral);
-            if (baseGeneral instanceof DefenseEvent) defenseRegistrar.addPlayerEvent(integer, (DefenseEvent) baseGeneral);
+            if (baseGeneral instanceof RoundEvent) addEvent(integer,(RoundEvent) baseGeneral);
         });
 
     }
-    public RoundProcess getRoundProcess(){
-        return roundProcesses[desk.index()];
+
+
+    public void addEvent(int player,RoundEvent roundEvent){
+        //注册全局事件
+        if (roundEvent instanceof ActiveSkillEvent)
+            activeSkillRegistrar.addPlayerEvent(player, (ActiveSkillEvent) roundEvent);
+        if (roundEvent instanceof OffenseEvent)
+            offenseRegistrar.addPlayerEvent(player, (OffenseEvent) roundEvent);
+        if (roundEvent instanceof DefenseEvent)
+            defenseRegistrar.addPlayerEvent(player, (DefenseEvent) roundEvent);
+    }
+    public void subEvent(int player,RoundEvent roundEvent){
+        //注册全局事件
+        if (roundEvent instanceof ActiveSkillEvent)
+            activeSkillRegistrar.subPlayerEvent(player, (ActiveSkillEvent) roundEvent);
+        if (roundEvent instanceof OffenseEvent)
+            offenseRegistrar.subPlayerEvent(player, (OffenseEvent) roundEvent);
+        if (roundEvent instanceof DefenseEvent)
+            defenseRegistrar.subPlayerEvent(player, (DefenseEvent) roundEvent);
+    }
+
+    public RoundProcess getRoundProcess(int player) {
+        return roundProcesses[player];
     }
 
     public void begin() {
@@ -126,6 +151,30 @@ public class RoundManage {
         return new InteractiveEvent(player, message, interactiveable[0]);
     }
 
+    /**
+     *  执行杀，仅仅只是反映执行的结果，不执行结果的处理（处理闪牌，杀成功掉血操作），需调用方处理
+     * @param operatePlayer 操作人
+     * @param beShaPlayer 被杀玩家
+     * @param shaCard 杀牌
+     * @param shan 闪牌（被杀玩家所出的牌）
+     * @return T杀成功（未被闪避）  F杀失败（被闪避，出闪闪避及其他闪避）
+     */
+    public boolean playSha(int operatePlayer, int beShaPlayer, Card shaCard, Card[] shan) {
+        //todo 杀前逻辑
+
+
+        //执行闪询问
+        playCard(beShaPlayer, "", shan, card -> {
+            if (card.getNameId() != CardEnum.SHAN.getId())
+                throw new SgsApiException("指定牌不为闪");
+        });
+        return shan[0] == null;
+    }
+
+    /**
+     * 全局无懈可击检查，当锦囊牌对人生效前，执行此方法。通过此方法来阻断锦囊牌的生效。
+     * @throws DesktopRefuseException 无懈可击生效时，抛出此异常。
+     */
     public void wxkjCheck() throws DesktopRefuseException {
         ArrayList<CompletePlayer> completePlayers = new ArrayList<>();
         //场上是否有无懈可击
@@ -155,6 +204,58 @@ public class RoundManage {
         }
         if (playWhile[0] == null)
             if (!completePlayers.isEmpty()) ContextManage.messageReceipt().global("不使用无懈可击");
+    }
+
+
+    /**
+     * 选择目标，当需要选择目标时，调用此方法。
+     * @param player 选择玩家
+     * @param targets 目标池
+     * @param target 被选目标
+     */
+    public void selectTarget(int player, List<CompletePlayer> targets, Integer[] target) {
+        ContextManage.interactiveMachine().addEvent(player, "请选择目标", new Interactiveable() {
+
+            boolean a = false;
+            boolean b = false;
+
+            @Override
+            public InteractiveEnum type() {
+                return InteractiveEnum.XZMB;
+            }
+
+            @Override
+            public List<ShowPlayer> targetPlayer() {
+                return targets.stream().map(ShowPlayer::new).collect(Collectors.toList());
+            }
+
+            @Override
+            public void setTargetPlayer(int id) throws SgsApiException {
+                ShowPlayer showPlayer = Util.collectionCollectAndCheckId(targetPlayer(), id);
+                log.debug("选择目标：" + showPlayer);
+                target[0] = showPlayer.getId();
+                a = true;
+            }
+
+            @Override
+            public void cancelTargetPlayer() {
+                target[0] = null;
+                log.debug("取消选择目标");
+                b = true;
+            }
+
+            @Override
+            public void cancel() {
+                cancelTargetPlayer();
+            }
+
+            @Override
+            public InteractiveEvent.CompleteEnum complete() {
+//                log.debug("完成目标选择");
+                return a || b ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
+            }
+        });
+        ContextManage.interactiveMachine().lock();
     }
 
     /**
@@ -212,7 +313,17 @@ public class RoundManage {
      * @param lossLocation 失去位置
      */
     public void loseCard(int operatePlayer, int lossCardPlayer, Card lossCard, int lossLocation) {
-
+        switch (lossLocation) {
+            case HAND_CARD:
+                break;
+            case EQUIP_CARD:
+                //去掉装备牌的特殊效果
+                BaseCard baseCard = CardEnum.getById(lossCard.getNameId()).getBaseCard();
+                if (baseCard instanceof Loseable) ((Loseable) baseCard).lose(lossCardPlayer);
+                break;
+            case DECIDE_CARD:
+                break;
+        }
     }
 
     /**

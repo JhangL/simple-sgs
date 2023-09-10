@@ -1,5 +1,6 @@
 package com.jh.sgs.core.pojo;
 
+import com.jh.sgs.core.enums.IdentityEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

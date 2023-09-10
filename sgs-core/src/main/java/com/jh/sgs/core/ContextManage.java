@@ -1,5 +1,9 @@
 package com.jh.sgs.core;
 
+import com.jh.sgs.core.desktop.DecideCardDesktop;
+import com.jh.sgs.core.desktop.Desktop;
+import com.jh.sgs.core.desktop.ExecuteCardDesktop;
+import com.jh.sgs.core.desktop.ShaCardDesktop;
 import com.jh.sgs.core.interfaces.MessageReceipt;
 
 public class ContextManage {
@@ -44,12 +48,15 @@ public class ContextManage {
     public static DecideCardDesktop decideCardDesktop() {
         return (DecideCardDesktop) gameEngineThreadLocal.get().getRoundMange().getDesktopStack().peek();
     }
+    public static ShaCardDesktop shaCardDesktop() {
+        return (ShaCardDesktop) gameEngineThreadLocal.get().getRoundMange().getDesktopStack().peek();
+    }
 
     public static RoundManage roundManage() {
         return gameEngineThreadLocal.get().getRoundMange();
     }
 
-    public static RoundProcess roundProcess() {
-        return gameEngineThreadLocal.get().getRoundMange().getRoundProcess();
+    public static RoundProcess roundProcess(int player) {
+        return gameEngineThreadLocal.get().getRoundMange().getRoundProcess(player);
     }
 }

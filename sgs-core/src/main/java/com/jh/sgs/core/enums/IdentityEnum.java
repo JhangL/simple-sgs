@@ -1,4 +1,4 @@
-package com.jh.sgs.core.pojo;
+package com.jh.sgs.core.enums;
 
 public enum IdentityEnum {
     ZG("zhu"), ZC("zhong"), FZ("fan"), NJ("nei");

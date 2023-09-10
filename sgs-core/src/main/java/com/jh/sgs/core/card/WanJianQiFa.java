@@ -1,10 +1,10 @@
 package com.jh.sgs.core.card;
 
 import com.jh.sgs.core.ContextManage;
+import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.exception.DesktopException;
 import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.pojo.Card;
-import com.jh.sgs.core.pojo.CardEnum;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import lombok.extern.log4j.Log4j2;
 

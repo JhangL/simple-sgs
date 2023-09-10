@@ -1,4 +1,4 @@
-package com.jh.sgs.core.pojo;
+package com.jh.sgs.core.enums;
 
 import com.jh.sgs.core.card.*;
 import com.jh.sgs.core.exception.SgsApiException;

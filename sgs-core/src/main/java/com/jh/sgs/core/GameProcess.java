@@ -1,9 +1,14 @@
 package com.jh.sgs.core;
 
+import com.jh.sgs.core.enums.IdentityEnum;
+import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.interfaces.ShowStatus;
-import com.jh.sgs.core.pojo.*;
+import com.jh.sgs.core.pojo.CompleteGeneral;
+import com.jh.sgs.core.pojo.CompletePlayer;
+import com.jh.sgs.core.pojo.General;
+import com.jh.sgs.core.pojo.OriginalPlayer;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 

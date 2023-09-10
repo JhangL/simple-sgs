@@ -3,10 +3,10 @@ package com.jh.sgs.core.card;
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.InteractiveEvent;
 import com.jh.sgs.core.Util;
+import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
-import com.jh.sgs.core.pojo.InteractiveEnum;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;

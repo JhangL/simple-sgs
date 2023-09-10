@@ -1,5 +1,10 @@
 package com.jh.sgs.core;
 
+import com.jh.sgs.core.desktop.DecideCardDesktop;
+import com.jh.sgs.core.desktop.ExecuteCardDesktop;
+import com.jh.sgs.core.desktop.ShaCardDesktop;
+import com.jh.sgs.core.enums.CardEnum;
+import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.DesktopException;
 import com.jh.sgs.core.exception.DesktopRefuseException;
 import com.jh.sgs.core.exception.SgsApiException;
@@ -7,8 +12,8 @@ import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.EventLock;
-import com.jh.sgs.core.pojo.InteractiveEnum;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
@@ -26,6 +31,12 @@ public class RoundProcess {
     private int playerIndex;
     @Getter
     private final EventLock playCardBool =new EventLock();
+    @Setter
+    private int limitSha=1;
+
+    @Setter
+    @Getter
+    private int useSha;
     public RoundProcess(CompletePlayer completePlayer) {
         this.completePlayer = completePlayer;
         playerIndex = completePlayer.getId();
@@ -51,6 +62,7 @@ public class RoundProcess {
 
     void start() {
         playCardBool.setFalse("正常回合开始");
+        useSha=0;
     }
 
     void decide() {
@@ -75,10 +87,23 @@ public class RoundProcess {
         Card[] cards = new Card[]{null};
         do {
             cards[0] = null;
-            interactiveMachine().addEvent(ContextManage.roundManage().playCard(playerIndex, "请出牌", cards, ExecuteCardDesktop::initCheck));
+            interactiveMachine().addEvent(ContextManage.roundManage().playCard(playerIndex, "请出牌", cards, card -> {
+                if (card.getNameId() == CardEnum.SHA.getId()){
+                    if (useSha>=getLimitSha()){
+                        throw new SgsApiException("超出使用杀限制(限制："+limitSha+")");
+                    }
+                    ShaCardDesktop.initCheck(card);
+                }else {
+                    ExecuteCardDesktop.initCheck(card);
+                }
+            }));
             interactiveMachine().lock();
             if (cards[0] != null) {
-                desktopStack().create(new ExecuteCardDesktop(playerIndex, cards[0]));
+                if (cards[0].getNameId() == CardEnum.SHA.getId()){
+                    desktopStack().create(new ShaCardDesktop(playerIndex, cards[0]));
+                }else {
+                    desktopStack().create(new ExecuteCardDesktop(playerIndex, cards[0]));
+                }
                 try {
                     desktopStack().remove();
                 } catch (DesktopException e) {
@@ -144,4 +169,9 @@ public class RoundProcess {
     void end() {
 
     }
+
+    public int getLimitSha() {
+        return limitSha;
+    }
+
 }

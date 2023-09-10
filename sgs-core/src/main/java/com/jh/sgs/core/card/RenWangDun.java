@@ -1,6 +1,6 @@
 package com.jh.sgs.core.card;
 
-import com.jh.sgs.core.pojo.EquipCardEnum;
+import com.jh.sgs.core.enums.EquipCardEnum;
 
 public class RenWangDun extends EquipCard{
     @Override

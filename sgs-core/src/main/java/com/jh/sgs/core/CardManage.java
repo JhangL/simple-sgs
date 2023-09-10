@@ -2,9 +2,9 @@ package com.jh.sgs.core;
 
 import com.alibaba.fastjson2.JSON;
 import com.jh.sgs.core.card.BaseCard;
+import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.interfaces.ShowStatus;
 import com.jh.sgs.core.pojo.Card;
-import com.jh.sgs.core.pojo.CardEnum;
 import com.jh.sgs.core.pojo.FalseCard;
 import lombok.NonNull;
 

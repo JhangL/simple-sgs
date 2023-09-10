@@ -1,4 +1,4 @@
-package com.jh.sgs.core.pojo;
+package com.jh.sgs.core.enums;
 
 import lombok.Getter;
 

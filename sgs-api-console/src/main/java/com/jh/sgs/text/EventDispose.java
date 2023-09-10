@@ -2,9 +2,9 @@ package com.jh.sgs.text;
 
 import com.jh.sgs.StartGame;
 import com.jh.sgs.core.InteractiveEvent;
+import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.interactive.*;
-import com.jh.sgs.core.pojo.InteractiveEnum;
 
 public class EventDispose {
     private final InteractiveEvent interactiveEvent;
@@ -37,18 +37,43 @@ public class EventDispose {
                 return xzyx(interactive);
             case CP:
                 return cp(interactive);
-//            case QP: return qp(interactive);
+            case QP: return qp(interactive);
             case GHCQSSQYXZP:
                 return ghcqssqyxzp(interactive);
             case XZMB:
                 return xzmb(interactive);
             case ZYCP:
                 return zycp(interactive);
-//            case WGFDXZP: return wgfdxzp(interactive);
+            case WGFDXZP: return wgfdxzp(interactive);
+            case XZP:
+                return xzp(interactive);
+//            case GSF: return gsf(interactive);
+            case TOF: return tof(interactive);
             default:
                 System.out.println("系统未实现此事件");
                 return false;
         }
+    }
+
+    private boolean tof(TOF tof) {
+        println("输入是或否（0否  !0是）");
+        int i = StartGame.inputer.inputInt();
+        if (i == Inputer.CANCAL) return false;
+        tof.trueOrFalse(i!=0);
+        return true;
+    }
+
+    private boolean xzp(XZP xzp) {
+        println("可选择牌:" + xzp.targetCard());
+        println("输入对应牌id（-1取消选择）");
+        int i = StartGame.inputer.inputInt();
+        if (i == Inputer.CANCAL) return false;
+        if (i == -1) {
+            xzp.cancelPlayCard();
+            return true;
+        }
+        xzp.setCard(i);
+        return true;
     }
 
     private boolean zycp(ZYCP zycp) {

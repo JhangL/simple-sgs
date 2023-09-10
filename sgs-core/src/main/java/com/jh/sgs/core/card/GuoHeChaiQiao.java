@@ -4,13 +4,11 @@ import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.InteractiveEvent;
 import com.jh.sgs.core.RoundManage;
 import com.jh.sgs.core.Util;
+import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.DesktopErrorException;
-import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
-import com.jh.sgs.core.pojo.InteractiveEnum;
-import com.jh.sgs.core.pojo.ShowPlayer;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.Arrays;
@@ -33,48 +31,7 @@ public class GuoHeChaiQiao extends OneSilkbagCard {
             return false;
         }).collect(Collectors.toList());
         final Integer[] targetPlayer = new Integer[1];
-        ContextManage.interactiveMachine().addEvent(ContextManage.executeCardDesktop().getPlayer(), "请选择目标", new Interactiveable() {
-
-            boolean a = false;
-            boolean b = false;
-
-            @Override
-            public InteractiveEnum type() {
-                return InteractiveEnum.XZMB;
-            }
-
-            @Override
-            public List<ShowPlayer> targetPlayer() {
-                return collect.stream().map(ShowPlayer::new).collect(Collectors.toList());
-            }
-
-            @Override
-            public void setTargetPlayer(int id) throws SgsApiException {
-                ShowPlayer showPlayer = Util.collectionCollectAndCheckId(targetPlayer(), id);
-                log.debug("选择目标：" + showPlayer);
-                targetPlayer[0] = showPlayer.getId();
-                a = true;
-            }
-
-            @Override
-            public void cancelTargetPlayer() {
-                targetPlayer[0] = null;
-                log.debug("取消选择目标");
-                b = true;
-            }
-
-            @Override
-            public void cancel() {
-                cancelTargetPlayer();
-            }
-
-            @Override
-            public InteractiveEvent.CompleteEnum complete() {
-//                log.debug("完成目标选择");
-                return a || b ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
-            }
-        });
-        ContextManage.interactiveMachine().lock();
+        ContextManage.roundManage().selectTarget(ContextManage.executeCardDesktop().getPlayer(),collect,targetPlayer);
         if (targetPlayer[0] == null) throw new DesktopErrorException("未选择目标");
         return targetPlayer[0];
     }

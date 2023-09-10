@@ -3,9 +3,9 @@ package com.jh.sgs.core.card;
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.RoundManage;
 import com.jh.sgs.core.Util;
+import com.jh.sgs.core.enums.EquipCardEnum;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
-import com.jh.sgs.core.pojo.EquipCardEnum;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2

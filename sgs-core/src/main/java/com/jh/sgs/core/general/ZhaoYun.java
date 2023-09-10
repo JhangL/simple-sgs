@@ -3,9 +3,13 @@ package com.jh.sgs.core.general;
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.InteractiveEvent;
 import com.jh.sgs.core.Util;
+import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.interactive.Interactiveable;
-import com.jh.sgs.core.pojo.*;
+import com.jh.sgs.core.pojo.Card;
+import com.jh.sgs.core.pojo.CompletePlayer;
+import com.jh.sgs.core.pojo.FalseCard;
+import com.jh.sgs.core.pojo.Skill;
 import com.jh.sgs.core.roundevent.ActiveSkillEvent;
 
 import java.util.ArrayList;

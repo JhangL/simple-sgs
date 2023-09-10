@@ -1,34 +1,25 @@
-package com.jh.sgs.core;
+package com.jh.sgs.core.desktop;
 
+import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.card.BaseCard;
 import com.jh.sgs.core.card.Decidable;
 import com.jh.sgs.core.exception.DesktopException;
 import com.jh.sgs.core.exception.SgsApiException;
-import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.pojo.Card;
-import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
-public class DecideCardDesktop extends Desktop {
-    @Getter
-    private Card card;
-    private boolean cardUsed;
+public class DecideCardDesktop extends CardDesktop {
 
     private Decidable decidable;
 
     public DecideCardDesktop(int player, Card card) {
-        super(player);
-        this.card = card;
+    super(player, card);
     }
 
-    public void useCard() {
-        if (cardUsed) throw new SgsRuntimeException("desktop牌已使用");
-        else cardUsed = true;
-    }
     @Override
     protected void initCheck() {
-        BaseCard baseCard = ContextManage.cardManage().getBaseCard(card);
+        BaseCard baseCard = ContextManage.cardManage().getBaseCard(getCard());
         if (!(baseCard instanceof Decidable)) throw new SgsApiException("该牌不需要判定");
         decidable = (Decidable) baseCard;
     }
@@ -47,8 +38,8 @@ public class DecideCardDesktop extends Desktop {
 
     @Override
     protected void end() {
-        ContextManage.messageReceipt().global(getPlayer() + "完成判定" + card);
-        if (!cardUsed) ContextManage.cardManage().recoveryCard(card);
+        ContextManage.messageReceipt().global(getPlayer() + "完成判定" + getCard());
+        if (!isCardUsed()) ContextManage.cardManage().recoveryCard(getCard());
     }
 
     @Override

@@ -32,18 +32,18 @@ public class Inputer {
 
     private int nowaitInputInt() {
         int a;
-        System.out.println("请输入(" + SYSTEM + "系统)：");
+        Util.printlnColor(32,3,"请输入(" + SYSTEM + "系统)：");
         while (true)
             try {
                 a = Integer.parseInt(scanner.nextLine());
                 break;
             } catch (Exception e) {
-                System.err.println("请输入数字");
+                Util.printlnColor(35,3,"请输入数字");
             }
-        System.out.println("输入：" + a);
+        Util.printlnColor(34,3,"输入：" + a);
         if (a == SYSTEM) {
             system();
-            System.out.println("返回牌局");
+            Util.printlnColor(32,3,"返回牌局");
             a = inputInt();
         }
         return a;
@@ -53,8 +53,8 @@ public class Inputer {
         int a = CANCAL;
         int time = ticking;
         long l = System.currentTimeMillis();
-        System.out.println("请输入(" + SYSTEM + "系统)：");
-        System.out.println("计时    输入");
+        Util.printlnColor(32,3,"请输入(" + SYSTEM + "系统)：");
+        Util.printlnColor(32,3,"计时    输入");
         while (time >= 0) {
             try {
                 if (System.in.available() > 0) {
@@ -62,12 +62,12 @@ public class Inputer {
                         a = Integer.parseInt(scanner.nextLine());
                         break;
                     } catch (Exception e) {
-                        System.out.println("输入错误");
-                        System.out.print("\b\b\b\b\b\b\b\b\b\b\b" + time + "     ");
+                        Util.printlnColor(32,3,"输入错误");
+                        Util.printColor(32,3,"\b\b\b\b\b\b\b\b\b\b\b" + time + "     ");
                         time -= 2;
                     }
                 } else {
-                    System.out.print("\b\b\b\b\b\b\b\b\b\b\b" + time + "     ");
+                    Util.printColor(32,3,"\b\b\b\b\b\b\b\b\b\b\b" + time + "     ");
                     time -= 2;
                 }
             } catch (IOException e) {
@@ -79,11 +79,11 @@ public class Inputer {
                 throw new RuntimeException(e);
             }
         }
-        if (a == 1000) System.out.println(a);
-        System.out.println("输入：" + a);
+        if (a == CANCAL) Util.printlnColor(32,3, String.valueOf(a));
+        Util.printlnColor(32,3,"输入：" + a);
         if (a == SYSTEM) {
             system();
-            System.out.println("返回牌局");
+            Util.printlnColor(32,3,"返回牌局");
             a = inputInt();
         }
         return a;
@@ -91,21 +91,21 @@ public class Inputer {
 
     private void system() {
         while (true) {
-            System.out.println("1剩余牌数 2弃牌数 3玩家 886关闭系统 " + CANCAL + "返回");
+            Util.printlnColor(32,4,"1剩余牌数 2弃牌数 3玩家 886关闭系统 " + CANCAL + "返回");
             int i = Integer.parseInt(scanner.nextLine());
             switch (i) {
                 case 1:
-                    System.out.println("剩余牌数:" + StartGame.messageRequest.getUsingCardNum());
+                    Util.printlnColor(32,4,"剩余牌数:" + StartGame.messageRequest.getUsingCardNum());
                     break;
                 case 2:
-                    System.out.println("牌数:" + StartGame.messageRequest.getUsedCardNum());
+                    Util.printlnColor(32,4,"牌数:" + StartGame.messageRequest.getUsedCardNum());
                     break;
                 case 3:
-                    System.out.println("选择玩家id(0<=id<总人数) " + CANCAL + "返回");
+                    Util.printlnColor(32,4,"选择玩家id(0<=id<总人数) " + CANCAL + "返回");
                     int i1 = Integer.parseInt(scanner.nextLine());
                     if (i1 == CANCAL) break;
                     if (i1 < 0 || i1 >= StartGame.playerNum) {
-                        System.out.println("超出范围");
+                        Util.printlnColor(32,4,"超出范围");
                         break;
                     }
                     System.out.println(StartGame.messageRequest.getShowPlayer(i1));
@@ -116,7 +116,7 @@ public class Inputer {
                 case CANCAL:
                     return;
                 default:
-                    System.out.println("输入错误，返回");
+                    Util.printlnColor(32,4,"输入错误，返回");
             }
         }
 
