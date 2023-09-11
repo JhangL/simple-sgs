@@ -26,14 +26,24 @@ public class DataBaseBasicData implements BasicData {
     private Statement statement;
 
 
-    public DataBaseBasicData(String propFilePath) throws IOException {
+    public DataBaseBasicData(String propFilePath) {
         Properties properties = new Properties();
-        properties.load(Files.newInputStream(Paths.get(propFilePath)));
+        try {
+            if (propFilePath.contains("classpath:")) {
+                properties.load(getClass().getClassLoader().getResourceAsStream(propFilePath.substring(10)));
+
+            } else {
+                properties.load(Files.newInputStream(Paths.get(propFilePath)));
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         username = properties.getProperty("username");
         url = properties.getProperty("url");
         password = properties.getProperty("password");
         initDataBase();
     }
+
 
     public DataBaseBasicData(String url, String username, String password) {
         this.url = url;

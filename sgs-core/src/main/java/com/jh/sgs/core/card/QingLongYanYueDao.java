@@ -55,12 +55,10 @@ public class QingLongYanYueDao extends WeaponCard{
                 });
                 if (tofs[0]){
                     card[0]=null;
-                    Card[] cards = new Card[1];
-                    ContextManage.interactiveMachine().addEvent(ContextManage.roundManage().playCard(mainplayer, "请出杀", cards, card1 -> {
+                    Card[] cards = new Card[1];ContextManage.roundManage().playCard(mainplayer, "请出杀", cards, card1 -> {
                         if (card1.getNameId() != CardEnum.SHA.getId())
                             throw new SgsApiException("指定牌不为杀");
-                    }));
-                    ContextManage.interactiveMachine().lock();
+                    },false);
                     if (cards[0]!=null){
                         ContextManage.shaCardDesktop().getProcessCards().add(cards[0]);
                         boolean b1 = ContextManage.roundManage().playSha(mainplayer, player, cards[0], card);

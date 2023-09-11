@@ -81,4 +81,5 @@ public class Util {
     public static CompletePlayer getPlayer(int index) {
         return ContextManage.desk().get(index);
     }
+
 }

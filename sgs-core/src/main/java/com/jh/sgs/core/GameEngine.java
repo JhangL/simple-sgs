@@ -39,7 +39,8 @@ public class GameEngine implements Runnable ,MessageRequest {
     private MessageReceipt messageReceipt;
 
     @Setter
-    BasicData basicData = new DataBaseBasicData("jdbc:mysql://localhost:3306/sgs", "root", "123456");
+//    BasicData basicData = new DataBaseBasicData("jdbc:mysql://localhost:3306/sgs", "root", "123456");
+    BasicData basicData = new DataBaseBasicData("classpath:dataBase.properties");
 
     int playerNum;
 

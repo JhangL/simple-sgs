@@ -21,7 +21,7 @@ public class ShaCardDesktop extends CardDesktop {
 
     @Override
     protected void initCheck() {
-        if (getCard().getId()!= CardEnum.SHA.getId()) throw new SgsApiException("该牌不是杀");
+        if (getCard().getNameId()!= CardEnum.SHA.getId()) throw new SgsApiException("该牌不是杀");
         Card card1 = Util.getPlayer(getPlayer()).getEquipCard()[0];
         if (card1== null) shaable= (Shaable) CardEnum.SHA.getBaseCard();
         else shaable = (Shaable) CardEnum.getById(card1.getNameId()).getBaseCard();
@@ -31,12 +31,12 @@ public class ShaCardDesktop extends CardDesktop {
     protected void execute() throws DesktopException {
         ContextManage.messageReceipt().global(getPlayer() + "出牌" + getCard());
         RoundProcess roundProcess = ContextManage.roundProcess(getPlayer());
-        roundProcess.setUseSha(roundProcess.getLimitSha()+1);
+        roundProcess.setUseSha(roundProcess.getUseSha()+1);
         shaable.sha();
     }
 
     public static void initCheck(Card card) {
-        if (card.getId()!= CardEnum.SHA.getId()) throw new SgsApiException("该牌不是杀");
+        if (card.getNameId()!= CardEnum.SHA.getId()) throw new SgsApiException("该牌不是杀");
     }
 
     @Override
@@ -50,6 +50,6 @@ public class ShaCardDesktop extends CardDesktop {
         log.debug("{} {}执行出错，退牌", getPlayer(), getCard());
         Util.getPlayer(getPlayer()).getHandCard().add(getCard());
         RoundProcess roundProcess = ContextManage.roundProcess(getPlayer());
-        roundProcess.setUseSha(roundProcess.getLimitSha()-1);
+        roundProcess.setUseSha(roundProcess.getUseSha()-1);
     }
 }

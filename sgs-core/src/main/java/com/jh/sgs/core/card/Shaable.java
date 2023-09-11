@@ -15,7 +15,7 @@ public interface Shaable {
     default int shaTarget() throws DesktopErrorException{
         List<CompletePlayer> targets = ContextManage.roundManage().findTarget(ContextManage.shaCardDesktop().getPlayer(), ContextManage.shaCardDesktop().getCard(), shaDistance());
         final Integer[] targetPlayer = new Integer[1];
-        ContextManage.roundManage().selectTarget(ContextManage.executeCardDesktop().getPlayer(),targets,targetPlayer);
+        ContextManage.roundManage().selectTarget(ContextManage.shaCardDesktop().getPlayer(),targets,targetPlayer);
         if (targetPlayer[0] == null) throw new DesktopErrorException("未选择目标");
         return targetPlayer[0];
     };

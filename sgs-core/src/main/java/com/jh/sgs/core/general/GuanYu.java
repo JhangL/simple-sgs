@@ -3,7 +3,9 @@ package com.jh.sgs.core.general;
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.InteractiveEvent;
 import com.jh.sgs.core.Util;
+import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.enums.InteractiveEnum;
+import com.jh.sgs.core.enums.SuitEnum;
 import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.interactive.Interactiveable;
@@ -18,34 +20,31 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class ZhaoYun extends BaseGeneral implements PlayCardAbilityEvent, PlayCardAbility.PlayCardAbilityable {
+public class GuanYu extends BaseGeneral implements PlayCardAbilityEvent, PlayCardAbility.PlayCardAbilityable {
 
-
-    PlayCardAbility longDan = new PlayCardAbility(7, "龙胆", this);
-
-    public ZhaoYun(CompletePlayer completePlayer) {
+    private PlayCardAbility wuSeng=new PlayCardAbility(4,"武圣",this);
+    public GuanYu(CompletePlayer completePlayer) {
         super(completePlayer);
     }
 
 
     @Override
     public List<PlayCardAbility> addAbilityOption() {
-        return Collections.singletonList(longDan);
+        return Collections.singletonList(wuSeng);
     }
 
     @Override
     public Card playCardAbility(PlayCardAbility playCardAbility, Consumer<Card> action) {
-        if (playCardAbility == longDan) {
-            return longDan(action);
+        if (playCardAbility == wuSeng) {
+            return wuSeng(action);
         } else {
             throw new SgsRuntimeException("系统错误");
         }
     }
 
-    private Card longDan(Consumer<Card> action) {
-
+    private Card wuSeng(Consumer<Card> action) {
         final Card[] falseCard = new Card[1];
-        ContextManage.interactiveMachine().addEvent(getPlayerIndex(), "(龙胆)请出牌", new Interactiveable() {
+        ContextManage.interactiveMachine().addEvent(getPlayerIndex(), "(武圣)请出牌", new Interactiveable() {
             boolean a, b;
 
             @Override
@@ -65,22 +64,30 @@ public class ZhaoYun extends BaseGeneral implements PlayCardAbilityEvent, PlayCa
 
             @Override
             public void setCard(int id) {
-                Card card = Util.collectionCollectAndCheckId(getCompletePlayer().getHandCard(), id);
+                Card card = null;
+                int v=0;
+                try {
+                    card = Util.collectionCollectAndCheckId(getCompletePlayer().getHandCard(), id);
+                    v=10;
+                }catch (Exception e){
+                    card = Util.ArrayCollectAndCheckId(getCompletePlayer().getEquipCard(), id);
+                }
                 Card falseCard1;
-                switch (card.getNameId()) {
-                    case 1:
+                switch (SuitEnum.getByIndex(card.getSuit())) {
+                    case HONGT:
+                    case FP:
                         falseCard1 = new FalseCard(card);
-                        falseCard1.setNameId(2);
-                        break;
-                    case 2:
-                        falseCard1 = new FalseCard(card);
-                        falseCard1.setNameId(1);
+                        falseCard1.setNameId(CardEnum.SHA.getId());
                         break;
                     default:
-                        throw new SgsApiException("选择的牌不是杀/闪");
+                        throw new SgsApiException("选择的牌不是红色");
                 }
                 action.accept(falseCard1);
-                getCompletePlayer().getHandCard().remove(card);
+                if (v==10){
+                    getCompletePlayer().getHandCard().remove(card);
+                }else {
+                    Util.ArrayRemove(getCompletePlayer().getEquipCard(),card);
+                }
                 falseCard[0] = falseCard1;
                 a = true;
             }

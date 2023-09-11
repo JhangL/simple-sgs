@@ -10,12 +10,10 @@ import com.jh.sgs.core.exception.DesktopRefuseException;
 import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.general.BaseGeneral;
 import com.jh.sgs.core.interactive.Interactiveable;
-import com.jh.sgs.core.pojo.Card;
-import com.jh.sgs.core.pojo.CompletePlayer;
-import com.jh.sgs.core.pojo.ShowPlayer;
-import com.jh.sgs.core.roundevent.ActiveSkillEvent;
+import com.jh.sgs.core.pojo.*;
 import com.jh.sgs.core.roundevent.DefenseEvent;
 import com.jh.sgs.core.roundevent.OffenseEvent;
+import com.jh.sgs.core.roundevent.PlayCardAbilityEvent;
 import com.jh.sgs.core.roundevent.RoundEvent;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -38,7 +36,7 @@ public class RoundManage {
 
     private RoundRegistrar<OffenseEvent> offenseRegistrar = new RoundRegistrar<>();
     private RoundRegistrar<DefenseEvent> defenseRegistrar = new RoundRegistrar<>();
-    private RoundRegistrar<ActiveSkillEvent> activeSkillRegistrar = new RoundRegistrar<>();
+    private RoundRegistrar<PlayCardAbilityEvent> playAbilityRegistrar = new RoundRegistrar<>();
 
 
     RoundManage(Desk desk) {
@@ -51,25 +49,26 @@ public class RoundManage {
         desk.foreach((integer, completePlayer) -> {
             BaseGeneral baseGeneral = completePlayer.getCompleteGeneral().getBaseGeneral();
             roundProcesses[integer] = baseGeneral;
-            if (baseGeneral instanceof RoundEvent) addEvent(integer,(RoundEvent) baseGeneral);
+            if (baseGeneral instanceof RoundEvent) addEvent(integer, (RoundEvent) baseGeneral);
         });
 
     }
 
 
-    public void addEvent(int player,RoundEvent roundEvent){
+    public void addEvent(int player, RoundEvent roundEvent) {
         //注册全局事件
-        if (roundEvent instanceof ActiveSkillEvent)
-            activeSkillRegistrar.addPlayerEvent(player, (ActiveSkillEvent) roundEvent);
+        if (roundEvent instanceof PlayCardAbilityEvent)
+            playAbilityRegistrar.addPlayerEvent(player, (PlayCardAbilityEvent) roundEvent);
         if (roundEvent instanceof OffenseEvent)
             offenseRegistrar.addPlayerEvent(player, (OffenseEvent) roundEvent);
         if (roundEvent instanceof DefenseEvent)
             defenseRegistrar.addPlayerEvent(player, (DefenseEvent) roundEvent);
     }
-    public void subEvent(int player,RoundEvent roundEvent){
+
+    public void subEvent(int player, RoundEvent roundEvent) {
         //注册全局事件
-        if (roundEvent instanceof ActiveSkillEvent)
-            activeSkillRegistrar.subPlayerEvent(player, (ActiveSkillEvent) roundEvent);
+        if (roundEvent instanceof PlayCardAbilityEvent)
+            playAbilityRegistrar.subPlayerEvent(player, (PlayCardAbilityEvent) roundEvent);
         if (roundEvent instanceof OffenseEvent)
             offenseRegistrar.subPlayerEvent(player, (OffenseEvent) roundEvent);
         if (roundEvent instanceof DefenseEvent)
@@ -98,57 +97,93 @@ public class RoundManage {
     }
 
 
-    public InteractiveEvent playCard(int player, String message, Card[] cards, Consumer<Card> action) {
+    public void playCard(int player, String message, Card[] cards, Consumer<Card> action, boolean singleAbility) {
         CompletePlayer player1 = Util.getPlayer(player);
-        final Interactiveable[] interactiveable = {new Interactiveable() {
-
-            boolean cancel;
-            boolean play;
-
-            @Override
-            public void cancelPlayCard() {
-                log.debug("取消出牌");
-                cards[0] = null;
-                cancel = true;
-            }
-
-            @Override
-            public InteractiveEnum type() {
-                return InteractiveEnum.CP;
-            }
-
-            @Override
-            public List<Card> handCard() {
-                return Util.collectionCloneToList(player1.getHandCard());
-            }
-
-            @Override
-            public void playCard(int id) {
-                Set<Card> handCard = player1.getHandCard();
-                Card card = Util.collectionCollectAndCheckId(handCard, id);
-                //检查
-                action.accept(card);
-                handCard.remove(card);
-                log.debug(player + "出牌:" + card);
-                play = true;
-                cards[0] = card;
-            }
-
-            @Override
-            public void cancel() {
-                cancelPlayCard();
-            }
-
-            @Override
-            public InteractiveEvent.CompleteEnum complete() {
-//                    log.debug("完成出牌阶段");
-                return cancel || play ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
-            }
-        }};
+        //todo 只实现了代替打出牌的技能使用，未实现独立技能。
+        ArrayList<PlayCardAbility> abilities = new ArrayList<>();
         //添加技能注册
-        activeSkillRegistrar.handlePlayer(player, activeSkillEvent -> interactiveable[0] = activeSkillEvent.addSkillOption(interactiveable[0]));
+        playAbilityRegistrar.handlePlayer(player, playAbilityEvent -> {
+             abilities.addAll(playAbilityEvent.addAbilityOption());
+        });
+        while (cards[0] == null) {
+            final PlayCardAbility[] abilty = new PlayCardAbility[1];
+            Interactiveable interactiveable = new Interactiveable() {
 
-        return new InteractiveEvent(player, message, interactiveable[0]);
+                boolean cancel;
+                boolean play;
+                boolean ability;
+
+                @Override
+                public void cancelPlayCard() {
+                    log.debug("取消出牌");
+                    cards[0] = null;
+                    cancel = true;
+                }
+
+                @Override
+                public InteractiveEnum type() {
+                    if (abilities.isEmpty()) return InteractiveEnum.CP;
+                    else return InteractiveEnum.JNCP;
+                }
+
+                @Override
+                public List<Card> handCard() {
+                    return Util.collectionCloneToList(player1.getHandCard());
+                }
+
+
+                @Override
+                public void setAbility(int id) {
+                    if (abilities.isEmpty()) Interactiveable.super.setAbility(id);
+                    abilty[0] = Util.collectionCollectAndCheckId(abilities, id);
+                    ability = true;
+                }
+
+
+                @Override
+                public List<ShowPlayCardAbility> showAbility() {
+                    if (abilities.isEmpty()) Interactiveable.super.showAbility();
+                    return abilities.stream().map(ShowPlayCardAbility::new).collect(Collectors.toList());
+                }
+
+                @Override
+                public void playCard(int id) {
+                    Set<Card> handCard = player1.getHandCard();
+                    Card card = Util.collectionCollectAndCheckId(handCard, id);
+                    //检查
+                    action.accept(card);
+                    handCard.remove(card);
+                    log.debug(player + "出牌:" + card);
+                    play = true;
+                    cards[0] = card;
+                }
+
+                @Override
+                public void cancel() {
+                    cancelPlayCard();
+                }
+
+                @Override
+                public InteractiveEvent.CompleteEnum complete() {
+//                    log.debug("完成出牌阶段");
+                    return cancel || play || ability ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
+                }
+            };
+            ContextManage.interactiveMachine().addEvent(player, message, interactiveable).lock();
+            //处理技能
+            if (abilty[0] != null) {
+                //使用了牌技能
+                cards[0] = abilty[0].getAbilityable().playCardAbility(abilty[0],action);
+                //若牌技能未返回牌，循环重新询问
+            } else {
+                //没使用牌技能
+                if (cards[0] == null) {
+                    //没用技能没出牌，，退出循环
+                    break;
+                }
+            }
+        }
+
     }
 
     /**
@@ -167,7 +202,7 @@ public class RoundManage {
         playCard(beShaPlayer, "", shan, card -> {
             if (card.getNameId() != CardEnum.SHAN.getId())
                 throw new SgsApiException("指定牌不为闪");
-        });
+        }, false);
         return shan[0] == null;
     }
 
@@ -188,12 +223,11 @@ public class RoundManage {
         //无懈可击出牌
         Card[] playWhile = new Card[1];
         for (CompletePlayer completePlayer : completePlayers) {
-            ContextManage.interactiveMachine().addEvent(playCard(completePlayer.getId(), "是否使用无懈可击", playWhile, card -> {
+            playCard(completePlayer.getId(), "是否使用无懈可击", playWhile, card -> {
                 if (card.getNameId() != CardEnum.WU_XIE_KE_JI.getId())
                     throw new SgsApiException("指定牌不为无懈可击");
                 ExecuteCardDesktop.initCheck(card);
-            }));
-            ContextManage.interactiveMachine().lock();
+            }, false);
             //新增desktop（无懈可击使用desktop传递异常）
             if (playWhile[0] != null) {
                 if (!completePlayers.isEmpty()) ContextManage.messageReceipt().global("使用无懈可击");

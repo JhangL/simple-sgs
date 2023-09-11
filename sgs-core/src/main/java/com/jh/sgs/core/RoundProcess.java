@@ -30,13 +30,14 @@ public class RoundProcess {
     @Getter
     private int playerIndex;
     @Getter
-    private final EventLock playCardBool =new EventLock();
+    private final EventLock playCardBool = new EventLock();
     @Setter
-    private int limitSha=1;
+    private int limitSha = 1;
 
     @Setter
     @Getter
     private int useSha;
+
     public RoundProcess(CompletePlayer completePlayer) {
         this.completePlayer = completePlayer;
         playerIndex = completePlayer.getId();
@@ -52,24 +53,24 @@ public class RoundProcess {
         messageReceipt().global(playerIndex + "摸牌阶段");
         obtainCard();
         messageReceipt().global(playerIndex + "出牌阶段");
-        if(!playCardBool.isLock())playCard();
-        else messageReceipt().global(playerIndex + "跳过出牌阶段 "+playCardBool.getEvent());
+        if (!playCardBool.isLock()) playCard();
+        else messageReceipt().global(playerIndex + "跳过出牌阶段 " + playCardBool.getEvent());
         messageReceipt().global(playerIndex + "弃牌阶段");
         discardCard();
         messageReceipt().global(playerIndex + "结束阶段");
         end();
     }
 
-    void start() {
+    public void start() {
         playCardBool.setFalse("正常回合开始");
-        useSha=0;
+        useSha = 0;
     }
 
-    void decide() {
+    public void decide() {
         List<Card> decideCard = getCompletePlayer().getDecideCard();
-        while (!decideCard.isEmpty()){
+        while (!decideCard.isEmpty()) {
             Card card = decideCard.get(0);
-            desktopStack().create(new DecideCardDesktop(playerIndex,card));
+            desktopStack().create(new DecideCardDesktop(playerIndex, card));
             decideCard.remove(0);
             try {
                 desktopStack().remove();
@@ -79,29 +80,28 @@ public class RoundProcess {
         }
     }
 
-    void obtainCard() {
+    public void obtainCard() {
         completePlayer.getHandCard().addAll(cardManage().obtainCard(2));
     }
 
-    void playCard() {
+    public void playCard() {
         Card[] cards = new Card[]{null};
         do {
             cards[0] = null;
-            interactiveMachine().addEvent(ContextManage.roundManage().playCard(playerIndex, "请出牌", cards, card -> {
-                if (card.getNameId() == CardEnum.SHA.getId()){
-                    if (useSha>=getLimitSha()){
-                        throw new SgsApiException("超出使用杀限制(限制："+limitSha+")");
+            ContextManage.roundManage().playCard(playerIndex, "请出牌", cards, card -> {
+                if (card.getNameId() == CardEnum.SHA.getId()) {
+                    if (useSha >= getLimitSha()) {
+                        throw new SgsApiException("超出使用杀限制(限制：" + limitSha + ")");
                     }
                     ShaCardDesktop.initCheck(card);
-                }else {
+                } else {
                     ExecuteCardDesktop.initCheck(card);
                 }
-            }));
-            interactiveMachine().lock();
+            }, false);
             if (cards[0] != null) {
-                if (cards[0].getNameId() == CardEnum.SHA.getId()){
+                if (cards[0].getNameId() == CardEnum.SHA.getId()) {
                     desktopStack().create(new ShaCardDesktop(playerIndex, cards[0]));
-                }else {
+                } else {
                     desktopStack().create(new ExecuteCardDesktop(playerIndex, cards[0]));
                 }
                 try {
@@ -114,7 +114,7 @@ public class RoundProcess {
 
     }
 
-    void discardCard() {
+    public void discardCard() {
         int i = completePlayer.getHandCard().size() - completePlayer.getBlood();
         if (i > 0) {
             interactiveMachine().addEvent(playerIndex, "请弃" + i + "张牌", new Interactiveable() {
@@ -166,7 +166,7 @@ public class RoundProcess {
         }
     }
 
-    void end() {
+    public void end() {
 
     }
 

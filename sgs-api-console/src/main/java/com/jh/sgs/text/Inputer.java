@@ -101,7 +101,7 @@ public class Inputer {
                     Util.printlnColor(32,4,"牌数:" + StartGame.messageRequest.getUsedCardNum());
                     break;
                 case 3:
-                    Util.printlnColor(32,4,"选择玩家id(0<=id<总人数) " + CANCAL + "返回");
+                    Util.printlnColor(32,4,"选择玩家id(0<=id<"+StartGame.playerNum+") " + CANCAL + "返回");
                     int i1 = Integer.parseInt(scanner.nextLine());
                     if (i1 == CANCAL) break;
                     if (i1 < 0 || i1 >= StartGame.playerNum) {

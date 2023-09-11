@@ -1,16 +1,16 @@
 package com.jh.sgs.core.interactive.base;
 
 import com.jh.sgs.core.exception.SgsApiException;
-import com.jh.sgs.core.pojo.Skill;
+import com.jh.sgs.core.pojo.ShowPlayCardAbility;
 
 import java.util.List;
 
-public interface SetSkill {
-    default void setSkill(int id){
+public interface SetAbility {
+    default void setAbility(int id){
         throw SgsApiException.FFWSX;
     }
 
-    default List<Skill> showSkill(){
+    default List<ShowPlayCardAbility> showAbility(){
         throw SgsApiException.FFWSX;
     }
 }

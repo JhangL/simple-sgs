@@ -28,11 +28,10 @@ public class NanManRuQin extends MoreSilkbagCard {
         log.debug("{}：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, completePlayer.getId());
         //todo 南蛮入侵响应时，可能需要重新修改逻辑，当前事件执行人并不是卡牌执行事件的发起者，响应需要杀，需要添加技能等监听处理
         Card[] playWhile = new Card[1];
-        ContextManage.interactiveMachine().addEvent(ContextManage.roundManage().playCard(completePlayer.getId(), "请出杀", playWhile, card -> {
+        ContextManage.roundManage().playCard(completePlayer.getId(), "请出杀", playWhile, card -> {
             if (card.getNameId() != CardEnum.SHA.getId())
                 throw new SgsApiException("指定牌不为杀");
-        }));
-        ContextManage.interactiveMachine().lock();
+        },false);
         if (playWhile[0] == null) {
             completePlayer.setBlood(completePlayer.getBlood() - 1);
             ContextManage.roundManage().subBlood(mainPlayer, completePlayer.getId(), ContextManage.executeCardDesktop().getCard(), 1);

@@ -1,12 +1,15 @@
 package com.jh.sgs.core.general;
 
-import com.jh.sgs.core.RoundProcess;
 import com.jh.sgs.core.pojo.CompletePlayer;
 
-public class ZhangFei extends RoundProcess {
+public class ZhangFei extends BaseGeneral {
 
     public ZhangFei(CompletePlayer completePlayer) {
         super(completePlayer);
-        setLimitSha(100);
+    }
+
+    @Override
+    public int getLimitSha() {
+        return 100;
     }
 }

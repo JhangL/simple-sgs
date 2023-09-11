@@ -42,7 +42,7 @@ public class EventDispose {
                 return ghcqssqyxzp(interactive);
             case XZMB:
                 return xzmb(interactive);
-            case ZYCP:
+            case JNCP:
                 return zycp(interactive);
             case WGFDXZP: return wgfdxzp(interactive);
             case XZP:
@@ -76,9 +76,9 @@ public class EventDispose {
         return true;
     }
 
-    private boolean zycp(ZYCP zycp) {
+    private boolean zycp(JNCP zycp) {
         println("手牌：" + zycp.handCard());
-        println("技能：" + zycp.showSkill());
+        println("技能：" + zycp.showAbility());
         boolean sk = false;
         while (true) {
             println("输入对应手牌id" + (!sk ? "(1000+技能id)" : "(龙胆开启)") + "（-1取消出牌）");
@@ -90,7 +90,7 @@ public class EventDispose {
             }
             if (i >= 1000) {
                 try {
-                    zycp.setSkill(i - 1000);
+                    zycp.setAbility(i - 1000);
                 } catch (SgsApiException e) {
                     System.err.println(e.getMessage());
                     continue;

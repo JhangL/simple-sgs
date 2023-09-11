@@ -31,9 +31,9 @@ public enum InteractiveEnum {
     WGFDXZP,
 
     /**
-     * 赵云出牌
+     * 技能出牌
      */
-    ZYCP,
+    JNCP,
 
     /**
      * 是否
@@ -44,6 +44,13 @@ public enum InteractiveEnum {
      */
     GSF,
 
+    /**
+     * 选择牌（给定目标选择）
+     */
     XZP,
+    /**
+     * 技能选择牌（手牌，装备牌选择）
+     */
+    JNXZP,
 
 }
