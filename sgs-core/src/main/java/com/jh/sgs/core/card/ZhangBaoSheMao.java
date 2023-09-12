@@ -10,4 +10,9 @@ public class ZhangBaoSheMao extends WeaponCard{
     public int shaDistance() {
         return 0;
     }
+
+    @Override
+    String getName() {
+        return "丈八蛇矛";
+    }
 }

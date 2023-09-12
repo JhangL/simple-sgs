@@ -1,15 +1,19 @@
 package com.jh.sgs.core.enums;
 
-import com.jh.sgs.core.exception.SgsApiException;
+import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.general.*;
 
 public enum GeneralEnum {
 
-    Test(1, Test1General.class),
+    LIU_BEI(1, LiuBei.class),
     ZHANG_FEI(2, ZhangFei.class),
     GUAN_YU(3, GuanYu.class),
+    ZHU_GE_LIANG(4, ZhuGeLiang.class),
     ZHAO_YUN(5, ZhaoYun.class),
-    LV_MENG(10, LvMeng.class);
+    GAN_NING(9, GanNing.class),
+    LV_MENG(10, LvMeng.class),
+    HUANG_GAI(11, HuangGai.class),
+    ZHEN_JI(22, ZhenJi.class);
 
     public final int id;
     public final Class<? extends BaseGeneral> aClass;
@@ -23,6 +27,6 @@ public enum GeneralEnum {
         for (GeneralEnum value : GeneralEnum.values()) {
             if (value.id == id) return value;
         }
-        throw new SgsApiException("武将未实现");
+        throw new SgsRuntimeException("武将未实现");
     }
 }

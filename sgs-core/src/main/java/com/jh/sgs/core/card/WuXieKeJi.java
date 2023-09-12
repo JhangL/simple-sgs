@@ -23,4 +23,9 @@ public class WuXieKeJi extends SilkbagCard {
     public void end() {
 
     }
+
+    @Override
+    String getName() {
+        return "无懈可击";
+    }
 }

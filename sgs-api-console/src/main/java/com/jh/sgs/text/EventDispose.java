@@ -2,9 +2,18 @@ package com.jh.sgs.text;
 
 import com.jh.sgs.StartGame;
 import com.jh.sgs.core.InteractiveEvent;
+import com.jh.sgs.core.enums.IdentityEnum;
 import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.interactive.*;
+import com.jh.sgs.core.pojo.Card;
+import com.jh.sgs.core.pojo.CompleteGeneral;
+import com.jh.sgs.core.pojo.CompletePlayer;
+import com.jh.sgs.core.pojo.General;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Set;
 
 public class EventDispose {
     private final InteractiveEvent interactiveEvent;
@@ -21,45 +30,118 @@ public class EventDispose {
     public void dispose() {
         String message = interactiveEvent.getMessage();
         player = interactiveEvent.getPlayer();
-        println("自身状态："+StartGame.messageRequest.getPlayer(player));
+        {
+            CompletePlayer player1 = StartGame.messageRequest.getPlayer(player);
+            CompleteGeneral completeGeneral = player1.getCompleteGeneral();
+            General general = null;
+            if (completeGeneral != null && completeGeneral.getGeneral() != null) {
+                general = completeGeneral.getGeneral();
+            }
+            IdentityEnum identity = player1.getIdentity();
+            int blood = player1.getBlood();
+            int maxBlood = player1.getMaxBlood();
+            Card[] equipCard = player1.getEquipCard();
+            Set<Card> handCard = player1.getHandCard();
+            List<Card> decideCard = player1.getDecideCard();
+            if (general != null) {
+                println(general.getName() + "  " + general.getCountry());
+            }
+            println("体力：" + blood + "/" + maxBlood + "    身份：" + identity);
+            println("手牌：" + handCard.toString());
+            println("装备：" + Arrays.toString(equipCard) + "  判定：" + decideCard.toString());
+        }
         println(message);
-        if (analyse(interactiveEvent.interactive())) {
-            interactiveEvent.complete();
-        } else {
-            interactiveEvent.cancel();
+        while (true) {
+            if (analyse(interactiveEvent.interactive())) {
+                try {
+                    interactiveEvent.complete();
+                    break;
+                } catch (SgsApiException e) {
+                    System.err.println(e.getMessage());
+                }
+            } else {
+                try {
+                    interactiveEvent.cancel();
+                    break;
+                } catch (SgsApiException e) {
+                    System.err.println(e.getMessage());
+                }
+            }
         }
     }
 
     private boolean analyse(Interactive interactive) {
         InteractiveEnum type = interactive.type();
-        switch (type) {
-            case XZYX:
-                return xzyx(interactive);
-            case CP:
-                return cp(interactive);
-            case QP: return qp(interactive);
-            case GHCQSSQYXZP:
-                return ghcqssqyxzp(interactive);
-            case XZMB:
-                return xzmb(interactive);
-            case JNCP:
-                return zycp(interactive);
-            case WGFDXZP: return wgfdxzp(interactive);
-            case XZP:
-                return xzp(interactive);
+        while (true) {
+            try {
+                switch (type) {
+                    case XZYX:
+                        return xzyx(interactive);
+                    case CP:
+                        return cp(interactive);
+                    case QP:
+                        return qp(interactive);
+                    case GHCQSSQYXZP:
+                        return ghcqssqyxzp(interactive);
+                    case XZMB:
+                        return xzmb(interactive);
+                    case JNCP:
+                        return jncp(interactive);
+                    case WGFDXZP:
+                        return wgfdxzp(interactive);
+                    case XZP:
+                        return xzp(interactive);
 //            case GSF: return gsf(interactive);
-            case TOF: return tof(interactive);
-            default:
-                System.out.println("系统未实现此事件");
-                return false;
+                    case JNXZP:
+                        return jnxzp(interactive);
+                    case TOF:
+                        return tof(interactive);
+                    case GX:
+                        return gx(interactive);
+                    default:
+                        System.out.println("系统未实现此事件");
+                        return false;
+                }
+            } catch (SgsApiException e) {
+                System.err.println(e.getMessage());
+            }
         }
+    }
+
+    private boolean gx(GX gx) {
+        while (true) {
+            println("牌：" + gx.targetCard());
+            println("输入位置(0顶  !0底)（-1完成操作）");
+            int i = StartGame.inputer.inputInt();
+            if (i == Inputer.CANCAL) return false;
+            if (i == -1) break;
+            println("按顺序输入对应牌id");
+            int[] i1 = StartGame.inputer.inputInts();
+            if (i == 0) {
+                gx.putCardsTop(i1);
+            } else {
+                gx.putCardsBottom(i1);
+            }
+        }
+        return true;
+    }
+
+    private boolean jnxzp(JNXZP jnxzp) {
+        println("手牌：" + jnxzp.handCard());
+        println("装备牌：" + jnxzp.equipCard());
+        println("输入对应牌id（-1取消选择）");
+        int i = StartGame.inputer.inputInt();
+        if (i == Inputer.CANCAL) return false;
+        if (i == -1) jnxzp.cancelPlayCard();
+        else jnxzp.setCard(i);
+        return true;
     }
 
     private boolean tof(TOF tof) {
         println("输入是或否（0否  !0是）");
         int i = StartGame.inputer.inputInt();
         if (i == Inputer.CANCAL) return false;
-        tof.trueOrFalse(i!=0);
+        tof.trueOrFalse(i != 0);
         return true;
     }
 
@@ -76,37 +158,15 @@ public class EventDispose {
         return true;
     }
 
-    private boolean zycp(JNCP zycp) {
-        println("手牌：" + zycp.handCard());
-        println("技能：" + zycp.showAbility());
-        boolean sk = false;
-        while (true) {
-            println("输入对应手牌id" + (!sk ? "(1000+技能id)" : "(龙胆开启)") + "（-1取消出牌）");
-            int i = StartGame.inputer.inputInt();
-            if (i == Inputer.CANCAL) return false;
-            if (i == -1) {
-                zycp.cancelPlayCard();
-                break;
-            }
-            if (i >= 1000) {
-                try {
-                    zycp.setAbility(i - 1000);
-                } catch (SgsApiException e) {
-                    System.err.println(e.getMessage());
-                    continue;
-                }
-                sk = !sk;
-                continue;
-            }
-            try {
-                zycp.playCard(i);
-            } catch (SgsApiException e) {
-                System.err.println(e.getMessage());
-                continue;
-            }
-
-            break;
-        }
+    private boolean jncp(JNCP jncp) {
+        println("手牌：" + jncp.handCard());
+        println("技能：" + jncp.showAbility());
+        println("输入对应手牌id,1000+技能id" + "（-1取消出牌）");
+        int i = StartGame.inputer.inputInt();
+        if (i == Inputer.CANCAL) return false;
+        if (i == -1) jncp.cancelPlayCard();
+        else if (i >= 1000) jncp.setAbility(i - 1000);
+        else jncp.playCard(i);
         return true;
     }
 
@@ -115,27 +175,17 @@ public class EventDispose {
         println("输入对应武将id");
         int i = StartGame.inputer.inputInt();
         if (i == Inputer.CANCAL) return false;
-        xzyx.setGeneral(i);
+        else xzyx.setGeneral(i);
         return true;
     }
 
     private boolean cp(CP cp) {
         println("手牌：" + cp.handCard());
         println("输入对应手牌id（-1取消出牌）");
-        while (true) {
-            int i = StartGame.inputer.inputInt();
-            if (i == Inputer.CANCAL) return false;
-            if (i == -1) cp.cancelPlayCard();
-            else {
-                try {
-                    cp.playCard(i);
-                } catch (SgsApiException e) {
-                    System.err.println(e.getMessage());
-                    continue;
-                }
-            }
-            break;
-        }
+        int i = StartGame.inputer.inputInt();
+        if (i == Inputer.CANCAL) return false;
+        if (i == -1) cp.cancelPlayCard();
+        else cp.playCard(i);
         return true;
     }
 

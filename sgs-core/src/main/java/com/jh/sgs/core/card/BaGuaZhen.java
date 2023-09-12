@@ -7,4 +7,9 @@ public class BaGuaZhen extends EquipCard{
     EquipCardEnum equipType() {
         return EquipCardEnum.ARMOR;
     }
+
+    @Override
+    String getName() {
+        return "八卦阵";
+    }
 }

@@ -6,11 +6,13 @@ import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.interfaces.ShowStatus;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.FalseCard;
+import lombok.Getter;
 import lombok.NonNull;
 
 import java.util.*;
 
 public class CardManage implements ShowStatus {
+    @Getter
     List<Card> usingCards;
     List<Card> usedCards;
     Map<Integer, Map<String, String>> cardParameter;

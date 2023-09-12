@@ -6,8 +6,11 @@ import com.jh.sgs.core.RoundManage;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.interactive.Interactiveable;
+import com.jh.sgs.core.interactive.impl.TOFImpl;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
+import com.jh.sgs.core.pool.BooleanPool;
+import com.jh.sgs.core.pool.TPool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,9 +21,9 @@ public class QiLinGong extends WeaponCard {
         CompletePlayer player1 = Util.getPlayer(player);
         int mainplayer = ContextManage.shaCardDesktop().getPlayer();
         CompletePlayer maincompletePlayer = Util.getPlayer(mainplayer);
-        Card[] card = new Card[1];
+        TPool<Card> card = new TPool<>();
         boolean b = ContextManage.roundManage().playSha(mainplayer, player, ContextManage.shaCardDesktop().getCard(), card);
-        if (card[0] != null) ContextManage.shaCardDesktop().getProcessCards().add(card[0]);
+        if (card.getPool() != null) ContextManage.shaCardDesktop().getProcessCards().add(card.getPool());
         if (b) {
             player1.setBlood(player1.getBlood() - 1);
             ContextManage.roundManage().subBlood(mainplayer, player, ContextManage.shaCardDesktop().getCard(), 1);
@@ -30,33 +33,9 @@ public class QiLinGong extends WeaponCard {
             if (player1.getEquipCard()[3] != null) cards.add(player1.getEquipCard()[3]);
             //检查目标坐骑牌是否为空
             if (!cards.isEmpty()) {
-                boolean[] tofs = new boolean[1];
-                ContextManage.interactiveMachine().addEvent(mainplayer, "是否使用" + getName(), new Interactiveable() {
-
-                    boolean a = false;
-
-                    @Override
-                    public void trueOrFalse(boolean tof) {
-                        tofs[0] = tof;
-                        a = true;
-                    }
-
-                    @Override
-                    public void cancel() {
-                        trueOrFalse(false);
-                    }
-
-                    @Override
-                    public InteractiveEvent.CompleteEnum complete() {
-                        return a ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
-                    }
-
-                    @Override
-                    public InteractiveEnum type() {
-                        return InteractiveEnum.TOF;
-                    }
-                });
-                if (tofs[0]) {
+                BooleanPool tofs = new BooleanPool();
+                ContextManage.interactiveMachine().addEvent(mainplayer, "是否使用" + getName(), new TOFImpl(tofs));
+                if (tofs.isPool()) {
                     if (cards.size() == 1) {
                         //一个坐骑直接弃掉
                         Card card1 = cards.get(0);
@@ -101,7 +80,7 @@ public class QiLinGong extends WeaponCard {
                                 return InteractiveEnum.XZP;
                             }
                         });
-                        if (cards1[0]!=null){
+                        if (cards1[0] != null) {
                             if (player1.getEquipCard()[2] == cards1[0]) player1.getEquipCard()[2] = null;
                             else if (player1.getEquipCard()[3] == cards1[0]) player1.getEquipCard()[3] = null;
                             ContextManage.roundManage().loseCard(mainplayer, player, cards1[0], RoundManage.EQUIP_CARD);

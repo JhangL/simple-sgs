@@ -1,7 +1,7 @@
 package com.jh.sgs.core.enums;
 
 import com.jh.sgs.core.ContextManage;
-import com.jh.sgs.core.pojo.PlayCardAbility;
+import com.jh.sgs.core.pojo.Ability;
 import lombok.Getter;
 
 public enum AbilityEnum {
@@ -10,14 +10,14 @@ public enum AbilityEnum {
 ;
 
     @Getter
-    private PlayCardAbility playCardAbility;
+    private Ability ability;
 
-    AbilityEnum(PlayCardAbility playCardAbility) {
-        this.playCardAbility = playCardAbility;
+    AbilityEnum(Ability ability) {
+        this.ability = ability;
     }
 
 
-    private static PlayCardAbility.PlayCardAbilityable getAbility(GeneralEnum generalEnum){
-        return  (PlayCardAbility.PlayCardAbilityable) ContextManage.generalManage().getBaseGeneralMap().get(generalEnum);
+    private static Ability.PlayCardAbilityable getAbility(GeneralEnum generalEnum){
+        return  (Ability.PlayCardAbilityable) ContextManage.generalManage().getBaseGeneralMap().get(generalEnum);
     }
 }

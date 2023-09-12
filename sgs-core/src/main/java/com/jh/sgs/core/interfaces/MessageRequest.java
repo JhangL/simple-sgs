@@ -1,10 +1,13 @@
 package com.jh.sgs.core.interfaces;
 
+import com.jh.sgs.core.pojo.CompletePlayer;
+import com.jh.sgs.core.pojo.ShowPlayer;
+
 public interface MessageRequest {
     String getAll();
 
-    String getPlayer(int id);
-    String getShowPlayer(int id);
+    CompletePlayer getPlayer(int id);
+    ShowPlayer getShowPlayer(int id);
 
     int getUsingCardNum();
     int getUsedCardNum();

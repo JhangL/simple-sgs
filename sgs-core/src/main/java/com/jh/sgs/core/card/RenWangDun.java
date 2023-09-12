@@ -7,4 +7,9 @@ public class RenWangDun extends EquipCard{
     EquipCardEnum equipType() {
         return EquipCardEnum.ARMOR;
     }
+
+    @Override
+    String getName() {
+        return "仁王盾";
+    }
 }

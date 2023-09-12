@@ -10,4 +10,9 @@ public class QingHongJian extends WeaponCard{
     public int shaDistance() {
         return 0;
     }
+
+    @Override
+    String getName() {
+        return "青釭剑";
+    }
 }

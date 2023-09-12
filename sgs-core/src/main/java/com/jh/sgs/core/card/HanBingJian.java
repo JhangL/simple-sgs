@@ -10,4 +10,9 @@ public class HanBingJian extends WeaponCard{
     public int shaDistance() {
         return 0;
     }
+
+    @Override
+    String getName() {
+        return "寒冰剑";
+    }
 }

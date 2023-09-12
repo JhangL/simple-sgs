@@ -7,21 +7,21 @@ import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.interactive.Interactiveable;
+import com.jh.sgs.core.pojo.Ability;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.FalseCard;
-import com.jh.sgs.core.pojo.PlayCardAbility;
-import com.jh.sgs.core.roundevent.PlayCardAbilityEvent;
+import com.jh.sgs.core.roundevent.AbilityEvent;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class ZhaoYun extends BaseGeneral implements PlayCardAbilityEvent, PlayCardAbility.PlayCardAbilityable {
+public class ZhaoYun extends BaseGeneral implements AbilityEvent, Ability.PlayCardAbilityable {
 
 
-    PlayCardAbility longDan = new PlayCardAbility(7, "龙胆", this);
+    Ability longDan = new Ability(7, "龙胆", this,Ability.PLAY_CARD);
 
     public ZhaoYun(CompletePlayer completePlayer) {
         super(completePlayer);
@@ -29,13 +29,13 @@ public class ZhaoYun extends BaseGeneral implements PlayCardAbilityEvent, PlayCa
 
 
     @Override
-    public List<PlayCardAbility> addAbilityOption() {
+    public List<Ability> addAbilityOption() {
         return Collections.singletonList(longDan);
     }
 
     @Override
-    public Card playCardAbility(PlayCardAbility playCardAbility, Consumer<Card> action) {
-        if (playCardAbility == longDan) {
+    public Card playCardAbility(Ability ability, Consumer<Card> action) {
+        if (ability == longDan) {
             return longDan(action);
         } else {
             throw new SgsRuntimeException("系统错误");

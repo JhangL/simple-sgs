@@ -56,6 +56,7 @@ public abstract class DelaySilkbagCard extends OneSilkbagCard implements Decidab
         CompletePlayer player1 = Util.getPlayer(player);
         player1.getDecideCard().add(0, ContextManage.executeCardDesktop().getCard());
         ContextManage.executeCardDesktop().useCard();
+        ContextManage.roundManage().statusRefresh(mainPlayer,player);
         log.debug("{}完成：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, player);
     }
 

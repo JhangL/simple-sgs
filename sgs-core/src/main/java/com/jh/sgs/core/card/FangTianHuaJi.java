@@ -10,4 +10,9 @@ public class FangTianHuaJi extends WeaponCard{
     public int shaDistance() {
         return 0;
     }
+
+    @Override
+    String getName() {
+        return "方天画戟";
+    }
 }

@@ -20,31 +20,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class GuanYu extends BaseGeneral implements AbilityEvent, Ability.PlayCardAbilityable {
+public class GanNing extends BaseGeneral implements AbilityEvent, Ability.PlayCardAbilityable {
 
-    private Ability wuSeng=new Ability(4,"武圣",this,Ability.PLAY_CARD);
-    public GuanYu(CompletePlayer completePlayer) {
+    private Ability qiXi = new Ability(14, "奇袭", this, Ability.PLAY_CARD);
+
+    public GanNing(CompletePlayer completePlayer) {
         super(completePlayer);
     }
 
 
     @Override
     public List<Ability> addAbilityOption() {
-        return Collections.singletonList(wuSeng);
+        if (getProcess()==PLAY_CARD) return Collections.singletonList(qiXi);
+        else return null;
     }
 
     @Override
     public Card playCardAbility(Ability ability, Consumer<Card> action) {
-        if (ability == wuSeng) {
-            return wuSeng(action);
+        if (ability == qiXi) {
+            return qiXi(action);
         } else {
             throw new SgsRuntimeException("系统错误");
         }
     }
 
-    private Card wuSeng(Consumer<Card> action) {
+    private Card qiXi(Consumer<Card> action) {
         final Card[] falseCard = new Card[1];
-        ContextManage.interactiveMachine().addEvent(getPlayerIndex(), "(武圣)请出牌", new Interactiveable() {
+        ContextManage.interactiveMachine().addEvent(getPlayerIndex(), "(奇袭)请出牌", new Interactiveable() {
             boolean a, b;
 
             @Override
@@ -74,13 +76,13 @@ public class GuanYu extends BaseGeneral implements AbilityEvent, Ability.PlayCar
                 }
                 Card falseCard1;
                 switch (SuitEnum.getByIndex(card.getSuit())) {
-                    case HONGT:
-                    case FP:
+                    case HEIT:
+                    case MH:
                         falseCard1 = new FalseCard(card);
-                        falseCard1.setNameId(CardEnum.SHA.getId());
+                        falseCard1.setNameId(CardEnum.GUO_HE_CHAI_QIAO.getId());
                         break;
                     default:
-                        throw new SgsApiException("选择的牌不是红色");
+                        throw new SgsApiException("选择的牌花色不是黑色");
                 }
                 action.accept(falseCard1);
                 if (v==10){

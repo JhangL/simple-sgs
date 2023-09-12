@@ -127,14 +127,14 @@ public class GameEngine implements Runnable ,MessageRequest {
     }
 
     @Override
-    public String getPlayer(int id) {
-        return gameProcess.getDesk().get(id).toString();
+    public CompletePlayer getPlayer(int id) {
+        return gameProcess.getDesk().get(id);
     }
 
     @Override
-    public String getShowPlayer(int id) {
+    public ShowPlayer getShowPlayer(int id) {
         CompletePlayer completePlayer = gameProcess.getDesk().get(id);
-        return new ShowPlayer(completePlayer).toString();
+        return new ShowPlayer(completePlayer);
     }
 
     @Override

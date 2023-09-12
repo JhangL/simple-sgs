@@ -52,5 +52,9 @@ public enum InteractiveEnum {
      * 技能选择牌（手牌，装备牌选择）
      */
     JNXZP,
+    /**
+     * 观星
+     */
+    GX,
 
 }

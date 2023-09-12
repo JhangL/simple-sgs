@@ -12,6 +12,7 @@ import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.EventLock;
+import com.jh.sgs.core.pool.TPool;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -25,6 +26,15 @@ import static com.jh.sgs.core.ContextManage.*;
 
 @Log4j2
 public class RoundProcess {
+    public static final int START=1;
+    public static final int DECIDE=2;
+    public static final int OBTAIN_CARD=3;
+    public static final int PLAY_CARD=4;
+    public static final int DIS_CARD=5;
+    public static final int END=6;
+
+
+
     @Getter
     private CompletePlayer completePlayer;
     @Getter
@@ -33,6 +43,9 @@ public class RoundProcess {
     private final EventLock playCardBool = new EventLock();
     @Setter
     private int limitSha = 1;
+
+    @Getter
+    private int process;
 
     @Setter
     @Getter
@@ -47,17 +60,25 @@ public class RoundProcess {
         log.info(playerIndex + "回合");
         messageReceipt().global(playerIndex + "回合");
         messageReceipt().global(playerIndex + "开始阶段");
+        process=START;
         start();
         messageReceipt().global(playerIndex + "判定阶段");
+        process=DECIDE;
         decide();
         messageReceipt().global(playerIndex + "摸牌阶段");
+        process=OBTAIN_CARD;
         obtainCard();
         messageReceipt().global(playerIndex + "出牌阶段");
-        if (!playCardBool.isLock()) playCard();
+        if (!playCardBool.isLock()){
+            process=PLAY_CARD;
+            playCard();
+        }
         else messageReceipt().global(playerIndex + "跳过出牌阶段 " + playCardBool.getEvent());
         messageReceipt().global(playerIndex + "弃牌阶段");
-        discardCard();
+        process=DIS_CARD;
+        disCard();
         messageReceipt().global(playerIndex + "结束阶段");
+        process=END;
         end();
     }
 
@@ -85,9 +106,9 @@ public class RoundProcess {
     }
 
     public void playCard() {
-        Card[] cards = new Card[]{null};
+        TPool<Card> cards = new TPool<>();
         do {
-            cards[0] = null;
+            cards.setPool(null);
             ContextManage.roundManage().playCard(playerIndex, "请出牌", cards, card -> {
                 if (card.getNameId() == CardEnum.SHA.getId()) {
                     if (useSha >= getLimitSha()) {
@@ -97,12 +118,12 @@ public class RoundProcess {
                 } else {
                     ExecuteCardDesktop.initCheck(card);
                 }
-            }, false);
-            if (cards[0] != null) {
-                if (cards[0].getNameId() == CardEnum.SHA.getId()) {
-                    desktopStack().create(new ShaCardDesktop(playerIndex, cards[0]));
+            }, true);
+            if (cards.getPool() != null) {
+                if (cards.getPool().getNameId() == CardEnum.SHA.getId()) {
+                    desktopStack().create(new ShaCardDesktop(playerIndex, cards.getPool()));
                 } else {
-                    desktopStack().create(new ExecuteCardDesktop(playerIndex, cards[0]));
+                    desktopStack().create(new ExecuteCardDesktop(playerIndex, cards.getPool()));
                 }
                 try {
                     desktopStack().remove();
@@ -110,11 +131,11 @@ public class RoundProcess {
                     throw new RuntimeException("系统错误");
                 }
             }
-        } while (cards[0] != null);
+        } while (cards.getPool() != null);
 
     }
 
-    public void discardCard() {
+    public void disCard() {
         int i = completePlayer.getHandCard().size() - completePlayer.getBlood();
         if (i > 0) {
             interactiveMachine().addEvent(playerIndex, "请弃" + i + "张牌", new Interactiveable() {
@@ -172,6 +193,11 @@ public class RoundProcess {
 
     public int getLimitSha() {
         return limitSha;
+    }
+
+
+    public void statusRefresh(){
+
     }
 
 }

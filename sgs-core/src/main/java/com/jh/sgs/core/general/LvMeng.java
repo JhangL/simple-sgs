@@ -8,7 +8,7 @@ public class LvMeng extends BaseGeneral {
     }
 
     @Override
-    public void discardCard() {
-        if (getUseSha() != 0) super.discardCard();
+    public void disCard() {
+        if (getUseSha() != 0) super.disCard();
     }
 }

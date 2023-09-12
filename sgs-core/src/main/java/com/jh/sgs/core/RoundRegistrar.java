@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class RoundRegistrar<T extends RoundEvent> extends HashMap<Integer, List<T>> {
 
@@ -32,6 +33,9 @@ public class RoundRegistrar<T extends RoundEvent> extends HashMap<Integer, List<
     }
     public void handlePlayer(int player, Consumer<T> action){
         get(player).forEach(action);
+    }
+    public Stream<T> handlePlayer(int player){
+        return get(player).stream();
     }
     public void handleGlobal(Consumer<T> action){
         get(-1).forEach(action);

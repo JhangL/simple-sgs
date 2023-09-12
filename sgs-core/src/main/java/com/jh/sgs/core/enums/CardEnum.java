@@ -9,6 +9,7 @@ public enum CardEnum {
     SHA(1,new Sha()),
     SHAN(2,new Shan()),
     TAO(3,new Tao()),
+    JUE_DOU(4,null),
     GUO_HE_CHAI_QIAO(5,new GuoHeChaiQiao()),
     SHUN_SHOU_QIAN_YANG(6,new ShunShouQianYang()),
     WU_ZHONG_SHENG_YOU(7,new WuZhongShengYou()),

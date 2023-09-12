@@ -27,6 +27,7 @@ public abstract class EquipCard extends BaseCard implements Executable{
         }
         completePlayer.getEquipCard()[equipType().ordinal()] = ContextManage.executeCardDesktop().getCard();
         ContextManage.executeCardDesktop().useCard();
+        ContextManage.roundManage().statusRefresh(ContextManage.executeCardDesktop().getPlayer(),ContextManage.executeCardDesktop().getPlayer());
         log.debug(id + "装备装备牌" + ContextManage.executeCardDesktop().getCard());
         ContextManage.messageReceipt().global(ContextManage.executeCardDesktop().getPlayer() +"完成装备"+ContextManage.executeCardDesktop().getCard());
     }

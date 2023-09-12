@@ -11,7 +11,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @ToString(callSuper = true)
-public class ShowPlayer extends ID{
+public class ShowPlayer extends ID {
 
     private String name;
     private String country;
@@ -23,8 +23,10 @@ public class ShowPlayer extends ID{
 
     public ShowPlayer(CompletePlayer completePlayer) {
         this.setId(completePlayer.getId());
-        this.name = completePlayer.getCompleteGeneral().getGeneral().getName();
-        this.country = completePlayer.getCompleteGeneral().getGeneral().getCountry();
+        if (completePlayer.getCompleteGeneral() != null && completePlayer.getCompleteGeneral().getGeneral() != null) {
+            this.name = completePlayer.getCompleteGeneral().getGeneral().getName();
+            this.country = completePlayer.getCompleteGeneral().getGeneral().getCountry();
+        }
         this.blood = completePlayer.getBlood();
         this.maxBlood = completePlayer.getMaxBlood();
         this.equipCard = Util.arrayCloneToList(completePlayer.getEquipCard());

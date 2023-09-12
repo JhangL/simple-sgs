@@ -4,8 +4,10 @@ import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.enums.SuitEnum;
 import com.jh.sgs.core.exception.DesktopErrorException;
+import com.jh.sgs.core.interactive.impl.XZMBImpl;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
+import com.jh.sgs.core.pool.TPool;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.List;
@@ -33,10 +35,10 @@ public class LeBuSiShu extends DelaySilkbagCard {
         List<CompletePlayer> target = ContextManage.roundManage().findTarget(ContextManage.executeCardDesktop().getPlayer(), ContextManage.executeCardDesktop().getCard());
         //过滤有乐不思蜀的人
         List<CompletePlayer> collect = target.stream().filter(completePlayer -> completePlayer.getDecideCard().stream().noneMatch(card -> card.getNameId() == CardEnum.LE_BU_SI_SHU.getId())).collect(Collectors.toList());
-        final Integer[] targetPlayer = new Integer[1];
-        ContextManage.roundManage().selectTarget(ContextManage.executeCardDesktop().getPlayer(),collect,targetPlayer);
-        if (targetPlayer[0] == null) throw new DesktopErrorException("未选择目标");
-        return targetPlayer[0];
+        TPool<Integer> targetPlayer=new TPool<>();
+        ContextManage.interactiveMachine().addEvent(ContextManage.executeCardDesktop().getPlayer(),"请选择目标",new XZMBImpl(targetPlayer,collect)).lock();
+        if (targetPlayer.getPool() == null) throw new DesktopErrorException("未选择目标");
+        return targetPlayer.getPool();
     }
 
     @Override

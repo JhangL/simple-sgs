@@ -10,4 +10,9 @@ public class CiXiongShuangGuJian extends WeaponCard{
     public int shaDistance() {
         return 0;
     }
+
+    @Override
+    String getName() {
+        return "雌雄双股剑";
+    }
 }

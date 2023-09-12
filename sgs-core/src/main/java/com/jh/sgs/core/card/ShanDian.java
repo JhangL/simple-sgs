@@ -42,6 +42,7 @@ public class ShanDian extends DelaySilkbagCard {
         Card card = ContextManage.decideCardDesktop().getCard();
         int i = ContextManage.desk().nextOnDesk(ContextManage.decideCardDesktop().getPlayer());
         Util.getPlayer(i).getDecideCard().add(0, card);
+        ContextManage.roundManage().statusRefresh(-1,i);
         ContextManage.decideCardDesktop().useCard();
     }
 
@@ -50,4 +51,8 @@ public class ShanDian extends DelaySilkbagCard {
         return ContextManage.executeCardDesktop().getPlayer();
     }
 
+    @Override
+    String getName() {
+        return "闪电";
+    }
 }

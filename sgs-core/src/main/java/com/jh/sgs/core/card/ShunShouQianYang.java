@@ -7,8 +7,10 @@ import com.jh.sgs.core.Util;
 import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.DesktopErrorException;
 import com.jh.sgs.core.interactive.Interactiveable;
+import com.jh.sgs.core.interactive.impl.XZMBImpl;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
+import com.jh.sgs.core.pool.TPool;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.Arrays;
@@ -31,13 +33,12 @@ public class ShunShouQianYang extends OneSilkbagCard {
         List<CompletePlayer> collect = target.stream().filter(completePlayer -> {
             if (!completePlayer.getHandCard().isEmpty()) return true;
             if (!completePlayer.getDecideCard().isEmpty()) return true;
-            if (Arrays.stream(completePlayer.getEquipCard()).anyMatch(Objects::nonNull)) return true;
-            return false;
+            return Arrays.stream(completePlayer.getEquipCard()).anyMatch(Objects::nonNull);
         }).collect(Collectors.toList());
-        final Integer[] targetPlayer = new Integer[1];
-        ContextManage.roundManage().selectTarget(ContextManage.executeCardDesktop().getPlayer(),collect,targetPlayer);
-        if (targetPlayer[0] == null) throw new DesktopErrorException("未选择目标");
-        return targetPlayer[0];
+        TPool<Integer> targetPlayer=new TPool<>();
+        ContextManage.interactiveMachine().addEvent(ContextManage.executeCardDesktop().getPlayer(),"请选择目标",new XZMBImpl(targetPlayer,collect)).lock();
+        if (targetPlayer.getPool() == null) throw new DesktopErrorException("未选择目标");
+        return targetPlayer.getPool();
     }
 
     @Override
