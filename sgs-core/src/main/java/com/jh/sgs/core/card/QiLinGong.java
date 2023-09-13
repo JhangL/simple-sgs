@@ -26,7 +26,9 @@ public class QiLinGong extends WeaponCard {
         if (card.getPool() != null) ContextManage.shaCardDesktop().getProcessCards().add(card.getPool());
         if (b) {
             player1.setBlood(player1.getBlood() - 1);
-            ContextManage.roundManage().subBlood(mainplayer, player, ContextManage.shaCardDesktop().getCard(), 1);
+            TPool<Card> cardTPool = new TPool<>(ContextManage.shaCardDesktop().getCard());
+            ContextManage.roundManage().subBlood(mainplayer, player,cardTPool, 1);
+            if (cardTPool.isEmpty())ContextManage.shaCardDesktop().useCard();
             //麒麟弓特殊效果
             ArrayList<Card> cards = new ArrayList<>();
             if (player1.getEquipCard()[2] != null) cards.add(player1.getEquipCard()[2]);

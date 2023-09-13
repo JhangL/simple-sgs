@@ -19,7 +19,10 @@ public class Sha extends BaseCard implements Shaable{
         if (b){
             CompletePlayer player1 = Util.getPlayer(player);
             player1.setBlood(player1.getBlood()-1);
-            ContextManage.roundManage().subBlood(ContextManage.shaCardDesktop().getPlayer(),player,ContextManage.shaCardDesktop().getCard(),1);
+            TPool<Card> cardTPool = new TPool<>(ContextManage.shaCardDesktop().getCard());
+            ContextManage.roundManage().subBlood(ContextManage.shaCardDesktop().getPlayer(),player,cardTPool,1);
+            if (cardTPool.isEmpty())ContextManage.shaCardDesktop().useCard();
+
         }
     }
 

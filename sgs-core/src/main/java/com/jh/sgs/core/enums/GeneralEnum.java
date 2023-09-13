@@ -13,6 +13,9 @@ public enum GeneralEnum {
     GAN_NING(9, GanNing.class),
     LV_MENG(10, LvMeng.class),
     HUANG_GAI(11, HuangGai.class),
+    LU_XUN(14, LuXun.class),
+    CAO_CAO(16, CaoCao.class),
+    SI_MA_YI(17, SiMaYi.class),
     ZHEN_JI(22, ZhenJi.class);
 
     public final int id;

@@ -27,7 +27,6 @@ public class WanJianQiFa extends MoreSilkbagCard {
     void effect(CompletePlayer completePlayer) throws DesktopException {
         int mainPlayer = ContextManage.executeCardDesktop().getPlayer();
         log.debug("{}：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, completePlayer.getId());
-        //todo 万箭齐发响应时，可能需要重新修改逻辑，当前事件执行人并不是卡牌执行事件的发起者，响应需要闪，需要添加技能等监听处理
         TPool<Card> playWhile = new TPool<>();
         ContextManage.roundManage().playCard(completePlayer.getId(), "请出闪", playWhile, card -> {
             if (card.getNameId() != CardEnum.SHAN.getId())
@@ -35,7 +34,9 @@ public class WanJianQiFa extends MoreSilkbagCard {
         },false);
         if (playWhile.getPool() == null) {
             completePlayer.setBlood(completePlayer.getBlood() - 1);
-            ContextManage.roundManage().subBlood(mainPlayer, completePlayer.getId(), ContextManage.executeCardDesktop().getCard(), 1);
+            TPool<Card> cardTPool = new TPool<>(ContextManage.executeCardDesktop().getCard());
+            ContextManage.roundManage().subBlood(mainPlayer, completePlayer.getId(),cardTPool, 1);
+            if (cardTPool.isEmpty())ContextManage.executeCardDesktop().useCard();
         } else {
             ContextManage.executeCardDesktop().getProcessCards().add(playWhile.getPool());
         }

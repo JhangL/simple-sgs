@@ -45,7 +45,6 @@ public class WuGuFengDeng extends MoreSilkbagCard {
     void effect(CompletePlayer completePlayer) {
         int mainPlayer = ContextManage.executeCardDesktop().getPlayer();
         log.debug("{}：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, completePlayer);
-        //todo 五谷丰登摸牌时，可能需要重新修改逻辑，当前事件执行人并不是卡牌执行事件的发起者
         final Card[] card = new Card[1];
         ContextManage.interactiveMachine().addEvent(completePlayer.getId(), "请选择牌", new Interactiveable() {
             boolean a = false;

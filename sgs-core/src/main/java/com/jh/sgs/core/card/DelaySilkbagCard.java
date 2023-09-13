@@ -8,8 +8,6 @@ import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.List;
-
 @Log4j2
 public abstract class DelaySilkbagCard extends OneSilkbagCard implements Decidable {
     @Override
@@ -22,8 +20,7 @@ public abstract class DelaySilkbagCard extends OneSilkbagCard implements Decidab
             decideFalse();
             return;
         }
-        List<Card> cards = ContextManage.cardManage().obtainCard(1);
-        Card card = cards.get(0);
+        Card card = ContextManage.roundManage().decide(ContextManage.decideCardDesktop().getPlayer());
         log.debug("{}判定牌：{}", getName(), card);
         boolean b = decideTerm(card);
         if (b) {
@@ -56,7 +53,7 @@ public abstract class DelaySilkbagCard extends OneSilkbagCard implements Decidab
         CompletePlayer player1 = Util.getPlayer(player);
         player1.getDecideCard().add(0, ContextManage.executeCardDesktop().getCard());
         ContextManage.executeCardDesktop().useCard();
-        ContextManage.roundManage().statusRefresh(mainPlayer,player);
+        ContextManage.roundManage().statusRefresh(mainPlayer, player);
         log.debug("{}完成：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, player);
     }
 

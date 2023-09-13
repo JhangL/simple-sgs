@@ -5,7 +5,6 @@ import com.jh.sgs.core.card.BaseCard;
 import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.interfaces.ShowStatus;
 import com.jh.sgs.core.pojo.Card;
-import com.jh.sgs.core.pojo.FalseCard;
 import lombok.Getter;
 import lombok.NonNull;
 
@@ -52,7 +51,7 @@ public class CardManage implements ShowStatus {
     }
 
     public void recoveryCard(@NonNull Card card) {
-        if (card instanceof FalseCard) card = ((FalseCard) card).getCard();
+        if (card.isFalsed()) card.backTrue();
         usedCards.add(card);
     }
 

@@ -21,6 +21,7 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -37,8 +38,10 @@ public class RoundManage {
 
     private RoundRegistrar<OffenseEvent> offenseRegistrar = new RoundRegistrar<>();
     private RoundRegistrar<DefenseEvent> defenseRegistrar = new RoundRegistrar<>();
-    private RoundRegistrar<AbilityEvent> AbilityRegistrar = new RoundRegistrar<>();
+    private RoundRegistrar<AbilityEvent> abilityRegistrar = new RoundRegistrar<>();
     private RoundRegistrar<CardTargetHideEvent> cardTargetHideRegistrar = new RoundRegistrar<>();
+    private RoundRegistrar<DecideInvadeEvent> decideInvadeRegistrar = new RoundRegistrar<>();
+    private RoundRegistrar<BeSubBloodEvent> beSubBloodRegistrar = new RoundRegistrar<>();
 //    private RoundRegistrar<AbilityEvent> singleAbilityRegistrar = new RoundRegistrar<>();
 
 
@@ -53,6 +56,9 @@ public class RoundManage {
             BaseGeneral baseGeneral = completePlayer.getCompleteGeneral().getBaseGeneral();
             roundProcesses[integer] = baseGeneral;
             if (baseGeneral instanceof RoundEvent) addEvent(integer, (RoundEvent) baseGeneral);
+            for (Object o : baseGeneral.getSkill()) {
+                if (o instanceof RoundEvent) addEvent(integer, (RoundEvent) o);
+            }
         });
 
     }
@@ -76,23 +82,41 @@ public class RoundManage {
 
 
     public void addEvent(int player, RoundEvent roundEvent) {
+
         //注册全局事件
         if (roundEvent instanceof AbilityEvent)
-            AbilityRegistrar.addPlayerEvent(player, (AbilityEvent) roundEvent);
+            if (roundEvent.eventLocation() == RoundEvent.PLAYER)
+                abilityRegistrar.addPlayerEvent(player, (AbilityEvent) roundEvent);
+            else abilityRegistrar.addGlobalEvent((AbilityEvent) roundEvent);
         if (roundEvent instanceof OffenseEvent)
-            offenseRegistrar.addPlayerEvent(player, (OffenseEvent) roundEvent);
+            if (roundEvent.eventLocation() == RoundEvent.PLAYER)
+                offenseRegistrar.addPlayerEvent(player, (OffenseEvent) roundEvent);
+            else offenseRegistrar.addGlobalEvent((OffenseEvent) roundEvent);
         if (roundEvent instanceof DefenseEvent)
-            defenseRegistrar.addPlayerEvent(player, (DefenseEvent) roundEvent);
+            if (roundEvent.eventLocation() == RoundEvent.PLAYER)
+                defenseRegistrar.addPlayerEvent(player, (DefenseEvent) roundEvent);
+            else defenseRegistrar.addGlobalEvent((DefenseEvent) roundEvent);
+        if (roundEvent instanceof CardTargetHideEvent)
+            if (roundEvent.eventLocation() == RoundEvent.PLAYER)
+                cardTargetHideRegistrar.addPlayerEvent(player, (CardTargetHideEvent) roundEvent);
+            else cardTargetHideRegistrar.addGlobalEvent((CardTargetHideEvent) roundEvent);
+        if (roundEvent instanceof DecideInvadeEvent)
+            if (roundEvent.eventLocation() == RoundEvent.PLAYER)
+                decideInvadeRegistrar.addPlayerEvent(player, (DecideInvadeEvent) roundEvent);
+            else decideInvadeRegistrar.addGlobalEvent((DecideInvadeEvent) roundEvent);
     }
 
     public void subEvent(int player, RoundEvent roundEvent) {
-        //注册全局事件
         if (roundEvent instanceof AbilityEvent)
-            AbilityRegistrar.subPlayerEvent(player, (AbilityEvent) roundEvent);
+            abilityRegistrar.subPlayerEvent(player, (AbilityEvent) roundEvent);
         if (roundEvent instanceof OffenseEvent)
             offenseRegistrar.subPlayerEvent(player, (OffenseEvent) roundEvent);
         if (roundEvent instanceof DefenseEvent)
             defenseRegistrar.subPlayerEvent(player, (DefenseEvent) roundEvent);
+        if (roundEvent instanceof CardTargetHideEvent)
+            cardTargetHideRegistrar.subPlayerEvent(player, (CardTargetHideEvent) roundEvent);
+        if (roundEvent instanceof DecideInvadeEvent)
+            decideInvadeRegistrar.subPlayerEvent(player, (DecideInvadeEvent) roundEvent);
     }
 
     public RoundProcess getRoundProcess(int player) {
@@ -105,7 +129,7 @@ public class RoundManage {
         ArrayList<Ability> abilities = new ArrayList<>();
         //添加技能注册
         //牌技能注册（可替换牌的技能）
-        AbilityRegistrar.handlePlayer(player, playAbilityEvent -> {
+        abilityRegistrar.handlePlayer(player, playAbilityEvent -> {
             if (playAbilityEvent.addAbilityOption() == null) return;
             for (Ability ability : playAbilityEvent.addAbilityOption()) {
                 if (ability.getType() == Ability.PLAY_CARD)
@@ -114,7 +138,7 @@ public class RoundManage {
         });
         //独立技能
         if (singleAbility) {
-            AbilityRegistrar.handlePlayer(player, playAbilityEvent -> {
+            abilityRegistrar.handlePlayer(player, playAbilityEvent -> {
                 if (playAbilityEvent.addAbilityOption() == null) return;
                 for (Ability ability : playAbilityEvent.addAbilityOption()) {
                     if (ability.getType() == Ability.SINGLE)
@@ -267,6 +291,23 @@ public class RoundManage {
 
 
     /**
+     * 判定事件，获取判定牌
+     * @param operatePlayer 操作人
+     * @return 判定牌
+     */
+    public Card decide(int operatePlayer) {
+        //判定入侵（修改判定牌）
+        List<Card> collect = decideInvadeRegistrar.handlePlayer(operatePlayer).map(DecideInvadeEvent::decideInvade).filter(Objects::isNull).collect(Collectors.toList());
+        if (!collect.isEmpty()) {
+            Card remove = collect.remove(collect.size() - 1);
+            ContextManage.cardManage().recoveryCard(collect);
+            return remove;
+        }
+        List<Card> cards = ContextManage.cardManage().obtainCard(1);
+        return cards.get(0);
+    }
+
+    /**
      * 查找目标事件，获取特定距离内的目标。在查找时，获取到的目标是处理监听事件（进攻事件，防御事件）后的目标。
      * @param player 要查找玩家
      * @param card 触发牌
@@ -301,8 +342,8 @@ public class RoundManage {
     public List<CompletePlayer> findTarget(int player, Card card) {
         ArrayList<CompletePlayer> completePlayers = new ArrayList<>();
         desk.foreachOnDeskNoPlayer(player, completePlayers::add);
-        //todo 查找目标时的特殊事件处理（例如：空城）
-        return completePlayers;
+        List<CompletePlayer> collect = completePlayers.stream().filter(completePlayer -> !cardTargetHideRegistrar.handlePlayer(completePlayer.getId()).anyMatch(cardTargetHideEvent -> cardTargetHideEvent.hide(card))).collect(Collectors.toList());
+        return collect;
     }
 
     /**
@@ -320,6 +361,7 @@ public class RoundManage {
      * @param lossLocation 失去位置
      */
     public void loseCard(int operatePlayer, int lossCardPlayer, Card lossCard, int lossLocation) {
+        //todo 人 牌失去事件
         switch (lossLocation) {
             case HAND_CARD:
                 break;
@@ -347,11 +389,12 @@ public class RoundManage {
      * 减血事件，当减血时，请求此事件。（此方法无实际效果，仅调用使用）
      * @param operatePlayer 操作玩家
      * @param subBloodPlayer 减血玩家
-     * @param subBloodCard 减血牌
+     * @param subBloodCard 减血牌(可使用，可能为空)
      * @param subBloodNum 减血数
      */
-    public void subBlood(int operatePlayer, int subBloodPlayer, Card subBloodCard, int subBloodNum) {
-
+    public void subBlood(int operatePlayer, int subBloodPlayer, TPool<Card> subBloodCard, int subBloodNum) {
+        //通知受伤注册器
+        beSubBloodRegistrar.handlePlayer(subBloodPlayer, beSubBloodEvent -> beSubBloodEvent.beSubBlood(operatePlayer, subBloodCard));
     }
 
     /**

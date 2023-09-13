@@ -29,7 +29,9 @@ public class GuanShiFu extends WeaponCard {
         if (card.getPool() != null) ContextManage.shaCardDesktop().getProcessCards().add(card.getPool());
         if (b) {
             player1.setBlood(player1.getBlood() - 1);
-            ContextManage.roundManage().subBlood(mainplayer, player, ContextManage.shaCardDesktop().getCard(), 1);
+            TPool<Card> cardTPool = new TPool<>(ContextManage.shaCardDesktop().getCard());
+            ContextManage.roundManage().subBlood(mainplayer, player, cardTPool, 1);
+            if (cardTPool.isEmpty())ContextManage.shaCardDesktop().useCard();
         } else {
             //贯石斧特殊效果
             if (card.getPool() != null) {//被闪闪避
@@ -86,7 +88,9 @@ public class GuanShiFu extends WeaponCard {
                     });
                     if (dis[0]) {
                         player1.setBlood(player1.getBlood() - 1);
-                        ContextManage.roundManage().subBlood(mainplayer, player, ContextManage.shaCardDesktop().getCard(), 1);
+                        TPool<Card> cardTPool = new TPool<>(ContextManage.shaCardDesktop().getCard());
+                        ContextManage.roundManage().subBlood(mainplayer, player, cardTPool, 1);
+                        if (cardTPool.isEmpty())ContextManage.shaCardDesktop().useCard();
                     }
                 }
             }

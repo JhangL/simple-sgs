@@ -23,7 +23,9 @@ public class QingLongYanYueDao extends WeaponCard{
         if (card.getPool()!=null) ContextManage.shaCardDesktop().getProcessCards().add(card.getPool());
         if (b){
             player1.setBlood(player1.getBlood()-1);
-            ContextManage.roundManage().subBlood(mainplayer,player,ContextManage.shaCardDesktop().getCard(),1);
+            TPool<Card> cardTPool = new TPool<>(ContextManage.shaCardDesktop().getCard());
+            ContextManage.roundManage().subBlood(mainplayer, player,cardTPool, 1);
+            if (cardTPool.isEmpty())ContextManage.shaCardDesktop().useCard();
         }else {
             //青龙偃月刀特殊效果
             while (card.getPool()!=null){//被闪闪避
@@ -42,7 +44,9 @@ public class QingLongYanYueDao extends WeaponCard{
                         if (card.getPool()!=null) ContextManage.shaCardDesktop().getProcessCards().add(card.getPool());
                         if(b1){
                             player1.setBlood(player1.getBlood()-1);
-                            ContextManage.roundManage().subBlood(mainplayer,player,ContextManage.shaCardDesktop().getCard(),1);
+                            TPool<Card> cardTPool = new TPool<>(ContextManage.shaCardDesktop().getCard());
+                            ContextManage.roundManage().subBlood(mainplayer, player,cardTPool, 1);
+                            if (cardTPool.isEmpty())ContextManage.shaCardDesktop().useCard();
                         }
                     }
                 }

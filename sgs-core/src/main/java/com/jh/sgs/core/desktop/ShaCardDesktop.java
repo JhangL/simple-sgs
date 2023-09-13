@@ -40,15 +40,8 @@ public class ShaCardDesktop extends CardDesktop {
     }
 
     @Override
-    protected void end() {
-        ContextManage.messageReceipt().global(getPlayer() + "完成出牌" + getCard());
-        if (!isCardUsed()) ContextManage.cardManage().recoveryCard(getCard());
-        ContextManage.cardManage().recoveryCard(getProcessCards());
-    }
-    @Override
     protected void error() {
-        log.debug("{} {}执行出错，退牌", getPlayer(), getCard());
-        Util.getPlayer(getPlayer()).getHandCard().add(getCard());
+        super.error();
         RoundProcess roundProcess = ContextManage.roundProcess(getPlayer());
         roundProcess.setUseSha(roundProcess.getUseSha()-1);
     }

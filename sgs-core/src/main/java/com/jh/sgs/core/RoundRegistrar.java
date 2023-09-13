@@ -14,30 +14,36 @@ public class RoundRegistrar<T extends RoundEvent> extends HashMap<Integer, List<
     public RoundRegistrar() {
         super();
         for (int i = 0; i < ContextManage.gameEngine().playerNum; i++) {
-            put(i,new ArrayList<>());
+            put(i, new ArrayList<>());
         }
-        put(-1,new ArrayList<>());
+        put(-1, new ArrayList<>());
     }
 
-    public void addPlayerEvent(int player,T roundEvent){
+    public void addPlayerEvent(int player, T roundEvent) {
         get(player).add(roundEvent);
     }
-    public void subPlayerEvent(int player,T roundEvent){
+
+    public void subPlayerEvent(int player, T roundEvent) {
         get(player).remove(roundEvent);
     }
-    public void addGlobalEvent( T roundEvent){
+
+    public void addGlobalEvent(T roundEvent) {
         get(-1).add(roundEvent);
     }
-    public void subGlobalEvent(T roundEvent){
+
+    public void subGlobalEvent(T roundEvent) {
         get(-1).remove(roundEvent);
     }
-    public void handlePlayer(int player, Consumer<T> action){
-        get(player).forEach(action);
+
+    public void handlePlayer(int player, Consumer<T> action) {
+        handlePlayer(player).forEach(action);
     }
-    public Stream<T> handlePlayer(int player){
-        return get(player).stream();
+
+    public Stream<T> handlePlayer(int player) {
+        List<T> ts = get(player);
+        ts.addAll(get(-1));
+        return ts.stream();
     }
-    public void handleGlobal(Consumer<T> action){
-        get(-1).forEach(action);
-    }
+
+
 }

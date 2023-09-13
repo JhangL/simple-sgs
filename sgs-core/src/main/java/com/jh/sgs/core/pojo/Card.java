@@ -5,9 +5,12 @@ import com.jh.sgs.core.interfaces.ShowStatus;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.util.Map;
+
 @EqualsAndHashCode(callSuper = true)
-@Data()
-public class Card extends ID implements Cloneable, ShowStatus {
+@Data
+public class Card extends SupportFalse implements Cloneable, ShowStatus {
+
     private int nameId;
     private String num;
     private int suit;
@@ -33,6 +36,24 @@ public class Card extends ID implements Cloneable, ShowStatus {
         if (suit == -1) {
             return "隐藏";
         }
-        return  SuitEnum.getByIndex(suit).getName() + num+name;
+        return SuitEnum.getByIndex(suit).getName() + num + name;
+    }
+
+    @Override
+    void falseSteps(Map<String, Object> originalData) {
+        originalData.put("nameId", nameId);
+        originalData.put("num", num);
+        originalData.put("suit", suit);
+        originalData.put("name", name);
+        originalData.put("remark", remark);
+    }
+
+    @Override
+    void trueSteps(Map<String, Object> originalData) {
+        nameId = (int) originalData.get("nameId");
+        num = (String) originalData.get("num");
+        suit = (int) originalData.get("suit");
+        name = (String) originalData.get("name");
+        remark = (String) originalData.get("remark");
     }
 }
