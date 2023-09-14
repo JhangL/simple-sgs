@@ -1,6 +1,6 @@
 package com.jh.sgs.core.desktop;
 
-import com.jh.sgs.core.ContextManage;
+import com.jh.sgs.core.CardManage;
 import com.jh.sgs.core.card.BaseCard;
 import com.jh.sgs.core.card.Executable;
 import com.jh.sgs.core.exception.DesktopException;
@@ -20,7 +20,7 @@ public class ExecuteCardDesktop extends CardDesktop {
 
     @Override
     protected void initCheck() {
-        BaseCard baseCard = ContextManage.cardManage().getBaseCard(getCard());
+        BaseCard baseCard = CardManage.getBaseCard(getCard());
         if (!(baseCard instanceof Executable)) throw new SgsApiException("该牌不可执行");
         executable = (Executable) baseCard;
     }
@@ -32,7 +32,7 @@ public class ExecuteCardDesktop extends CardDesktop {
     }
 
     public static void initCheck(Card card) {
-        BaseCard baseCard = ContextManage.cardManage().getBaseCard(card);
+        BaseCard baseCard = CardManage.getBaseCard(card);
         if (!(baseCard instanceof Executable)) throw new SgsApiException("该牌不可执行");
     }
 

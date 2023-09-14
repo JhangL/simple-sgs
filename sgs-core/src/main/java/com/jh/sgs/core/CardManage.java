@@ -55,7 +55,7 @@ public class CardManage implements ShowStatus {
         usedCards.add(card);
     }
 
-    public BaseCard getBaseCard(Card card) {
+    public static BaseCard getBaseCard(Card card) {
         return CardEnum.getById(card.getNameId()).getBaseCard();
     }
 

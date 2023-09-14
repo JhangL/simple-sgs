@@ -1,5 +1,6 @@
 package com.jh.sgs.core;
 
+import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.ID;
@@ -75,7 +76,7 @@ public class Util {
     }
 
     public static CompletePlayer getDesktopMainPlayer() {
-        return getPlayer(ContextManage.executeCardDesktop().getPlayer());
+        return getPlayer(CardDesktop.playerInContext());
     }
 
     public static CompletePlayer getPlayer(int index) {

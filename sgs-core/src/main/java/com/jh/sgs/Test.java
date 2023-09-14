@@ -1,9 +1,17 @@
 package com.jh.sgs;
 
-import java.text.MessageFormat;
+import com.jh.sgs.core.pojo.Card;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class Test {
     public static void main(String[] args) {
-        String format = MessageFormat.format("{0}{1}", 1, 2);
+        Set<Card> cards = new HashSet<>();
+        Card card = new Card();
+        cards.add(card);
+        card.setId(2);
+        cards.remove(card);
+        System.out.println(cards);
     }
 }

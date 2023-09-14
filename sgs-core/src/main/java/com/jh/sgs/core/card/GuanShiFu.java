@@ -4,6 +4,7 @@ import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.InteractiveEvent;
 import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.Util;
+import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.interactive.Interactiveable;
@@ -16,21 +17,20 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Log4j2
 public class GuanShiFu extends WeaponCard {
     @Override
     public void shaExecute(int player) {
         CompletePlayer player1 = Util.getPlayer(player);
-        int mainplayer = ContextManage.shaCardDesktop().getPlayer();
+        int mainplayer = CardDesktop.playerInContext();
         CompletePlayer maincompletePlayer = Util.getPlayer(mainplayer);
         TPool<Card> card = new TPool<>();
-        boolean b = ContextManage.roundManage().playSha(mainplayer, player, ContextManage.shaCardDesktop().getCard(), card);
+        boolean b = ContextManage.roundManage().playSha(mainplayer, player, CardDesktop.cardInContext(), card);
         if (card.getPool() != null) ContextManage.shaCardDesktop().getProcessCards().add(card.getPool());
         if (b) {
             player1.setBlood(player1.getBlood() - 1);
-            TPool<Card> cardTPool = new TPool<>(ContextManage.shaCardDesktop().getCard());
+            TPool<Card> cardTPool = new TPool<>(CardDesktop.cardInContext());
             ContextManage.roundManage().subBlood(mainplayer, player, cardTPool, 1);
             if (cardTPool.isEmpty())ContextManage.shaCardDesktop().useCard();
         } else {
@@ -48,9 +48,9 @@ public class GuanShiFu extends WeaponCard {
                         @Override
                         public void disCard(int[] ids) {
                             if (ids.length != 2) throw new SgsApiException("弃牌数与要求数不符");
-                            Set<Card> handCard = maincompletePlayer.getHandCard();
+                            List<Card> handCard = maincompletePlayer.getHandCard();
                             ArrayList<Card> cards = Util.collectionCollectAndCheckIds(handCard, ids);
-                            cards.forEach(handCard::remove);
+                            handCard.removeAll(cards);
                             log.debug(mainplayer + "弃牌:" + cards);
                             dis.addAll(cards);
                             a = true;
@@ -89,7 +89,7 @@ public class GuanShiFu extends WeaponCard {
                     ContextManage.shaCardDesktop().getProcessCards().addAll(dis);
                     if (dis.size()==2) {
                         player1.setBlood(player1.getBlood() - 1);
-                        TPool<Card> cardTPool = new TPool<>(ContextManage.shaCardDesktop().getCard());
+                        TPool<Card> cardTPool = new TPool<>(CardDesktop.cardInContext());
                         ContextManage.roundManage().subBlood(mainplayer, player, cardTPool, 1);
                         if (cardTPool.isEmpty())ContextManage.shaCardDesktop().useCard();
                     }

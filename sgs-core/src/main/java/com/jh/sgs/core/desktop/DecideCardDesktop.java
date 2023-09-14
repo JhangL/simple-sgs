@@ -1,5 +1,6 @@
 package com.jh.sgs.core.desktop;
 
+import com.jh.sgs.core.CardManage;
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.card.BaseCard;
 import com.jh.sgs.core.card.Decidable;
@@ -20,13 +21,13 @@ public class DecideCardDesktop extends CardDesktop {
 
     @Override
     protected void initCheck() {
-        BaseCard baseCard = ContextManage.cardManage().getBaseCard(getCard());
+        BaseCard baseCard = CardManage.getBaseCard(getCard());
         if (!(baseCard instanceof Decidable)) throw new SgsApiException("该牌不需要判定");
         decidable = (Decidable) baseCard;
     }
 
     public static void initCheck(Card card) {
-        BaseCard baseCard = ContextManage.cardManage().getBaseCard(card);
+        BaseCard baseCard = CardManage.getBaseCard(card);
         if (!(baseCard instanceof Decidable)) throw new SgsApiException("该牌不需要判定");
     }
 

@@ -3,6 +3,7 @@ package com.jh.sgs.core.card;
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.Util;
+import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.interactive.impl.TOFImpl;
@@ -17,14 +18,14 @@ public class QingLongYanYueDao extends WeaponCard{
     @Override
     public void shaExecute(int player) {
         CompletePlayer player1 = Util.getPlayer(player);
-        int mainplayer = ContextManage.shaCardDesktop().getPlayer();
+        int mainplayer = CardDesktop.playerInContext();
         CompletePlayer maincompletePlayer = Util.getPlayer(mainplayer);
         TPool<Card> card = new TPool<>();
-        boolean b = ContextManage.roundManage().playSha(mainplayer, player, ContextManage.shaCardDesktop().getCard(), card);
+        boolean b = ContextManage.roundManage().playSha(mainplayer, player, CardDesktop.cardInContext(), card);
         if (card.getPool()!=null) ContextManage.shaCardDesktop().getProcessCards().add(card.getPool());
         if (b){
             player1.setBlood(player1.getBlood()-1);
-            TPool<Card> cardTPool = new TPool<>(ContextManage.shaCardDesktop().getCard());
+            TPool<Card> cardTPool = new TPool<>(CardDesktop.cardInContext());
             ContextManage.roundManage().subBlood(mainplayer, player,cardTPool, 1);
             if (cardTPool.isEmpty())ContextManage.shaCardDesktop().useCard();
         }else {
@@ -45,7 +46,7 @@ public class QingLongYanYueDao extends WeaponCard{
                         if (card.getPool()!=null) ContextManage.shaCardDesktop().getProcessCards().add(card.getPool());
                         if(b1){
                             player1.setBlood(player1.getBlood()-1);
-                            TPool<Card> cardTPool = new TPool<>(ContextManage.shaCardDesktop().getCard());
+                            TPool<Card> cardTPool = new TPool<>(CardDesktop.cardInContext());
                             ContextManage.roundManage().subBlood(mainplayer, player,cardTPool, 1);
                             if (cardTPool.isEmpty())ContextManage.shaCardDesktop().useCard();
                         }

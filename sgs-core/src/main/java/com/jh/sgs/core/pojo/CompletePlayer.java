@@ -5,9 +5,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -25,7 +24,7 @@ public class CompletePlayer extends ID{
 
     private List<Card> decideCard=new ArrayList<>();
 
-    private Set<Card> handCard=new HashSet<>();
+    private List<Card> handCard=new LinkedList<>();
 
     public CompletePlayer(OriginalPlayer originalPlayer) {
         this.originalPlayer = originalPlayer;

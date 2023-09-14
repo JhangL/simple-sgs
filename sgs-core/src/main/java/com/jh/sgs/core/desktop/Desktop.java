@@ -1,5 +1,6 @@
 package com.jh.sgs.core.desktop;
 
+import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.exception.DesktopErrorException;
 import com.jh.sgs.core.exception.DesktopException;
 import com.jh.sgs.core.exception.DesktopRefuseException;
@@ -71,6 +72,8 @@ public abstract class Desktop {
             }
         }
     }
-
+    public static int playerInContext(){
+        return ContextManage.desktopStack().peek().getPlayer();
+    }
 
 }

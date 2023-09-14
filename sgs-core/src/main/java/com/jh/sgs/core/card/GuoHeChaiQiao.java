@@ -1,6 +1,7 @@
 package com.jh.sgs.core.card;
 
 import com.jh.sgs.core.*;
+import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.DesktopErrorException;
 import com.jh.sgs.core.interactive.Interactiveable;
@@ -21,7 +22,7 @@ public class GuoHeChaiQiao extends OneSilkbagCard {
     @Override
     int getPlayer() throws DesktopErrorException {
         //获取目标
-        List<CompletePlayer> target = ContextManage.roundManage().findTarget(ContextManage.executeCardDesktop().getPlayer(), ContextManage.executeCardDesktop().getCard());
+        List<CompletePlayer> target = ContextManage.roundManage().findTarget(CardDesktop.playerInContext(), CardDesktop.cardInContext());
         //过滤没手牌的人
         List<CompletePlayer> collect = target.stream().filter(completePlayer -> {
             if (!completePlayer.getHandCard().isEmpty()) return true;
@@ -29,14 +30,14 @@ public class GuoHeChaiQiao extends OneSilkbagCard {
             return Arrays.stream(completePlayer.getEquipCard()).anyMatch(Objects::nonNull);
         }).collect(Collectors.toList());
         TPool<Integer> targetPlayer = new TPool<>();
-        InteractiveMachine.addEventInContext(ContextManage.executeCardDesktop().getPlayer(), "请选择目标", new XZMBImpl(targetPlayer, collect)).lock();
+        InteractiveMachine.addEventInContext(CardDesktop.playerInContext(), "请选择目标", new XZMBImpl(targetPlayer, collect)).lock();
         if (targetPlayer.getPool() == null) throw new DesktopErrorException("未选择目标");
         return targetPlayer.getPool();
     }
 
     @Override
     void effect(int player) {
-        int mainPlayer = ContextManage.executeCardDesktop().getPlayer();
+        int mainPlayer = CardDesktop.playerInContext();
         log.debug("过河拆桥：执行玩家：{}，被执行玩家：{}", mainPlayer, player);
         CompletePlayer player1 = Util.getPlayer(player);
         final Card[] card = new Card[1];//选择卡牌

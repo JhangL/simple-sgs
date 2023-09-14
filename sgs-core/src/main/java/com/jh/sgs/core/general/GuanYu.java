@@ -56,13 +56,18 @@ public class GuanYu extends BaseGeneral implements AbilityEvent, Ability.PlayCar
                 default:
                     throw new SgsApiException("选择的牌不是红色");
             }
-            action.accept(falseCard1);
+             try {
+                action.accept(falseCard1);
+            }catch (SgsApiException e){
+                card.backTrue();
+                throw e;
+            }
             falseCard.setPool(falseCard1);
         }, true)).lock();
         if (!falseCard.isEmpty()) {
             Map<String, String> cardParameter = ContextManage.cardManage().getCardParameter(falseCard.getPool().getNameId());
             falseCard.getPool().setName(cardParameter.get("name"));
-            falseCard.getPool().setName(cardParameter.get("remark"));
+            falseCard.getPool().setRemark(cardParameter.get("remark"));
         }
         return falseCard.getPool();
     }

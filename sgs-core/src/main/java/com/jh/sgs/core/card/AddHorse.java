@@ -1,6 +1,7 @@
 package com.jh.sgs.core.card;
 
 import com.jh.sgs.core.ContextManage;
+import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.enums.EquipCardEnum;
 import com.jh.sgs.core.roundevent.DefenseEvent;
 
@@ -9,7 +10,7 @@ public class AddHorse extends EquipCard implements DefenseEvent ,Loseable{
     @Override
     public void execute() {
         super.execute();
-        ContextManage.roundManage().addEvent(ContextManage.executeCardDesktop().getPlayer(), this);
+        ContextManage.roundManage().addEvent(CardDesktop.playerInContext(), this);
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.jh.sgs.core.card;
 
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.Util;
+import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pool.TPool;
@@ -14,13 +15,13 @@ public class Sha extends BaseCard implements Shaable{
     @Override
     public void shaExecute(int player) {
         TPool<Card> card = new TPool<>();
-        boolean b = ContextManage.roundManage().playSha(ContextManage.shaCardDesktop().getPlayer(), player, ContextManage.shaCardDesktop().getCard(), card);
+        boolean b = ContextManage.roundManage().playSha(CardDesktop.playerInContext(), player, CardDesktop.cardInContext(), card);
         if (card.getPool()!=null) ContextManage.shaCardDesktop().getProcessCards().add(card.getPool());
         if (b){
             CompletePlayer player1 = Util.getPlayer(player);
             player1.setBlood(player1.getBlood()-1);
-            TPool<Card> cardTPool = new TPool<>(ContextManage.shaCardDesktop().getCard());
-            ContextManage.roundManage().subBlood(ContextManage.shaCardDesktop().getPlayer(),player,cardTPool,1);
+            TPool<Card> cardTPool = new TPool<>(CardDesktop.cardInContext());
+            ContextManage.roundManage().subBlood(CardDesktop.playerInContext(),player,cardTPool,1);
             if (cardTPool.isEmpty())ContextManage.shaCardDesktop().useCard();
 
         }

@@ -2,6 +2,7 @@ package com.jh.sgs.core.card;
 
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.Util;
+import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import lombok.extern.log4j.Log4j2;
 
@@ -15,7 +16,7 @@ public class TaoYuanJieYi extends MoreSilkbagCard {
     List<CompletePlayer> getPlayer() {
         List<CompletePlayer> completePlayers = new ArrayList<>();
         completePlayers.add(Util.getDesktopMainPlayer());
-        completePlayers.addAll(ContextManage.roundManage().findTarget(ContextManage.executeCardDesktop().getPlayer(), ContextManage.executeCardDesktop().getCard()));
+        completePlayers.addAll(ContextManage.roundManage().findTarget(CardDesktop.playerInContext(), CardDesktop.cardInContext()));
         //过滤满血
         return completePlayers.stream().filter(completePlayer -> completePlayer.getBlood() != completePlayer.getMaxBlood()).collect(Collectors.toList());
 
@@ -23,10 +24,10 @@ public class TaoYuanJieYi extends MoreSilkbagCard {
 
     @Override
     void effect(CompletePlayer completePlayer) {
-        int mainPlayer = ContextManage.executeCardDesktop().getPlayer();
+        int mainPlayer = CardDesktop.playerInContext();
         log.debug("{}结义：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, completePlayer);
         completePlayer.setBlood(completePlayer.getBlood() + 1);
-        ContextManage.roundManage().addBlood(mainPlayer, completePlayer.getId(), ContextManage.executeCardDesktop().getCard());
+        ContextManage.roundManage().addBlood(mainPlayer, completePlayer.getId(), CardDesktop.cardInContext());
         log.debug("{}完成：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, completePlayer);
     }
 

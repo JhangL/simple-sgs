@@ -2,6 +2,7 @@ package com.jh.sgs.core.card;
 
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.Util;
+import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.exception.DesktopException;
 import com.jh.sgs.core.exception.DesktopRefuseException;
 import com.jh.sgs.core.interfaces.MessageReceipt;
@@ -42,17 +43,17 @@ public abstract class DelaySilkbagCard extends OneSilkbagCard implements Decidab
     @Override
     public void effect() throws DesktopException {
         int player = getPlayer();
-        MessageReceipt.globalInContext(ContextManage.executeCardDesktop().getPlayer() + "将对" + player + "使用" + ContextManage.executeCardDesktop().getCard());
+        MessageReceipt.globalInContext(CardDesktop.playerInContext() + "将对" + player + "使用" + CardDesktop.cardInContext());
         effect(player);
-        MessageReceipt.globalInContext(ContextManage.executeCardDesktop().getPlayer() + "完成对" + player + "使用" + ContextManage.executeCardDesktop().getCard());
+        MessageReceipt.globalInContext(CardDesktop.playerInContext() + "完成对" + player + "使用" + CardDesktop.cardInContext());
     }
 
     @Override
     void effect(int player) {
-        int mainPlayer = ContextManage.executeCardDesktop().getPlayer();
+        int mainPlayer = CardDesktop.playerInContext();
         log.debug("{}：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, player);
         CompletePlayer player1 = Util.getPlayer(player);
-        player1.getDecideCard().add(0, ContextManage.executeCardDesktop().getCard());
+        player1.getDecideCard().add(0, CardDesktop.cardInContext());
         ContextManage.executeCardDesktop().useCard();
         ContextManage.roundManage().statusRefresh(mainPlayer, player);
         log.debug("{}完成：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, player);

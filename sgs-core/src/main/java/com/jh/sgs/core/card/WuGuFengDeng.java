@@ -4,6 +4,7 @@ import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.InteractiveEvent;
 import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.Util;
+import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.interfaces.MessageReceipt;
@@ -39,13 +40,13 @@ public class WuGuFengDeng extends MoreSilkbagCard {
     List<CompletePlayer> getPlayer() {
         List<CompletePlayer> completePlayers = new ArrayList<>();
         completePlayers.add(Util.getDesktopMainPlayer());
-        completePlayers.addAll(ContextManage.roundManage().findTarget(ContextManage.executeCardDesktop().getPlayer(), ContextManage.executeCardDesktop().getCard()));
+        completePlayers.addAll(ContextManage.roundManage().findTarget(CardDesktop.playerInContext(), CardDesktop.cardInContext()));
         return completePlayers;
     }
 
     @Override
     void effect(CompletePlayer completePlayer) {
-        int mainPlayer = ContextManage.executeCardDesktop().getPlayer();
+        int mainPlayer = CardDesktop.playerInContext();
         log.debug("{}：执行玩家：{}，被执行玩家：{}", getName(), mainPlayer, completePlayer);
         final Card[] card = new Card[1];
         InteractiveMachine.addEventInContext(completePlayer.getId(), "请选择牌", new Interactiveable() {

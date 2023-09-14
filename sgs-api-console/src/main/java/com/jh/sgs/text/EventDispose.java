@@ -13,7 +13,6 @@ import com.jh.sgs.core.pojo.General;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 public class EventDispose {
     private final InteractiveEvent interactiveEvent;
@@ -41,16 +40,17 @@ public class EventDispose {
             int blood = player1.getBlood();
             int maxBlood = player1.getMaxBlood();
             Card[] equipCard = player1.getEquipCard();
-            Set<Card> handCard = player1.getHandCard();
+            List<Card> handCard = player1.getHandCard();
             List<Card> decideCard = player1.getDecideCard();
             if (general != null) {
-                println(general.getName() + "  " + general.getCountry());
+                println(33,2,general.getName() + "  " + general.getCountry());
             }
-            println("体力：" + blood + "/" + maxBlood + "    身份：" + identity);
-            println("手牌：" + handCard.toString());
-            println("装备：" + Arrays.toString(equipCard) + "  判定：" + decideCard.toString());
+            println(33,2,"体力：" + blood + "/" + maxBlood + "    身份：" + identity);
+            println(33,2,"手牌：" + handCard.toString());
+            println(33,2,"装备：" + Arrays.toString(equipCard) + "  判定：" + decideCard.toString());
         }
-        println(message);
+        println(31,0,"-------------------->");
+        println(34,1,message);
         while (true) {
             if (analyse(interactiveEvent.interactive())) {
                 try {
@@ -68,6 +68,7 @@ public class EventDispose {
                 }
             }
         }
+        println(31,0,"<--------------------");
     }
 
     private boolean analyse(Interactive interactive) {
@@ -238,6 +239,9 @@ public class EventDispose {
 
 
     private void println(String message) {
-        System.out.println("player" + player + ":" + message);
+        System.out.println("player" + player + ":  " + message);
+    }
+    private void println(int fColor, int fontType,String message) {
+        Util.printlnColor(fColor,fontType,"player" + player + ":  " + message);
     }
 }

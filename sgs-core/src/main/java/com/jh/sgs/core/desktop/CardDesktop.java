@@ -47,4 +47,8 @@ public abstract class CardDesktop extends Desktop{
         if (card.isFalsed())card.backTrue();
         Util.getPlayer(getPlayer()).getHandCard().add(getCard());
     }
+
+    public static Card cardInContext(){
+        return ((CardDesktop) ContextManage.desktopStack().peek()).getCard();
+    }
 }

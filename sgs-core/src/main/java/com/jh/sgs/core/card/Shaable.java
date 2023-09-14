@@ -2,6 +2,7 @@ package com.jh.sgs.core.card;
 
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.InteractiveMachine;
+import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.exception.DesktopErrorException;
 import com.jh.sgs.core.exception.DesktopException;
 import com.jh.sgs.core.interactive.impl.XZMBImpl;
@@ -16,9 +17,9 @@ public interface Shaable {
     };
 
     default int shaTarget() throws DesktopErrorException{
-        List<CompletePlayer> targets = ContextManage.roundManage().findTarget(ContextManage.shaCardDesktop().getPlayer(), ContextManage.shaCardDesktop().getCard(), shaDistance());
+        List<CompletePlayer> targets = ContextManage.roundManage().findTarget(CardDesktop.playerInContext(), CardDesktop.cardInContext(), shaDistance());
         TPool<Integer> targetPlayer=new TPool<>();
-        InteractiveMachine.addEventInContext(ContextManage.shaCardDesktop().getPlayer(),"请选择目标",new XZMBImpl(targetPlayer,targets)).lock();
+        InteractiveMachine.addEventInContext(CardDesktop.playerInContext(),"请选择目标",new XZMBImpl(targetPlayer,targets)).lock();
         if (targetPlayer.getPool() == null) throw new DesktopErrorException("未选择目标");
         return targetPlayer.getPool();
     };

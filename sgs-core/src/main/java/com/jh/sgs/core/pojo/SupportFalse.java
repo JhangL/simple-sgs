@@ -19,12 +19,15 @@ public abstract class SupportFalse extends ID {
     public void changeFalse() {
         if (!falsed) {
             falseSteps(originalData);
+            falsed=true;
         }
     }
 
     public void backTrue() {
         if (falsed) {
             trueSteps(originalData);
+            originalData.clear();
+            falsed=false;
         }
     }
 }

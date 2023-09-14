@@ -20,7 +20,6 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import static com.jh.sgs.core.ContextManage.*;
 
@@ -165,9 +164,9 @@ public class RoundProcess {
                 @Override
                 public void disCard(int[] ids) {
                     if (ids.length != i) throw new SgsApiException("弃牌数与要求数不符");
-                    Set<Card> handCard = completePlayer.getHandCard();
+                    List<Card> handCard = completePlayer.getHandCard();
                     ArrayList<Card> cards = Util.collectionCollectAndCheckIds(handCard, ids);
-                    cards.forEach(handCard::remove);
+                    handCard.removeAll(cards);
                     dis.addAll(cards);
                     log.debug(playerIndex + "弃牌:" + cards);
                     c = true;

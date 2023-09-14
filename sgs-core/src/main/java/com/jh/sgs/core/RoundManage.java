@@ -24,7 +24,6 @@ import lombok.extern.log4j.Log4j2;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -217,7 +216,7 @@ public class RoundManage {
 
                 @Override
                 public void playCard(int id) {
-                    Set<Card> handCard = player1.getHandCard();
+                    List<Card> handCard = player1.getHandCard();
                     Card card = Util.collectionCollectAndCheckId(handCard, id);
                     //检查
                     action.accept(card);
@@ -291,7 +290,7 @@ public class RoundManage {
         ArrayList<CompletePlayer> completePlayers = new ArrayList<>();
         //场上是否有无懈可击
         ContextManage.desk().foreachOnDesk(completePlayer -> {
-            Set<Card> handCard = completePlayer.getHandCard();
+            List<Card> handCard = completePlayer.getHandCard();
             if (handCard.stream().anyMatch(card -> card.getNameId() == CardEnum.WU_XIE_KE_JI.getId()))
                 completePlayers.add(completePlayer);
 
@@ -434,5 +433,7 @@ public class RoundManage {
     public void statusRefresh(int operatePlayer, int refreshPlayer) {
         Util.getPlayer(refreshPlayer).getCompleteGeneral().getBaseGeneral().statusRefresh();
     }
+
+
 
 }

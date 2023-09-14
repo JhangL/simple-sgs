@@ -14,4 +14,5 @@ public class Util {
     public static void printColor(int fColor, int fontType, String s){
         System.out.printf("\033[%d;%dm%s\033[0m",fontType,fColor,s);
     }
+
 }

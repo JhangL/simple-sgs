@@ -2,6 +2,7 @@ package com.jh.sgs.core.card;
 
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.Util;
+import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.enums.SuitEnum;
 import com.jh.sgs.core.exception.DesktopErrorException;
 import com.jh.sgs.core.pojo.Card;
@@ -51,7 +52,7 @@ public class ShanDian extends DelaySilkbagCard {
 
     @Override
     int getPlayer() throws DesktopErrorException {
-        return ContextManage.executeCardDesktop().getPlayer();
+        return CardDesktop.playerInContext();
     }
 
     @Override

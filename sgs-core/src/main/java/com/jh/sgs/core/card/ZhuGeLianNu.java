@@ -1,6 +1,7 @@
 package com.jh.sgs.core.card;
 
 import com.jh.sgs.core.ContextManage;
+import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.exception.DesktopException;
 import lombok.extern.log4j.Log4j2;
@@ -20,7 +21,7 @@ public class ZhuGeLianNu extends WeaponCard implements Loseable{
     public void execute() {
         super.execute();
         log.debug("{} 特殊流程",getName());
-        ContextManage.roundProcess(ContextManage.executeCardDesktop().getPlayer()).setLimitSha(100);
+        ContextManage.roundProcess(CardDesktop.playerInContext()).setLimitSha(100);
     }
 
     @Override
