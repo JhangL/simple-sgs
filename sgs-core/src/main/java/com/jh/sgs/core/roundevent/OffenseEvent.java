@@ -1,5 +1,7 @@
 package com.jh.sgs.core.roundevent;
 
-public interface OffenseEvent extends RoundEvent{
+import com.jh.sgs.core.interfaces.RoundEvent;
+
+public interface OffenseEvent extends RoundEvent {
     int offense();
 }

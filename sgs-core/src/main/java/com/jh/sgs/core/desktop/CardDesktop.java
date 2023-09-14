@@ -3,6 +3,7 @@ package com.jh.sgs.core.desktop;
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.exception.SgsRuntimeException;
+import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.pojo.Card;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -35,7 +36,7 @@ public abstract class CardDesktop extends Desktop{
 
     @Override
     protected void end() {
-        ContextManage.messageReceipt().global(getPlayer() + "完成操作" + getCard());
+        MessageReceipt.globalInContext(getPlayer() + "完成操作" + getCard());
         if (!isCardUsed()) ContextManage.cardManage().recoveryCard(getCard());
         if (card.isFalsed())card.backTrue();
         ContextManage.cardManage().recoveryCard(getProcessCards());

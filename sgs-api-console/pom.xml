@@ -57,7 +57,7 @@
                     <manifest>
                         <addClasspath>true</addClasspath>
                         <classpathPrefix>lib/</classpathPrefix>
-                        <mainClass>com.jh.sgs.Main</mainClass>
+                        <mainClass>com.jh.sgs.StartGame</mainClass>
                     </manifest>
                 </archive>
             </configuration>

@@ -1,6 +1,6 @@
 package com.jh.sgs.core.general;
 
-import com.jh.sgs.core.ContextManage;
+import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.interactive.impl.JNXZPImpl;
 import com.jh.sgs.core.interactive.impl.TOFImpl;
 import com.jh.sgs.core.pojo.Card;
@@ -24,11 +24,11 @@ public class SiMaYi extends BaseGeneral {
         @Override
         public Card decideInvade() {
             BooleanPool tof = new BooleanPool();
-            ContextManage.interactiveMachine().addEvent(getPlayerIndex(), "是否使用鬼才", new TOFImpl(tof)).lock();
+            InteractiveMachine.addEventInContext(getPlayerIndex(), "是否使用鬼才", new TOFImpl(tof)).lock();
 
             if (tof.isPool()) {
                 TPool<Card> cardTPool = new TPool<>();
-                ContextManage.interactiveMachine().addEvent(getPlayerIndex(), "(鬼才)请出牌", new JNXZPImpl(getCompletePlayer(), cardTPool::setPool, false)).lock();
+                InteractiveMachine.addEventInContext(getPlayerIndex(), "(鬼才)请出牌", new JNXZPImpl(getCompletePlayer(), cardTPool::setPool, false)).lock();
                 if (!cardTPool.isEmpty()) {
                     return cardTPool.getPool();
                 }
@@ -47,7 +47,7 @@ public class SiMaYi extends BaseGeneral {
         @Override
         public void beSubBlood(int operatePlayer, TPool<Card> operateCard) {
             BooleanPool tof = new BooleanPool();
-            ContextManage.interactiveMachine().addEvent(getPlayerIndex(), "是否使用反馈", new TOFImpl(tof)).lock();
+            InteractiveMachine.addEventInContext(getPlayerIndex(), "是否使用反馈", new TOFImpl(tof)).lock();
             if (tof.isPool()){
                 //todo 反馈
             }

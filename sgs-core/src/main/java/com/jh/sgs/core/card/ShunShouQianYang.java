@@ -1,9 +1,6 @@
 package com.jh.sgs.core.card;
 
-import com.jh.sgs.core.ContextManage;
-import com.jh.sgs.core.InteractiveEvent;
-import com.jh.sgs.core.RoundManage;
-import com.jh.sgs.core.Util;
+import com.jh.sgs.core.*;
 import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.DesktopErrorException;
 import com.jh.sgs.core.interactive.Interactiveable;
@@ -36,7 +33,7 @@ public class ShunShouQianYang extends OneSilkbagCard {
             return Arrays.stream(completePlayer.getEquipCard()).anyMatch(Objects::nonNull);
         }).collect(Collectors.toList());
         TPool<Integer> targetPlayer=new TPool<>();
-        ContextManage.interactiveMachine().addEvent(ContextManage.executeCardDesktop().getPlayer(),"请选择目标",new XZMBImpl(targetPlayer,collect)).lock();
+        InteractiveMachine.addEventInContext(ContextManage.executeCardDesktop().getPlayer(),"请选择目标",new XZMBImpl(targetPlayer,collect)).lock();
         if (targetPlayer.getPool() == null) throw new DesktopErrorException("未选择目标");
         return targetPlayer.getPool();
     }
@@ -48,7 +45,7 @@ public class ShunShouQianYang extends OneSilkbagCard {
         CompletePlayer player1 = Util.getPlayer(player);
         final Card[] card = new Card[1];//选择卡牌
         final int[] lossLocation = new int[1];//选择位置
-        ContextManage.interactiveMachine().addEvent(mainPlayer, "请选择卡牌", new Interactiveable() {
+        InteractiveMachine.addEventInContext(mainPlayer, "请选择卡牌", new Interactiveable() {
 
             boolean a;
 
@@ -124,8 +121,7 @@ public class ShunShouQianYang extends OneSilkbagCard {
                 log.debug("完成卡牌选择");
                 return a? InteractiveEvent.CompleteEnum.COMPLETE: InteractiveEvent.CompleteEnum.NOEXECUTE;
             }
-        });
-        ContextManage.interactiveMachine().lock();
+        }).lock();
         //执行失牌，获得牌操作
         if (lossLocation[0] == RoundManage.HAND_CARD) player1.getHandCard().remove(card[0]);
         else if (lossLocation[0] == RoundManage.EQUIP_CARD) Util.ArrayRemove(player1.getEquipCard(), card[0]);

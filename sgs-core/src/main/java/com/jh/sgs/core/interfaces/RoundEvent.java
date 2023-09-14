@@ -1,4 +1,4 @@
-package com.jh.sgs.core.roundevent;
+package com.jh.sgs.core.interfaces;
 
 public interface RoundEvent {
     public static final int PLAYER=1;

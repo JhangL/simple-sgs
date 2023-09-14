@@ -7,6 +7,7 @@ import com.jh.sgs.core.card.Shaable;
 import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.exception.DesktopException;
 import com.jh.sgs.core.exception.SgsApiException;
+import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.pojo.Card;
 import lombok.extern.log4j.Log4j2;
 
@@ -29,7 +30,7 @@ public class ShaCardDesktop extends CardDesktop {
 
     @Override
     protected void execute() throws DesktopException {
-        ContextManage.messageReceipt().global(getPlayer() + "出牌" + getCard());
+        MessageReceipt.globalInContext(getPlayer() + "出牌" + getCard());
         RoundProcess roundProcess = ContextManage.roundProcess(getPlayer());
         roundProcess.setUseSha(roundProcess.getUseSha()+1);
         shaable.sha();

@@ -1,6 +1,7 @@
 package com.jh.sgs.core.general;
 
 import com.jh.sgs.core.ContextManage;
+import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.enums.SuitEnum;
 import com.jh.sgs.core.exception.SgsApiException;
@@ -43,7 +44,7 @@ public class ZhenJi extends BaseGeneral implements AbilityEvent, Ability.PlayCar
 
     private Card qingGuo(Consumer<Card> action) {
         TPool<Card> falseCard = new TPool<>();
-        ContextManage.interactiveMachine().addEvent(getPlayerIndex(), "(倾国)请出牌", new JNXZPImpl(getCompletePlayer(), card -> {
+        InteractiveMachine.addEventInContext(getPlayerIndex(), "(倾国)请出牌", new JNXZPImpl(getCompletePlayer(), card -> {
             Card falseCard1;
             switch (SuitEnum.getByIndex(card.getSuit())) {
                 case HEIT:
@@ -72,7 +73,7 @@ public class ZhenJi extends BaseGeneral implements AbilityEvent, Ability.PlayCar
 
         BooleanPool a = new BooleanPool();
         do {
-            ContextManage.interactiveMachine().addEvent(getPlayerIndex(), "是否使用洛神", new TOFImpl(a)).lock();
+            InteractiveMachine.addEventInContext(getPlayerIndex(), "是否使用洛神", new TOFImpl(a)).lock();
             if (a.isPool()) {
                 //使用
                 Card card = ContextManage.roundManage().decide(getPlayerIndex());

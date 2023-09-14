@@ -1,6 +1,7 @@
 package com.jh.sgs.core.general;
 
 import com.jh.sgs.core.ContextManage;
+import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.enums.IdentityEnum;
 import com.jh.sgs.core.exception.SgsRuntimeException;
@@ -57,10 +58,10 @@ public class LiuBei extends BaseGeneral implements AbilityEvent, Ability.PlayCar
     private void renDe() {
         List<CompletePlayer> targets = ContextManage.roundManage().findTarget(getPlayerIndex(), null);
         TPool<Integer> target = new TPool<>();
-        ContextManage.interactiveMachine().addEvent(getPlayerIndex(), "(仁德)请选择目标", new XZMBImpl(target, targets)).lock();
+        InteractiveMachine.addEventInContext(getPlayerIndex(), "(仁德)请选择目标", new XZMBImpl(target, targets)).lock();
         if (target.getPool() == null) return;
         TPool<Card> cardPool = new TPool<>();
-        ContextManage.interactiveMachine().addEvent(getPlayerIndex(), "(仁德)请选择手牌", new JNXZPImpl(getCompletePlayer(), cardPool::setPool, false)).lock();
+        InteractiveMachine.addEventInContext(getPlayerIndex(), "(仁德)请选择手牌", new JNXZPImpl(getCompletePlayer(), cardPool::setPool, false)).lock();
         if (cardPool.getPool() == null) return;
         Util.getPlayer(target.getPool()).getHandCard().add(cardPool.getPool());
         renDeNum++;

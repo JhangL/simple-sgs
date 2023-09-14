@@ -1,6 +1,7 @@
 package com.jh.sgs.core.card;
 
 import com.jh.sgs.core.ContextManage;
+import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.exception.SgsApiException;
@@ -30,7 +31,7 @@ public class QingLongYanYueDao extends WeaponCard{
             //青龙偃月刀特殊效果
             while (card.getPool()!=null){//被闪闪避
                 BooleanPool tofs = new BooleanPool();
-                ContextManage.interactiveMachine().addEvent(mainplayer, "是否使用青龙偃月刀",new TOFImpl(tofs));
+                InteractiveMachine.addEventInContext(mainplayer, "是否使用青龙偃月刀",new TOFImpl(tofs));
                 if (tofs.isPool()){
                     card.setPool(null);
                     TPool<Card> cards = new TPool<>();

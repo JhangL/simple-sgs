@@ -3,6 +3,7 @@ package com.jh.sgs.core;
 import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.interactive.Interactive;
 import com.jh.sgs.core.interactive.Interactiveable;
+import com.jh.sgs.core.interfaces.InteractiveSubmit;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -15,10 +16,13 @@ public class InteractiveEvent {
     private final String message;
     private final Interactiveable interactiveable;
 
-    protected InteractiveEvent(int player, String message, Interactiveable interactiveable) {
+    private InteractiveSubmit submit;
+
+    public InteractiveEvent(int player, String message, Interactiveable interactiveable, InteractiveSubmit submit) {
         this.player = player;
         this.message = message;
         this.interactiveable = interactiveable;
+        this.submit = submit;
     }
 
     /**
@@ -40,7 +44,7 @@ public class InteractiveEvent {
         lock();
         if (interactiveable.complete()!=CompleteEnum.COMPLETE) throw new SgsApiException("流程未完成");
         log.debug(player + "流程执行结束-->");
-        ContextManage.interactiveMachine().subEvent(this);
+        submit.submit(this);
         lock=true;
     }
 

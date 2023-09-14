@@ -9,6 +9,7 @@ import com.jh.sgs.core.exception.DesktopException;
 import com.jh.sgs.core.exception.DesktopRefuseException;
 import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.interactive.Interactiveable;
+import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.EventLock;
@@ -102,13 +103,17 @@ public class RoundProcess {
     }
 
     public void obtainCard() {
-        completePlayer.getHandCard().addAll(cardManage().obtainCard(2));
+        List<Card> cards = cardManage().obtainCard(2);
+        completePlayer.getHandCard().addAll(cards);
+        MessageReceipt.personalInContext(getPlayerIndex(),"从牌堆摸取牌{}",cards);
+        MessageReceipt.globalInContext("{}从牌堆摸取{}张牌",getPlayerIndex(),cards.size());
     }
 
     public void playCard() {
         TPool<Card> cards = new TPool<>();
         do {
             cards.setPool(null);
+
             ContextManage.roundManage().playCard(playerIndex, "请出牌", cards, card -> {
                 if (card.getNameId() == CardEnum.SHA.getId()) {
                     if (useSha >= getLimitSha()) {
@@ -132,12 +137,13 @@ public class RoundProcess {
                 }
             }
         } while (cards.getPool() != null);
-
+        MessageReceipt.globalInContext("{}取消出牌",getPlayerIndex());
     }
 
     public void disCard() {
         int i = completePlayer.getHandCard().size() - completePlayer.getBlood();
         if (i > 0) {
+            ArrayList<Card> dis = new ArrayList<>();
             interactiveMachine().addEvent(playerIndex, "请弃" + i + "张牌", new Interactiveable() {
                 boolean c = false;
 
@@ -162,7 +168,7 @@ public class RoundProcess {
                     Set<Card> handCard = completePlayer.getHandCard();
                     ArrayList<Card> cards = Util.collectionCollectAndCheckIds(handCard, ids);
                     cards.forEach(handCard::remove);
-                    ContextManage.cardManage().recoveryCard(cards);
+                    dis.addAll(cards);
                     log.debug(playerIndex + "弃牌:" + cards);
                     c = true;
                 }
@@ -182,8 +188,9 @@ public class RoundProcess {
 //                    log.debug(i + "成功弃牌");
                     return c ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
                 }
-            });
-            interactiveMachine().lock();
+            }).lock();
+            MessageReceipt.globalInContext("{}弃牌{}",getPlayerIndex(),dis);
+            ContextManage.cardManage().recoveryCard(dis);
         }
     }
 

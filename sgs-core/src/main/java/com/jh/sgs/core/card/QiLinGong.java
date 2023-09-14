@@ -1,9 +1,6 @@
 package com.jh.sgs.core.card;
 
-import com.jh.sgs.core.ContextManage;
-import com.jh.sgs.core.InteractiveEvent;
-import com.jh.sgs.core.RoundManage;
-import com.jh.sgs.core.Util;
+import com.jh.sgs.core.*;
 import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.interactive.impl.TOFImpl;
@@ -36,7 +33,7 @@ public class QiLinGong extends WeaponCard {
             //检查目标坐骑牌是否为空
             if (!cards.isEmpty()) {
                 BooleanPool tofs = new BooleanPool();
-                ContextManage.interactiveMachine().addEvent(mainplayer, "是否使用" + getName(), new TOFImpl(tofs));
+                InteractiveMachine.addEventInContext(mainplayer, "是否使用" + getName(), new TOFImpl(tofs));
                 if (tofs.isPool()) {
                     if (cards.size() == 1) {
                         //一个坐骑直接弃掉
@@ -48,7 +45,7 @@ public class QiLinGong extends WeaponCard {
                     } else {
                         //选一个
                         Card[] cards1 = new Card[1];
-                        ContextManage.interactiveMachine().addEvent(mainplayer, "选择要弃的牌", new Interactiveable() {
+                        InteractiveMachine.addEventInContext(mainplayer, "选择要弃的牌", new Interactiveable() {
                             boolean a = false;
 
                             @Override

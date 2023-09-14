@@ -1,6 +1,7 @@
 package com.jh.sgs.core.general;
 
 import com.jh.sgs.core.ContextManage;
+import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.enums.SuitEnum;
 import com.jh.sgs.core.exception.SgsApiException;
@@ -43,7 +44,7 @@ public class GanNing extends BaseGeneral implements AbilityEvent, Ability.PlayCa
 
     private Card qiXi(Consumer<Card> action) {
         TPool<Card> falseCard = new TPool<>();
-        ContextManage.interactiveMachine().addEvent(getPlayerIndex(), "(奇袭)请出牌", new JNXZPImpl(getCompletePlayer(), card -> {
+        InteractiveMachine.addEventInContext(getPlayerIndex(), "(奇袭)请出牌", new JNXZPImpl(getCompletePlayer(), card -> {
             Card falseCard1;
             switch (SuitEnum.getByIndex(card.getSuit())) {
                 case HEIT:

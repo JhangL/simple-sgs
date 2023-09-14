@@ -2,6 +2,7 @@ package com.jh.sgs.core.general;
 
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.InteractiveEvent;
+import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.enums.InteractiveEnum;
@@ -40,7 +41,7 @@ public class ZhuGeLiang extends BaseGeneral implements CardTargetHideEvent {
     public void start() {
         super.start();
         BooleanPool pool = new BooleanPool();
-        ContextManage.interactiveMachine().addEvent(getPlayerIndex(), "是否使用空城", new TOFImpl(pool)).lock();
+        InteractiveMachine.addEventInContext(getPlayerIndex(), "是否使用空城", new TOFImpl(pool)).lock();
         if (!pool.isPool()) return;
         //空城
         int i = ContextManage.desk().sizeOnDesk();
@@ -48,7 +49,7 @@ public class ZhuGeLiang extends BaseGeneral implements CardTargetHideEvent {
         List<Card> cards = ContextManage.cardManage().obtainCard(i);
         ArrayList<Card> top = new ArrayList<>();
         ArrayList<Card> bottom = new ArrayList<>();
-        ContextManage.interactiveMachine().addEvent(getPlayerIndex(), "请将牌置于牌堆顶或底", new Interactiveable() {
+        InteractiveMachine.addEventInContext(getPlayerIndex(), "请将牌置于牌堆顶或底", new Interactiveable() {
 
             int a = 0;
             final int b = cards.size();

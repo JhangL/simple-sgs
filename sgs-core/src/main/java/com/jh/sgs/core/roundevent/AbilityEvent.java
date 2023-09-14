@@ -1,5 +1,6 @@
 package com.jh.sgs.core.roundevent;
 
+import com.jh.sgs.core.interfaces.RoundEvent;
 import com.jh.sgs.core.pojo.Ability;
 
 import java.util.List;

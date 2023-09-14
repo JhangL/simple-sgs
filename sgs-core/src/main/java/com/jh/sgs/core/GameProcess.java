@@ -4,11 +4,9 @@ import com.jh.sgs.core.enums.IdentityEnum;
 import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.interactive.Interactiveable;
+import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.interfaces.ShowStatus;
-import com.jh.sgs.core.pojo.CompleteGeneral;
-import com.jh.sgs.core.pojo.CompletePlayer;
-import com.jh.sgs.core.pojo.General;
-import com.jh.sgs.core.pojo.OriginalPlayer;
+import com.jh.sgs.core.pojo.*;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -44,14 +42,19 @@ public class GameProcess implements ShowStatus {
      * 初始手牌
      */
     private void originalHandCard() {
-        ContextManage.messageReceipt().global("获取初始手牌");
-        desk.foreach(completePlayer -> completePlayer.getHandCard().addAll(ContextManage.cardManage().obtainCard(4)));
-
+        MessageReceipt.globalInContext("获取初始手牌");
+        desk.foreach((integer, completePlayer) -> {
+            List<Card> cards = ContextManage.cardManage().obtainCard(4);
+            completePlayer.getHandCard().addAll(cards);
+            MessageReceipt.personalInContext(integer, "你的初始手牌：" + cards);
+        });
+        MessageReceipt.globalInContext("获取初始手牌完成");
     }
 
     private void selectGeneral() {
-        ContextManage.messageReceipt().global("选择武将");
-        desk.foreach((integer, completePlayer) -> ContextManage.interactiveMachine().addEvent(integer,"请选择武将", new Interactiveable() {
+        MessageReceipt.globalInContext("选择武将");
+        List<General> all = ContextManage.generalManage().getAll();
+        desk.foreach((integer, completePlayer) -> InteractiveMachine.addEventInContext(integer, "请选择武将", new Interactiveable() {
 
             int step = 0;
 
@@ -65,13 +68,13 @@ public class GameProcess implements ShowStatus {
                 General general = Util.collectionCollectAndCheckId(selectableGeneral(), id);
                 completePlayer.setCompleteGeneral(new CompleteGeneral());
                 completePlayer.getCompleteGeneral().setGeneral(general);
-                log.debug(integer+"选择武将"+general);
+                log.debug(integer + "选择武将" + general);
                 step++;
             }
 
             @Override
             public List<General> selectableGeneral() {
-                return ContextManage.generalManage().getAll();
+                return all;
             }
 
             @Override
@@ -80,21 +83,25 @@ public class GameProcess implements ShowStatus {
             }
 
             @Override
-            public InteractiveEvent.CompleteEnum  complete() {
+            public InteractiveEvent.CompleteEnum complete() {
 //                log.debug(integer+"完成武将选择");
-                return step == 1? InteractiveEvent.CompleteEnum.COMPLETE: InteractiveEvent.CompleteEnum.NOEXECUTE;
+                return step == 1 ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
             }
         }));
         ContextManage.interactiveMachine().lock();
-        desk.foreach(completePlayer -> ContextManage.generalManage().setGeneral(completePlayer));
+        desk.foreach((integer, completePlayer) -> {
+            ContextManage.generalManage().setGeneral(completePlayer);
+            MessageReceipt.personalInContext(integer, "你选择的武将：" + completePlayer.getCompleteGeneral().getGeneral());
+        });
+        MessageReceipt.globalInContext("选择武将完成");
     }
 
     /**
      * 设置初始血量
      */
     private void setBlood() {
-        ContextManage.messageReceipt().global("设置体力");
-        desk.foreach(completePlayer -> {
+        MessageReceipt.globalInContext("设置体力");
+        desk.foreach((integer, completePlayer) -> {
             if (completePlayer.getIdentity() == IdentityEnum.ZG) {
                 completePlayer.setBlood(completePlayer.getCompleteGeneral().getGeneral().getBlood() + 1);
                 desk.setIndex(completePlayer);
@@ -102,18 +109,25 @@ public class GameProcess implements ShowStatus {
                 completePlayer.setBlood(completePlayer.getCompleteGeneral().getGeneral().getBlood());
             }
             completePlayer.setMaxBlood(completePlayer.getBlood());
+            MessageReceipt.personalInContext(integer, "你的体力为：" + completePlayer.getBlood());
         });
+        MessageReceipt.globalInContext("设置体力完成");
     }
 
     /**
      * 分配身份;
      */
     private void distributeIdentity() {
-        ContextManage.messageReceipt().global("分配身份");
+        MessageReceipt.globalInContext("分配身份");
         List<IdentityEnum> distribute = ContextManage.gameEngine().getIdentityManage().distribute();
         if (distribute.size() != desk.size()) throw new SgsRuntimeException("身份个数与实际不符");
         Iterator<IdentityEnum> iterator = distribute.iterator();
-        desk.foreach(completePlayer -> completePlayer.setIdentity(iterator.next()));
+        desk.foreach((integer, completePlayer) -> {
+            IdentityEnum next = iterator.next();
+            completePlayer.setIdentity(next);
+            MessageReceipt.personalInContext(integer, "你的身份为：" + next);
+        });
+        MessageReceipt.globalInContext("分配身份完成");
     }
 
     @Override

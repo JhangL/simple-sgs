@@ -1,6 +1,7 @@
 package com.jh.sgs.core.general;
 
 import com.jh.sgs.core.ContextManage;
+import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.enums.SuitEnum;
 import com.jh.sgs.core.exception.SgsApiException;
@@ -43,7 +44,7 @@ public class GuanYu extends BaseGeneral implements AbilityEvent, Ability.PlayCar
     private Card wuSeng(Consumer<Card> action) {
 
         TPool<Card> falseCard = new TPool<>();
-        ContextManage.interactiveMachine().addEvent(getPlayerIndex(), "(武圣)请出牌", new JNXZPImpl(getCompletePlayer(), card -> {
+        InteractiveMachine.addEventInContext(getPlayerIndex(), "(武圣)请出牌", new JNXZPImpl(getCompletePlayer(), card -> {
             Card falseCard1;
             switch (SuitEnum.getByIndex(card.getSuit())) {
                 case HONGT:

@@ -6,6 +6,7 @@ import com.jh.sgs.core.interfaces.MessageReceipt;
 import java.util.List;
 
 public class TextMessageReceipt implements MessageReceipt {
+
     @Override
     public void personal(int player, String message) {
         Util.printlnColor(35,3,player + "消息：" + message);
@@ -25,6 +26,6 @@ public class TextMessageReceipt implements MessageReceipt {
     }
     @Override
     public String name() {
-        return "控制台文本回调器";
+        return "控制台处理文本回调器";
     }
 }

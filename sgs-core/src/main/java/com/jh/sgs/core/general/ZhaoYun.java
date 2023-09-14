@@ -1,6 +1,7 @@
 package com.jh.sgs.core.general;
 
 import com.jh.sgs.core.ContextManage;
+import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.interactive.impl.JNXZPImpl;
@@ -42,7 +43,7 @@ public class ZhaoYun extends BaseGeneral implements AbilityEvent, Ability.PlayCa
     private Card longDan(Consumer<Card> action) {
 
         TPool<Card> falseCard = new TPool<>();
-        ContextManage.interactiveMachine().addEvent(getPlayerIndex(), "(龙胆)请出牌", new JNXZPImpl(getCompletePlayer(), card -> {
+        InteractiveMachine.addEventInContext(getPlayerIndex(), "(龙胆)请出牌", new JNXZPImpl(getCompletePlayer(), card -> {
             Card falseCard1;
             switch (card.getNameId()) {
                 case 1:

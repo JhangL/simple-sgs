@@ -1,6 +1,6 @@
 package com.jh.sgs.core;
 
-import com.jh.sgs.core.roundevent.RoundEvent;
+import com.jh.sgs.core.interfaces.RoundEvent;
 
 import java.util.ArrayList;
 import java.util.HashMap;

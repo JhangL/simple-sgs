@@ -2,6 +2,7 @@ package com.jh.sgs.core.card;
 
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.InteractiveEvent;
+import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.SgsApiException;
@@ -37,10 +38,10 @@ public class GuanShiFu extends WeaponCard {
             if (card.getPool() != null) {//被闪闪避
 
                 BooleanPool tofs = new BooleanPool();
-                ContextManage.interactiveMachine().addEvent(mainplayer, "是否使用贯石斧", new TOFImpl(tofs));
+                InteractiveMachine.addEventInContext(mainplayer, "是否使用贯石斧", new TOFImpl(tofs));
                 if (tofs.isPool()) {
-                    boolean[] dis = new boolean[1];
-                    ContextManage.interactiveMachine().addEvent(mainplayer, "请弃2张牌", new Interactiveable() {
+                    ArrayList<Card> dis = new ArrayList<>();
+                    InteractiveMachine.addEventInContext(mainplayer, "请弃2张牌", new Interactiveable() {
 
                         boolean a;
 
@@ -50,9 +51,8 @@ public class GuanShiFu extends WeaponCard {
                             Set<Card> handCard = maincompletePlayer.getHandCard();
                             ArrayList<Card> cards = Util.collectionCollectAndCheckIds(handCard, ids);
                             cards.forEach(handCard::remove);
-                            ContextManage.shaCardDesktop().getProcessCards().addAll(cards);
                             log.debug(mainplayer + "弃牌:" + cards);
-                            dis[0] = true;
+                            dis.addAll(cards);
                             a = true;
                         }
 
@@ -86,7 +86,8 @@ public class GuanShiFu extends WeaponCard {
                             return InteractiveEnum.GSF;
                         }
                     });
-                    if (dis[0]) {
+                    ContextManage.shaCardDesktop().getProcessCards().addAll(dis);
+                    if (dis.size()==2) {
                         player1.setBlood(player1.getBlood() - 1);
                         TPool<Card> cardTPool = new TPool<>(ContextManage.shaCardDesktop().getCard());
                         ContextManage.roundManage().subBlood(mainplayer, player, cardTPool, 1);

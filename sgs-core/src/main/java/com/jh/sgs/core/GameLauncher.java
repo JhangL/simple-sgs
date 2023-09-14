@@ -1,11 +1,11 @@
 package com.jh.sgs.core;
 
+import com.jh.sgs.core.interfaces.GameConfig;
 import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.interfaces.MessageRequest;
 import lombok.Getter;
 
 import static com.jh.sgs.core.GameEngine.threadGroup;
-import static com.jh.sgs.core.GameEngine.threadName;
 
 public class GameLauncher {
 
@@ -14,14 +14,14 @@ public class GameLauncher {
     @Getter
     private Thread thread;
 
-    public GameLauncher() {
-        gameEngine = new GameEngine();
+    public GameLauncher(GameConfig gameConfig) {
+        gameEngine = new GameEngine(gameConfig);
         thread = new Thread(threadGroup, gameEngine);
     }
 
     public GameLauncher(MessageReceipt messageReceipt, int playerNum) {
         gameEngine = new GameEngine(messageReceipt, playerNum);
-        thread = new Thread(threadGroup, gameEngine,threadName);
+        thread = new Thread(threadGroup, gameEngine);
     }
 
     public void start() {
@@ -32,11 +32,11 @@ public class GameLauncher {
         GameLauncher gameLauncher = new GameLauncher(messageReceipt, playerNum);
         gameLauncher.start();
 
-       return gameLauncher.getGameEngine();
+        return gameLauncher.getGameEngine();
     }
 
-    public static MessageRequest run() {
-        GameLauncher gameLauncher = new GameLauncher();
+    public static MessageRequest run(GameConfig gameConfig) {
+        GameLauncher gameLauncher = new GameLauncher(gameConfig);
         gameLauncher.start();
         return gameLauncher.getGameEngine();
     }
