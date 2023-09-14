@@ -5,10 +5,7 @@ import com.jh.sgs.core.interfaces.BasicData;
 import com.jh.sgs.core.interfaces.GameConfig;
 import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.interfaces.MessageRequest;
-import com.jh.sgs.text.AutoMessageReceipt;
-import com.jh.sgs.text.DataBaseBasicDataCache;
-import com.jh.sgs.text.Inputer;
-import com.jh.sgs.text.TextMessageReceipt;
+import com.jh.sgs.text.*;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,19 +20,20 @@ public class StartGame {
     public static BasicData basicData=new DataBaseBasicDataCache("classpath:dataBase.properties");
 
     public static void main(String[] args) throws IOException {
-
+        File file1 = new File("./sgslog");
+        System.out.println("运行文件地址："+file1.getAbsolutePath());
+        if (!file1.exists()) {
+            file1.mkdirs();// 能创建多级目录
+        }
         if (args.length>=2){
             if ("-server".equals(args[0])){
                 int s= Integer.parseInt(args[1]);
-                File file1 = new File("./sgslog");
-                if (!file1.exists()) {
-                    file1.mkdirs();// 能创建多级目录
-                }
+
                 System.out.println("运行文件地址："+file1.getAbsolutePath());
                 for (int i = 0; i < s; i++) {
                     File file = new File("./sgslog/server-" + i + ".log");
-                    if (!file1.exists()) {
-                        file1.createNewFile();// 能创建多级目录
+                    if (!file.exists()) {
+                        file.createNewFile();// 能创建多级目录
                     }
 //                    GameLauncher.run(new AutoMessageReceipt(file),2);
                     GameLauncher.run(new GameConfig() {
@@ -74,6 +72,25 @@ public class StartGame {
                 }
             }
         }
-        messageRequest = GameLauncher.run(messageReceipt, playerNum);
+        File file = new File("./sgslog/server-one.log");
+        if (!file.exists()) {
+            file.createNewFile();// 能创建多级目录
+        }
+        messageRequest = GameLauncher.run(new GameConfig() {
+            @Override
+            public MessageReceipt messageReceipt() {
+                return new FileMessageConsoleControlReceipt(file);
+            }
+
+            @Override
+            public int playerNum() {
+                return 2;
+            }
+
+            @Override
+            public BasicData basicData() {
+                return basicData;
+            }
+        });
     }
 }

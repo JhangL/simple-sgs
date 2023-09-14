@@ -37,8 +37,8 @@ public abstract class CardDesktop extends Desktop{
     @Override
     protected void end() {
         MessageReceipt.globalInContext(getPlayer() + "完成操作" + getCard());
-        if (!isCardUsed()) ContextManage.cardManage().recoveryCard(getCard());
         if (card.isFalsed())card.backTrue();
+        if (!isCardUsed()) ContextManage.cardManage().recoveryCard(getCard());
         ContextManage.cardManage().recoveryCard(getProcessCards());
     }
     @Override

@@ -29,6 +29,7 @@ public abstract class Desktop {
             if (e instanceof DesktopRelationalException) {
                 log.debug("{} 执行发出关联阻挡", player);
                 MessageReceipt.globalInContext(player + "完成阻挡" );
+                end();
                 throw new DesktopRefuseException(e.getMessage());
             } else if (e instanceof DesktopRefuseException) {
                 log.debug("{} 执行阻挡", player);

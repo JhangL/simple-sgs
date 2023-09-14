@@ -14,3 +14,6 @@
 1.  [sgs-api-console](sgs-api-console)api模块下执行[StartGame](sgs-api-console%2Fsrc%2Fmain%2Fjava%2Fcom%2Fjh%2Fsgs%2FStartGame.java).main()方法开始控制台交互方式的系统
 2.  通过[sgs-core](sgs-core)模块下[GameLauncher](sgs-core%2Fsrc%2Fmain%2Fjava%2Fcom%2Fjh%2Fsgs%2Fcore%2FGameLauncher.java).run()方法可开启一个执行系统，需实现一个简单的交互接口（系统可能因为事件未处理一直处于等待状态）
 
+#### 问题
+
+1. 测试，当判定牌被阻挡后，弃牌堆未出现

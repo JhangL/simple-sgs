@@ -1,5 +1,7 @@
 package com.jh.sgs.text;
 
+import java.io.PrintStream;
+
 public class Util {
 
     /**
@@ -14,5 +16,10 @@ public class Util {
     public static void printColor(int fColor, int fontType, String s){
         System.out.printf("\033[%d;%dm%s\033[0m",fontType,fColor,s);
     }
-
+    public static void printlnColor(PrintStream printStream, int fColor, int fontType, String s){
+        printStream.printf("\033[%d;%dm%s\033[0m\n",fontType,fColor,s);
+    }
+    public static void printColor(PrintStream printStream,int fColor, int fontType, String s){
+        printStream.printf("\033[%d;%dm%s\033[0m",fontType,fColor,s);
+    }
 }
