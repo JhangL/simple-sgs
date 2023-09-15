@@ -12,7 +12,6 @@ new FormModel {
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "name"
 				"text": "text"
-				"verticalAlignment": 1
 				"horizontalAlignment": 0
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 1

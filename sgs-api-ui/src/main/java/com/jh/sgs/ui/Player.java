@@ -4,7 +4,10 @@
 
 package com.jh.sgs.ui;
 
-import com.jh.sgs.core.pojo.Card;
+import com.jh.sgs.StartGameInUI;
+import com.jh.sgs.core.enums.IdentityEnum;
+import com.jh.sgs.core.enums.SuitEnum;
+import com.jh.sgs.core.pojo.*;
 import com.jh.sgs.core.pool.TPool;
 
 import javax.swing.*;
@@ -20,9 +23,59 @@ public class Player extends JPanel {
     public static final int CANCAL=-100;
     public boolean submitWait=false;
     public TPool<Integer> pool=new TPool<>();
-    public Player() {
+    private int playerId;
+
+    public Player(int i) {
+        playerId=i;
         initComponents();
         closeInPut();
+    }
+
+    private void flushData(){
+        CompletePlayer player1 = StartGameInUI.run.getPlayer(playerId);
+        List<Card> handCard = player1.getHandCard();
+        handcards.removeAll();
+        handcards.updateUI();
+        for (Card card : handCard) {
+            CardButton cardButton = new CardButton(this, card);
+            cardButton.setEnabled(false);
+            handcards.add(cardButton);
+        }
+        handcards.revalidate();
+        Card[] equipCard = player1.getEquipCard();
+        JButton[] a={equip1,equip2,equip3,equip4};
+        for (int i = 0; i < equipCard.length; i++) {
+            Card card = equipCard[i];
+            JButton jButton = a[i];
+            if (card==null){
+                jButton.setText("空");
+            }else {
+                jButton.setText(Util.toHtml(card.getNum()+"\n"+ SuitEnum.getByIndex(card.getSuit()).getName()+"\n\n"+card.getName()));
+            }
+            jButton.setEnabled(false);
+        }
+        StringBuilder stringBuilder = new StringBuilder();
+        CompleteGeneral completeGeneral = player1.getCompleteGeneral();
+        if (completeGeneral!=null){
+            General general = completeGeneral.getGeneral();
+            if (general!=null){
+                stringBuilder.append(general.getName()).append(" ").append( general.getCountry()).append("\n");
+                Skill[] skills = general.getSkills();
+                JButton[] v={skill1,skill2};
+                for (int i = 0; i < skills.length; i++) {
+                    Skill skill = skills[i];
+                    JButton jButton = v[i];
+                    jButton.setText(Util.toHtml(skill.getId()+"\n"+skill.getName()));
+                    jButton.setEnabled(false);
+                }
+            }
+        }
+
+        IdentityEnum identity = player1.getIdentity();
+        if (identity!=null)stringBuilder.append(identity.name()).append("\n");
+        stringBuilder.append( player1.getBlood()).append("/").append( player1.getMaxBlood());
+        name.setText(Util.toHtml(stringBuilder.toString()));
+        List<Card> decideCard = player1.getDecideCard();
     }
 
     private void closeInPut(){
@@ -118,6 +171,7 @@ public class Player extends JPanel {
     }
     public void lableText(String s){
         label1.setText(s);
+        flushData();
     }
     public void plaText(String s){
         pla.append(s);
@@ -179,7 +233,6 @@ public class Player extends JPanel {
 
         //---- name ----
         name.setText("text");
-        name.setVerticalAlignment(SwingConstants.TOP);
         name.setHorizontalAlignment(SwingConstants.CENTER);
         add(name);
         name.setBounds(540, 320, 104, 140);

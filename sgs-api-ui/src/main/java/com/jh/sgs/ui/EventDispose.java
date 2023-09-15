@@ -108,16 +108,14 @@ public class EventDispose {
         println("装备牌：" + jnxzp.equipCard());
         println("输入对应牌id（-1取消选择）");
         int i = player.waitValue();
-        if (i == Player.CANCAL) return false;
         if (i == -1) jnxzp.cancelPlayCard();
         else jnxzp.setCard(i);
         return true;
     }
 
     private boolean tof(TOF tof) {
-        println("输入是或否（0否  !0是）");
+        player.tof();
         int i =  player.waitValue();
-        if (i == Player.CANCAL) return false;
         tof.trueOrFalse(i != 0);
         return true;
     }
@@ -126,7 +124,6 @@ public class EventDispose {
         println("可选择牌:" + xzp.targetCard());
         println("输入对应牌id（-1取消选择）");
         int i =  player.waitValue();
-        if (i == Player.CANCAL) return false;
         if (i == -1) {
             xzp.cancelPlayCard();
             return true;
@@ -140,7 +137,6 @@ public class EventDispose {
         println("技能：" + jncp.showAbility());
         println("输入对应手牌id,1000+技能id" + "（-1取消出牌）");
         int i =  player.waitValue();
-        if (i == Player.CANCAL) return false;
         if (i == -1) jncp.cancelPlayCard();
         else if (i >= 1000) jncp.setAbility(i - 1000);
         else jncp.playCard(i);
@@ -152,8 +148,7 @@ public class EventDispose {
         println("输入对应武将id");
         player.input();
         int i = player.waitValue();
-        if (i == Player.CANCAL) return false;
-        else xzyx.setGeneral(i);
+        xzyx.setGeneral(i);
         return true;
     }
 
@@ -161,7 +156,6 @@ public class EventDispose {
         player.handCard(cp.handCard());
         player.cancel();
         int i =  player.waitValue();
-        if (i == Player.CANCAL) return false;
         if (i == -1) cp.cancelPlayCard();
         else cp.playCard(i);
         return true;
@@ -174,11 +168,9 @@ public class EventDispose {
         while (i1 != 0) {
             println("输入第" + (qp.discardNum() - i1 + 1) + "张对应手牌id");
             int i =  player.waitValue();
-            if (i == Player.CANCAL) return false;
-            else {
                 a[qp.discardNum() - i1] = i;
                 i1--;
-            }
+
         }
         qp.disCard(a);
         return true;
@@ -190,7 +182,6 @@ public class EventDispose {
         println("判定牌：" + ghcqssqyxzp.decideCard());
         println("输入对应牌id");
         int i =  player.waitValue();
-        if (i == Player.CANCAL) return false;
         ghcqssqyxzp.setCard(i);
         return true;
     }
@@ -200,7 +191,6 @@ public class EventDispose {
         println("输入对应目标id（-1取消选择目标）");
         player.input();
         int i =  player.waitValue();
-        if (i == Player.CANCAL) return false;
         if (i == -1) xzmb.cancelTargetPlayer();
         else xzmb.setTargetPlayer(i);
         return true;
@@ -210,7 +200,6 @@ public class EventDispose {
         println("可选择牌:" + wgfdxzp.targetCard());
         println("输入对应牌id");
         int i =  player.waitValue();
-        if (i == Player.CANCAL) return false;
         wgfdxzp.setCard(i);
         return true;
     }
