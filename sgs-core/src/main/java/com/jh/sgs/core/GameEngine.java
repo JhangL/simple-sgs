@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -92,7 +93,7 @@ public class GameEngine implements Runnable, MessageRequest {
         interactiveMachine = new InteractiveMachine();
         identityManage = new IdentityManage(basicData.getIdentity(playerNum));
         generalManage = new GeneralManage(basicData.getGenerals());
-        cardManage = new CardManage(basicData.getCards(), basicData.getCardParameter());
+        cardManage = new CardManage(new ArrayList<>(basicData.getCards()), basicData.getCardParameter());
     }
 
 

@@ -1,6 +1,7 @@
 package com.jh.sgs;
 
 import com.jh.sgs.core.GameLauncher;
+import com.jh.sgs.core.data.JsonBasicData;
 import com.jh.sgs.core.interfaces.BasicData;
 import com.jh.sgs.core.interfaces.GameConfig;
 import com.jh.sgs.core.interfaces.MessageReceipt;
@@ -72,14 +73,22 @@ public class StartGame {
                 }
             }
         }
-        File file = new File("./sgslog/server-one.log");
-        if (!file.exists()) {
-            file.createNewFile();// 能创建多级目录
+        File file01 = new File("./sgslog/glo.log");
+        if (!file01.exists()) {
+            file01.createNewFile();// 能创建多级目录
+        }
+        File file02 = new File("./sgslog/player0.log");
+        if (!file02.exists()) {
+            file02.createNewFile();// 能创建多级目录
+        }
+        File file03 = new File("./sgslog/player1.log");
+        if (!file03.exists()) {
+            file03.createNewFile();// 能创建多级目录
         }
         messageRequest = GameLauncher.run(new GameConfig() {
             @Override
             public MessageReceipt messageReceipt() {
-                return new FileMessageConsoleControlReceipt(file);
+                return new FileMessageConsoleControlReceipt(file01,file02,file03);
             }
 
             @Override
@@ -89,7 +98,7 @@ public class StartGame {
 
             @Override
             public BasicData basicData() {
-                return basicData;
+                return new JsonBasicData(Util.read("classpath:data.json"));
             }
         });
     }
