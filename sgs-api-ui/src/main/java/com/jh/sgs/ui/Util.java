@@ -51,4 +51,12 @@ public class Util {
         }
         return new String(bytes);
     }
+
+    public static String toHtml(String s){
+        String strhtmlbr = "<br>";
+        String strhtmlspeac = "&ensp;";
+        String strhtmltou = "<html>";
+        String strhtmlwei = "</html>";
+        return strhtmltou+ s.replaceAll("\n",strhtmlbr).replaceAll(" ",strhtmlspeac)+strhtmlwei;
+    }
 }

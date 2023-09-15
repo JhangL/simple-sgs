@@ -1,8 +1,6 @@
 package com.jh.sgs.ui;
 
 import com.jh.sgs.core.InteractiveEvent;
-import com.jh.sgs.core.interactive.Interactive;
-import com.jh.sgs.core.interactive.XZYX;
 import com.jh.sgs.core.interfaces.MessageReceipt;
 
 import java.util.List;
@@ -23,15 +21,13 @@ public class UiMessageReceipt implements MessageReceipt {
 
     @Override
     public void personal(int player, String message) {
-        players[player].pla.append(message+"\n");
-        players[player].pla.selectAll();
+        players[player].plaText(message+"\n");
     }
 
     @Override
     public void global(String message) {
         for (Player player : players) {
-            player.glo.append(message+"\n");
-            player.glo.selectAll();
+            player.gloText(message+"\n");
         }
     }
 

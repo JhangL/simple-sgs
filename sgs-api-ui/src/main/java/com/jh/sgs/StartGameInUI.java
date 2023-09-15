@@ -1,7 +1,6 @@
 package com.jh.sgs;
 
 import com.jh.sgs.core.GameLauncher;
-import com.jh.sgs.core.InteractiveEvent;
 import com.jh.sgs.core.data.JsonBasicData;
 import com.jh.sgs.core.interfaces.BasicData;
 import com.jh.sgs.core.interfaces.GameConfig;
@@ -12,8 +11,6 @@ import com.jh.sgs.ui.UiMessageReceipt;
 import com.jh.sgs.ui.Util;
 
 import javax.swing.*;
-import java.awt.*;
-import java.util.List;
 
 /**
  * 〈功能概述〉<br>
@@ -23,7 +20,9 @@ import java.util.List;
  */
 public class StartGameInUI {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnsupportedLookAndFeelException, ClassNotFoundException, InstantiationException, IllegalAccessException {
+        String lookAndFeel = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+        UIManager.setLookAndFeel(lookAndFeel);
         final Player[][] players = new Player[1][];
         GameConfig gameConfig = new GameConfig() {
 
@@ -47,8 +46,11 @@ public class StartGameInUI {
             }
         };
         GameLauncher.run(gameConfig);
-        for (Player player : players[0]) {
+        Player[] player1 = players[0];
+        for (int i = 0; i < player1.length; i++) {
+            Player player = player1[i];
             Main main = new Main();
+            main.setTitle("SGS-palyer"+i);
             main.setContentPane(player);
             main.pack();
             main.setVisible(true);

@@ -4,47 +4,157 @@
 
 package com.jh.sgs.ui;
 
-import java.awt.*;
-import java.awt.event.*;
+import com.jh.sgs.core.pojo.Card;
+import com.jh.sgs.core.pool.TPool;
+
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.util.List;
 
 /**
  * @author hp
  */
 public class Player extends JPanel {
+
+    public static final int CANCAL=-100;
     public boolean submitWait=false;
-    
+    public TPool<Integer> pool=new TPool<>();
     public Player() {
         initComponents();
-        button21.setPreferredSize(new Dimension(100,85));
-        handcards.revalidate();
+        closeInPut();
     }
 
+    private void closeInPut(){
+        synchronized (this){
+            tofT.setEnabled(false);
+            tofF.setEnabled(false);
+            input.setEditable(false);
+            submit2.setEnabled(false);
+            label1.setText("");
+            for (Component component : handcards.getComponents()) {
+                component.setEnabled(false);
+            }
+        }
+    }
+
+    public void tof(){
+        synchronized (this){
+            tofT.setEnabled(true);
+            tofF.setEnabled(true);
+        }
+    }
+    public void input(){
+        synchronized (this){
+            input.setEditable(true);
+        }
+    }
+
+    public void handCard(List<Card> cards){
+        synchronized (this){
+            handcards.removeAll();
+            handcards.updateUI();
+            for (Card card : cards) {
+                handcards.add(new CardButton(this,card));
+            }
+            handcards.revalidate();
+        }
+    }
+    public void cancel(){
+        synchronized (this){
+            submit2.setEnabled(true);
+        }
+    }
+
+    public int waitValue(){
+        submitWait=true;
+        while (submitWait){
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        };
+        return value();
+    }
+    public void tip(String a){
+        new Thread(() -> {
+            String text = label1.getText();
+            Color foreground = label1.getForeground();
+            input.setText(a);
+            input.setForeground(Color.RED);
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
+            input.setText(text);
+            input.setForeground(foreground);
+        }).start();
+    }
     private void submit(ActionEvent e) {
         if (submitWait){
+            if ("".equals(input.getText()))return;
+            try {
+                pool.setPool(Integer.valueOf(input.getText()));
+            }catch (Exception e1){
+                tip("请输入数字");
+                input.setText("");
+                return;
+            }
+            input.setText("");
+            closeInPut();
             submitWait=false;
         }
     }
+    public int value(){
+        Integer pool1 = pool.getPool();
+        pool.setPool(null);
+        return pool1;
+    }
+
+    public void click(int v) {
+        input.setText(v+"");
+    }
+    public void lableText(String s){
+        label1.setText(s);
+    }
+    public void plaText(String s){
+        pla.append(s);
+        if (pla.getText().length()>500){
+            pla.replaceRange("",0,pla.getText().length()-500);
+        }
+        pla.selectAll();
+    }
     public void gloText(String s){
         glo.append(s);
-        if (glo.getText().length()>20){
+        if (glo.getText().length()>500){
+            glo.replaceRange("",0,glo.getText().length()-500);
         }
+        glo.selectAll();
     }
 
 
-    private void gloInputMethodTextChanged(InputMethodEvent e) {
-        System.out.println();
-        // TODO add your code here
+
+
+    private void tofT(ActionEvent e) {
+        input.setText(1+"");
+    }
+
+    private void tofF(ActionEvent e) {
+        input.setText(0+"");
+    }
+
+    private void submit2(ActionEvent e) {
+        input.setText(-1+"");
     }
 
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
-        // Generated using JFormDesigner Evaluation license - unknown
         name = new JLabel();
         equip1 = new JButton();
         scrollPane1 = new JScrollPane();
         handcards = new JPanel();
-        button21 = new JButton();
         scrollPane2 = new JScrollPane();
         glo = new JTextArea();
         scrollPane3 = new JScrollPane();
@@ -62,14 +172,9 @@ public class Player extends JPanel {
         input = new JTextField();
         submit = new JButton();
         label1 = new JLabel();
+        submit2 = new JButton();
 
         //======== this ========
-        setBorder ( new javax . swing. border .CompoundBorder ( new javax . swing. border .TitledBorder ( new javax . swing.
-        border .EmptyBorder ( 0, 0 ,0 , 0) ,  "JF\u006frm\u0044es\u0069gn\u0065r \u0045va\u006cua\u0074io\u006e" , javax. swing .border . TitledBorder. CENTER
-        ,javax . swing. border .TitledBorder . BOTTOM, new java. awt .Font ( "D\u0069al\u006fg", java .awt . Font
-        . BOLD ,12 ) ,java . awt. Color .red ) , getBorder () ) );  addPropertyChangeListener(
-        new java. beans .PropertyChangeListener ( ){ @Override public void propertyChange (java . beans. PropertyChangeEvent e) { if( "\u0062or\u0064er"
-        .equals ( e. getPropertyName () ) )throw new RuntimeException( ) ;} } );
         setLayout(null);
 
         //---- name ----
@@ -94,10 +199,6 @@ public class Player extends JPanel {
                 handcards.setMaximumSize(null);
                 handcards.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
                 handcards.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
-
-                //---- button21 ----
-                button21.setText("text");
-                handcards.add(button21);
             }
             scrollPane1.setViewportView(handcards);
         }
@@ -109,14 +210,6 @@ public class Player extends JPanel {
 
             //---- glo ----
             glo.setEditable(false);
-            glo.addInputMethodListener(new InputMethodListener() {
-                @Override
-                public void caretPositionChanged(InputMethodEvent e) {}
-                @Override
-                public void inputMethodTextChanged(InputMethodEvent e) {
-                    gloInputMethodTextChanged(e);
-                }
-            });
             scrollPane2.setViewportView(glo);
         }
         add(scrollPane2);
@@ -149,11 +242,13 @@ public class Player extends JPanel {
 
             //---- tofT ----
             tofT.setText("yes");
+            tofT.addActionListener(e -> tofT(e));
             panel2.add(tofT);
             tofT.setBounds(5, 0, 80, 45);
 
             //---- tofF ----
             tofF.setText("no");
+            tofF.addActionListener(e -> tofF(e));
             panel2.add(tofF);
             tofF.setBounds(5, 55, 80, 45);
 
@@ -200,18 +295,24 @@ public class Player extends JPanel {
         add(skill1);
         skill1.setBounds(445, 355, 90, 43);
         add(input);
-        input.setBounds(130, 320, 330, 35);
+        input.setBounds(290, 320, 110, 35);
 
         //---- submit ----
         submit.setText("\u63d0\u4ea4");
         submit.addActionListener(e -> submit(e));
         add(submit);
-        submit.setBounds(470, 320, 65, 35);
+        submit.setBounds(400, 320, 65, 35);
 
         //---- label1 ----
-        label1.setText("-100\u53d6\u6d88");
+        label1.setForeground(new Color(0x3333ff));
         add(label1);
-        label1.setBounds(10, 320, 120, 35);
+        label1.setBounds(10, 320, 275, 35);
+
+        //---- submit2 ----
+        submit2.setText("\u53d6\u6d88");
+        submit2.addActionListener(e -> submit2(e));
+        add(submit2);
+        submit2.setBounds(470, 320, 65, 35);
 
         {
             // compute preferred size
@@ -231,12 +332,10 @@ public class Player extends JPanel {
     }
 
     // JFormDesigner - Variables declaration - DO NOT MODIFY  //GEN-BEGIN:variables  @formatter:off
-    // Generated using JFormDesigner Evaluation license - unknown
     public JLabel name;
     public JButton equip1;
     public JScrollPane scrollPane1;
     public JPanel handcards;
-    private JButton button21;
     public JScrollPane scrollPane2;
     public JTextArea glo;
     public JScrollPane scrollPane3;
@@ -254,5 +353,6 @@ public class Player extends JPanel {
     public JTextField input;
     public JButton submit;
     public JLabel label1;
+    public JButton submit2;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

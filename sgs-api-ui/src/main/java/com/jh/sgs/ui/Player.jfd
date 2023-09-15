@@ -1,4 +1,4 @@
-JFDML JFormDesigner: "8.1.1.0.298" Java: "11.0.6" encoding: "UTF-8"
+JFDML JFormDesigner: "8.1.1.0.298" Java: "17.0.7" encoding: "UTF-8"
 
 new FormModel {
 	contentType: "form/swing"
@@ -53,10 +53,6 @@ new FormModel {
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 1
 					}
-					add( new FormComponent( "javax.swing.JButton" ) {
-						name: "button21"
-						"text": "text"
-					} )
 				} )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 0
@@ -75,7 +71,6 @@ new FormModel {
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 1
 					}
-					addEvent( new FormEvent( "java.awt.event.InputMethodListener", "inputMethodTextChanged", "gloInputMethodTextChanged", true ) )
 				} )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 0
@@ -137,6 +132,7 @@ new FormModel {
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 1
 					}
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "tofT", true ) )
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 					"x": 5
 					"y": 0
@@ -149,6 +145,7 @@ new FormModel {
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 1
 					}
+					addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "tofF", true ) )
 				}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 					"width": 80
 					"height": 45
@@ -227,10 +224,10 @@ new FormModel {
 					"JavaCodeGenerator.variableModifiers": 1
 				}
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 130
+				"x": 290
 				"y": 320
 				"height": 35
-				"width": 330
+				"width": 110
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "submit"
@@ -240,26 +237,39 @@ new FormModel {
 				}
 				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "submit", true ) )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 470
+				"x": 400
 				"y": 320
 				"height": 35
 				"width": 65
 			} )
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "label1"
-				"text": "-100取消"
+				"foreground": new java.awt.Color( 51, 51, 255, 255 )
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 1
 				}
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
 				"x": 10
 				"y": 320
-				"width": 120
+				"width": 275
 				"height": 35
+			} )
+			add( new FormComponent( "javax.swing.JButton" ) {
+				name: "submit2"
+				"text": "取消"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 1
+				}
+				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "submit2", true ) )
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"width": 65
+				"height": 35
+				"x": 470
+				"y": 320
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 30, 20 )
-			"size": new java.awt.Dimension( 515, 460 )
+			"size": new java.awt.Dimension( 645, 575 )
 		} )
 	}
 }
