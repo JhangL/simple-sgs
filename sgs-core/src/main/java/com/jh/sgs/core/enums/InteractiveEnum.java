@@ -1,5 +1,8 @@
 package com.jh.sgs.core.enums;
 
+import com.jh.sgs.core.interactive.FK;
+import com.jh.sgs.core.interactive.GX;
+
 /**
  * 交互枚举，在com.jh.sgs.core.interactive包下有同名接口，用于分辨交互事件
  */
@@ -51,10 +54,13 @@ public enum InteractiveEnum {
     /**
      * 技能选择牌（手牌，装备牌选择）
      */
-    JNXZP,
+    JNXZP ,
     /**
      * 观星
      */
     GX,
-
+    /**
+     * 反馈
+     */
+    FK,
 }

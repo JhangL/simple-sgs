@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Log4j2
@@ -324,13 +325,20 @@ public class RoundManage {
      */
     public Card decide(int operatePlayer) {
         //判定入侵（修改判定牌）
-        List<Card> collect = roundRegistrarPool.getRegistrar(DecideInvadeEvent.class).handlePlayer(operatePlayer).map(DecideInvadeEvent::decideInvade).filter(Objects::isNull).collect(Collectors.toList());
-        if (!collect.isEmpty()) {
-            Card remove = collect.remove(collect.size() - 1);
-            ContextManage.cardManage().recoveryCard(collect);
-            return remove;
-        }
         List<Card> cards = ContextManage.cardManage().obtainCard(1);
+        TPool<Card> cardTPool = new TPool<>();
+        boolean b = roundRegistrarPool.getRegistrar(DecideInvadeEvent.class).handlePlayer(operatePlayer).anyMatch(decideInvadeEvent -> {
+            Card card = decideInvadeEvent.decideInvade();
+            if (card != null) {
+                cardTPool.setPool(card);
+                return true;
+            }
+            return false;
+        });
+        if (b){
+            ContextManage.cardManage().recoveryCard(cards);
+            return cardTPool.getPool();
+        }
         return cards.get(0);
     }
 
