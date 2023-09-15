@@ -12,4 +12,5 @@ public interface MessageRequest {
     int getUsingCardNum();
     int getUsedCardNum();
 
+
 }

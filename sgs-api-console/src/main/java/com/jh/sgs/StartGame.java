@@ -18,7 +18,7 @@ public class StartGame {
     public static int playerNum=2;
 
     public static MessageReceipt messageReceipt=new TextMessageReceipt();
-    public static BasicData basicData=new DataBaseBasicDataCache("classpath:dataBase.properties");
+    public static BasicData basicData;
 
     public static void main(String[] args) throws IOException {
         File file1 = new File("./sgslog");
@@ -27,6 +27,7 @@ public class StartGame {
             file1.mkdirs();// 能创建多级目录
         }
         if (args.length>=2){
+            basicData=new DataBaseBasicDataCache("classpath:dataBase.properties");
             if ("-server".equals(args[0])){
                 int s= Integer.parseInt(args[1]);
 
