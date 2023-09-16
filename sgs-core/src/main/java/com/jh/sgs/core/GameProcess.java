@@ -1,12 +1,16 @@
 package com.jh.sgs.core;
 
+import com.jh.sgs.base.enums.InteractiveEnum;
+import com.jh.sgs.base.interactive.Interactiveable;
+import com.jh.sgs.base.pojo.Card;
+import com.jh.sgs.base.pojo.General;
 import com.jh.sgs.core.enums.IdentityEnum;
-import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.SgsRuntimeException;
-import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.interfaces.ShowStatus;
-import com.jh.sgs.core.pojo.*;
+import com.jh.sgs.core.pojo.CompleteGeneral;
+import com.jh.sgs.core.pojo.CompletePlayer;
+import com.jh.sgs.core.pojo.OriginalPlayer;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -83,9 +87,9 @@ public class GameProcess implements ShowStatus {
             }
 
             @Override
-            public InteractiveEvent.CompleteEnum complete() {
+            public CompleteEnum complete() {
 //                log.debug(integer+"完成武将选择");
-                return step == 1 ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
+                return step == 1 ? CompleteEnum.COMPLETE : CompleteEnum.NOEXECUTE;
             }
         }));
         ContextManage.interactiveMachine().lock();

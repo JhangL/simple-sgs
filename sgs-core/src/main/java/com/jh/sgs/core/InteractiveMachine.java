@@ -1,7 +1,7 @@
 package com.jh.sgs.core;
 
+import com.jh.sgs.base.interactive.Interactiveable;
 import com.jh.sgs.core.exception.SgsRuntimeException;
-import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.interfaces.InteractiveSubmit;
 import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.interfaces.ShowStatus;

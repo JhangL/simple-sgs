@@ -1,7 +1,7 @@
 package com.jh.sgs.core.enums;
 
+import com.jh.sgs.base.exception.SgsApiException;
 import com.jh.sgs.core.card.*;
-import com.jh.sgs.core.exception.SgsApiException;
 import lombok.Getter;
 
 public enum CardEnum {

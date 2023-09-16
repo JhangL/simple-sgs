@@ -1,10 +1,10 @@
 package com.jh.sgs.core.desktop;
 
+import com.jh.sgs.base.pojo.Card;
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.interfaces.MessageReceipt;
-import com.jh.sgs.core.pojo.Card;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 

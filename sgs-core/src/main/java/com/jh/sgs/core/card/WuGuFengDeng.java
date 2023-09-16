@@ -1,14 +1,13 @@
 package com.jh.sgs.core.card;
 
+import com.jh.sgs.base.enums.InteractiveEnum;
+import com.jh.sgs.base.interactive.Interactiveable;
+import com.jh.sgs.base.pojo.Card;
 import com.jh.sgs.core.ContextManage;
-import com.jh.sgs.core.InteractiveEvent;
 import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.desktop.CardDesktop;
-import com.jh.sgs.core.enums.InteractiveEnum;
-import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.interfaces.MessageReceipt;
-import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import lombok.extern.log4j.Log4j2;
 
@@ -69,8 +68,8 @@ public class WuGuFengDeng extends MoreSilkbagCard {
             }
 
             @Override
-            public InteractiveEvent.CompleteEnum complete() {
-                return a ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
+            public CompleteEnum complete() {
+                return a ? CompleteEnum.COMPLETE : CompleteEnum.NOEXECUTE;
             }
 
             @Override

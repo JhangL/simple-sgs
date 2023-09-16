@@ -5,9 +5,13 @@
 package com.jh.sgs.ui;
 
 import com.jh.sgs.StartGameInUI;
+import com.jh.sgs.base.enums.SuitEnum;
+import com.jh.sgs.base.pojo.Card;
+import com.jh.sgs.base.pojo.General;
+import com.jh.sgs.base.pojo.Skill;
 import com.jh.sgs.core.enums.IdentityEnum;
-import com.jh.sgs.core.enums.SuitEnum;
-import com.jh.sgs.core.pojo.*;
+import com.jh.sgs.core.pojo.CompleteGeneral;
+import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pool.TPool;
 
 import javax.swing.*;

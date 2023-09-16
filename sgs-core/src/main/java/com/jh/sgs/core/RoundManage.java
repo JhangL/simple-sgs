@@ -1,21 +1,21 @@
 package com.jh.sgs.core;
 
+import com.jh.sgs.base.enums.InteractiveEnum;
+import com.jh.sgs.base.exception.SgsApiException;
+import com.jh.sgs.base.interactive.Interactiveable;
+import com.jh.sgs.base.pojo.Card;
+import com.jh.sgs.base.pojo.ShowPlayCardAbility;
 import com.jh.sgs.core.card.BaseCard;
 import com.jh.sgs.core.card.Loseable;
 import com.jh.sgs.core.desktop.Desktop;
 import com.jh.sgs.core.desktop.ExecuteCardDesktop;
 import com.jh.sgs.core.enums.CardEnum;
-import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.DesktopRefuseException;
-import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.general.BaseGeneral;
-import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.interfaces.RoundEvent;
 import com.jh.sgs.core.pojo.Ability;
-import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
-import com.jh.sgs.core.pojo.ShowPlayCardAbility;
 import com.jh.sgs.core.pool.TPool;
 import com.jh.sgs.core.roundevent.*;
 import lombok.Getter;
@@ -23,15 +23,11 @@ import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Log4j2
 public class RoundManage {
-
-
     private Desk desk;
     @Getter
     private Desktop.Stack desktopStack;
@@ -39,20 +35,6 @@ public class RoundManage {
     private RoundProcess[] roundProcesses;
 
     private RoundRegistrarPool roundRegistrarPool;
-//    private RoundRegistrar<OffenseEvent> offenseRegistrar = new RoundRegistrar<>();
-//    private RoundRegistrar<DefenseEvent> defenseRegistrar = new RoundRegistrar<>();
-//    private RoundRegistrar<AbilityEvent> abilityRegistrar = new RoundRegistrar<>();
-//    private RoundRegistrar<CardTargetHideEvent> cardTargetHideRegistrar = new RoundRegistrar<>();
-//    private RoundRegistrar<DecideInvadeEvent> decideInvadeRegistrar = new RoundRegistrar<>();
-//    private RoundRegistrar<BeSubBloodEvent> beSubBloodRegistrar = new RoundRegistrar<>();
-//    private RoundRegistrar<LossCardEvent> lossCardRegistrar = new RoundRegistrar<>();
-//    private RoundRegistrar<AbilityEvent> singleAbilityRegistrar = new RoundRegistrar<>();
-
-    void aaa() {
-
-
-    }
-
 
     RoundManage(Desk desk) {
         this.desk = desk;
@@ -97,54 +79,18 @@ public class RoundManage {
 
     public void addEvent(int player, RoundEvent roundEvent) {
         for (RoundRegistrar<RoundEvent> roundRegistrar : roundRegistrarPool.getRegistrar(roundEvent)) {
-            if (roundEvent.eventLocation() == RoundEvent.PLAYER)
-                roundRegistrar.addPlayerEvent(player, roundEvent);
+            if (roundEvent.eventLocation() == RoundEvent.PLAYER) roundRegistrar.addPlayerEvent(player, roundEvent);
             else roundRegistrar.addGlobalEvent(roundEvent);
         }
 
-//        //注册全局事件
-//        if (roundEvent instanceof AbilityEvent)
-//            if (roundEvent.eventLocation() == RoundEvent.PLAYER)
-//                abilityRegistrar.addPlayerEvent(player, (AbilityEvent) roundEvent);
-//            else abilityRegistrar.addGlobalEvent((AbilityEvent) roundEvent);
-//        if (roundEvent instanceof OffenseEvent)
-//            if (roundEvent.eventLocation() == RoundEvent.PLAYER)
-//                offenseRegistrar.addPlayerEvent(player, (OffenseEvent) roundEvent);
-//            else offenseRegistrar.addGlobalEvent((OffenseEvent) roundEvent);
-//        if (roundEvent instanceof DefenseEvent)
-//            if (roundEvent.eventLocation() == RoundEvent.PLAYER)
-//                defenseRegistrar.addPlayerEvent(player, (DefenseEvent) roundEvent);
-//            else defenseRegistrar.addGlobalEvent((DefenseEvent) roundEvent);
-//        if (roundEvent instanceof CardTargetHideEvent)
-//            if (roundEvent.eventLocation() == RoundEvent.PLAYER)
-//                cardTargetHideRegistrar.addPlayerEvent(player, (CardTargetHideEvent) roundEvent);
-//            else cardTargetHideRegistrar.addGlobalEvent((CardTargetHideEvent) roundEvent);
-//        if (roundEvent instanceof DecideInvadeEvent)
-//            if (roundEvent.eventLocation() == RoundEvent.PLAYER)
-//                decideInvadeRegistrar.addPlayerEvent(player, (DecideInvadeEvent) roundEvent);
-//            else decideInvadeRegistrar.addGlobalEvent((DecideInvadeEvent) roundEvent);
-//        if (roundEvent instanceof LossCardEvent)
-//            if (roundEvent.eventLocation() == RoundEvent.PLAYER)
-//                lossCardRegistrar.addPlayerEvent(player, (LossCardEvent) roundEvent);
-//            else lossCardRegistrar.addGlobalEvent((LossCardEvent) roundEvent);
+
     }
 
     public void subEvent(int player, RoundEvent roundEvent) {
         for (RoundRegistrar<RoundEvent> roundRegistrar : roundRegistrarPool.getRegistrar(roundEvent)) {
             roundRegistrar.subPlayerEvent(player, roundEvent);
         }
-//        if (roundEvent instanceof AbilityEvent)
-//            abilityRegistrar.subPlayerEvent(player, (AbilityEvent) roundEvent);
-//        if (roundEvent instanceof OffenseEvent)
-//            offenseRegistrar.subPlayerEvent(player, (OffenseEvent) roundEvent);
-//        if (roundEvent instanceof DefenseEvent)
-//            defenseRegistrar.subPlayerEvent(player, (DefenseEvent) roundEvent);
-//        if (roundEvent instanceof CardTargetHideEvent)
-//            cardTargetHideRegistrar.subPlayerEvent(player, (CardTargetHideEvent) roundEvent);
-//        if (roundEvent instanceof DecideInvadeEvent)
-//            decideInvadeRegistrar.subPlayerEvent(player, (DecideInvadeEvent) roundEvent);
-//        if (roundEvent instanceof LossCardEvent)
-//            lossCardRegistrar.subPlayerEvent(player, (LossCardEvent) roundEvent);
+
     }
 
     public RoundProcess getRoundProcess(int player) {
@@ -160,8 +106,7 @@ public class RoundManage {
         roundRegistrarPool.getRegistrar(AbilityEvent.class).handlePlayer(player, playAbilityEvent -> {
             if (playAbilityEvent.addAbilityOption() == null) return;
             for (Ability ability : playAbilityEvent.addAbilityOption()) {
-                if (ability.getType() == Ability.PLAY_CARD)
-                    abilities.add(ability);
+                if (ability.getType() == Ability.PLAY_CARD) abilities.add(ability);
             }
         });
         //独立技能
@@ -169,8 +114,7 @@ public class RoundManage {
             roundRegistrarPool.getRegistrar(AbilityEvent.class).handlePlayer(player, playAbilityEvent -> {
                 if (playAbilityEvent.addAbilityOption() == null) return;
                 for (Ability ability : playAbilityEvent.addAbilityOption()) {
-                    if (ability.getType() == Ability.SINGLE)
-                        abilities.add(ability);
+                    if (ability.getType() == Ability.SINGLE) abilities.add(ability);
                 }
             });
         }
@@ -212,7 +156,12 @@ public class RoundManage {
                 @Override
                 public List<ShowPlayCardAbility> showAbility() {
                     if (abilities.isEmpty()) Interactiveable.super.showAbility();
-                    return abilities.stream().map(ShowPlayCardAbility::new).collect(Collectors.toList());
+                    return abilities.stream().map((Ability ability1) -> {
+                        ShowPlayCardAbility showPlayCardAbility = new ShowPlayCardAbility();
+                        showPlayCardAbility.setId(ability1.getId());
+                        showPlayCardAbility.setName(ability1.getName());
+                        return showPlayCardAbility;
+                    }).collect(Collectors.toList());
                 }
 
                 @Override
@@ -233,9 +182,9 @@ public class RoundManage {
                 }
 
                 @Override
-                public InteractiveEvent.CompleteEnum complete() {
+                public CompleteEnum complete() {
 //                    log.debug("完成出牌阶段");
-                    return cancel || play || ability ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
+                    return cancel || play || ability ? CompleteEnum.COMPLETE : CompleteEnum.NOEXECUTE;
                 }
             };
             InteractiveMachine.addEventInContext(player, message, interactiveable).lock();
@@ -277,8 +226,7 @@ public class RoundManage {
 
         //执行闪询问
         playCard(beShaPlayer, "请出闪", shan, card -> {
-            if (card.getNameId() != CardEnum.SHAN.getId())
-                throw new SgsApiException("指定牌不为闪");
+            if (card.getNameId() != CardEnum.SHAN.getId()) throw new SgsApiException("指定牌不为闪");
         }, false);
         return shan.getPool() == null;
     }
@@ -301,8 +249,7 @@ public class RoundManage {
         TPool<Card> playWhile = new TPool<>();
         for (CompletePlayer completePlayer : completePlayers) {
             playCard(completePlayer.getId(), "是否使用无懈可击", playWhile, card -> {
-                if (card.getNameId() != CardEnum.WU_XIE_KE_JI.getId())
-                    throw new SgsApiException("指定牌不为无懈可击");
+                if (card.getNameId() != CardEnum.WU_XIE_KE_JI.getId()) throw new SgsApiException("指定牌不为无懈可击");
                 ExecuteCardDesktop.initCheck(card);
             }, false);
             //新增desktop（无懈可击使用desktop传递异常）
@@ -335,7 +282,7 @@ public class RoundManage {
             }
             return false;
         });
-        if (b){
+        if (b) {
             ContextManage.cardManage().recoveryCard(cards);
             return cardTPool.getPool();
         }
@@ -441,7 +388,6 @@ public class RoundManage {
     public void statusRefresh(int operatePlayer, int refreshPlayer) {
         Util.getPlayer(refreshPlayer).getCompleteGeneral().getBaseGeneral().statusRefresh();
     }
-
 
 
 }

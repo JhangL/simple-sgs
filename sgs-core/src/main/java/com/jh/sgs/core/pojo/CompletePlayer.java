@@ -1,5 +1,7 @@
 package com.jh.sgs.core.pojo;
 
+import com.jh.sgs.base.pojo.Card;
+import com.jh.sgs.base.pojo.ID;
 import com.jh.sgs.core.enums.IdentityEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,7 +12,7 @@ import java.util.List;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class CompletePlayer extends ID{
+public class CompletePlayer extends ID {
 
     private OriginalPlayer originalPlayer;
 

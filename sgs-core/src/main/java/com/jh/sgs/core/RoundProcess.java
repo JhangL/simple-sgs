@@ -1,16 +1,16 @@
 package com.jh.sgs.core;
 
+import com.jh.sgs.base.enums.InteractiveEnum;
+import com.jh.sgs.base.exception.SgsApiException;
+import com.jh.sgs.base.interactive.Interactiveable;
+import com.jh.sgs.base.pojo.Card;
 import com.jh.sgs.core.desktop.DecideCardDesktop;
 import com.jh.sgs.core.desktop.ExecuteCardDesktop;
 import com.jh.sgs.core.desktop.ShaCardDesktop;
 import com.jh.sgs.core.enums.CardEnum;
-import com.jh.sgs.core.enums.InteractiveEnum;
 import com.jh.sgs.core.exception.DesktopException;
 import com.jh.sgs.core.exception.DesktopRefuseException;
-import com.jh.sgs.core.exception.SgsApiException;
-import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.interfaces.MessageReceipt;
-import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.EventLock;
 import com.jh.sgs.core.pool.TPool;
@@ -183,9 +183,9 @@ public class RoundProcess {
                 }
 
                 @Override
-                public InteractiveEvent.CompleteEnum complete() {
+                public CompleteEnum complete() {
 //                    log.debug(i + "成功弃牌");
-                    return c ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
+                    return c ? CompleteEnum.COMPLETE : CompleteEnum.NOEXECUTE;
                 }
             }).lock();
             MessageReceipt.globalInContext("{}弃牌{}",getPlayerIndex(),dis);

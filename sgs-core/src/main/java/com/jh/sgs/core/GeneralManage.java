@@ -1,10 +1,10 @@
 package com.jh.sgs.core;
 
+import com.jh.sgs.base.pojo.General;
 import com.jh.sgs.core.enums.GeneralEnum;
 import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.general.BaseGeneral;
 import com.jh.sgs.core.pojo.CompletePlayer;
-import com.jh.sgs.core.pojo.General;
 import lombok.Getter;
 
 import java.lang.reflect.Constructor;

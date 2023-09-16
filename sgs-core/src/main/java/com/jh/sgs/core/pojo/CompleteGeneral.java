@@ -1,5 +1,6 @@
 package com.jh.sgs.core.pojo;
 
+import com.jh.sgs.base.pojo.General;
 import com.jh.sgs.core.general.BaseGeneral;
 import lombok.Data;
 

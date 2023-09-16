@@ -1,7 +1,7 @@
 package com.jh.sgs.core.interfaces;
 
+import com.jh.sgs.base.pojo.ShowPlayer;
 import com.jh.sgs.core.pojo.CompletePlayer;
-import com.jh.sgs.core.pojo.ShowPlayer;
 
 public interface MessageRequest {
     String getAll();

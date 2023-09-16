@@ -1,12 +1,12 @@
 package com.jh.sgs.core.card;
 
+import com.jh.sgs.base.pojo.Card;
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.RoundManage;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.enums.EquipCardEnum;
 import com.jh.sgs.core.interfaces.MessageReceipt;
-import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import lombok.extern.log4j.Log4j2;
 

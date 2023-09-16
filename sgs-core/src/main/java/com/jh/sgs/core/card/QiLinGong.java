@@ -1,11 +1,14 @@
 package com.jh.sgs.core.card;
 
-import com.jh.sgs.core.*;
+import com.jh.sgs.base.enums.InteractiveEnum;
+import com.jh.sgs.base.interactive.Interactiveable;
+import com.jh.sgs.base.pojo.Card;
+import com.jh.sgs.core.ContextManage;
+import com.jh.sgs.core.InteractiveMachine;
+import com.jh.sgs.core.RoundManage;
+import com.jh.sgs.core.Util;
 import com.jh.sgs.core.desktop.CardDesktop;
-import com.jh.sgs.core.enums.InteractiveEnum;
-import com.jh.sgs.core.interactive.Interactiveable;
 import com.jh.sgs.core.interactive.impl.TOFImpl;
-import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pool.BooleanPool;
 import com.jh.sgs.core.pool.TPool;
@@ -71,8 +74,8 @@ public class QiLinGong extends WeaponCard {
                             }
 
                             @Override
-                            public InteractiveEvent.CompleteEnum complete() {
-                                return a ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
+                            public CompleteEnum complete() {
+                                return a ? CompleteEnum.COMPLETE : CompleteEnum.NOEXECUTE;
                             }
 
                             @Override

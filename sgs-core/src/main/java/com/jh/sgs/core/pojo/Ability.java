@@ -1,5 +1,7 @@
 package com.jh.sgs.core.pojo;
 
+import com.jh.sgs.base.pojo.Card;
+import com.jh.sgs.base.pojo.ID;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;

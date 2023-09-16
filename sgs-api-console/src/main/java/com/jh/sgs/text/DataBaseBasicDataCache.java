@@ -1,8 +1,8 @@
 package com.jh.sgs.text;
 
+import com.jh.sgs.base.pojo.Card;
+import com.jh.sgs.base.pojo.General;
 import com.jh.sgs.core.data.DataBaseBasicData;
-import com.jh.sgs.core.pojo.Card;
-import com.jh.sgs.core.pojo.General;
 
 import java.util.List;
 import java.util.Map;

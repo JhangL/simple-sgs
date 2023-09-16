@@ -3,10 +3,10 @@ package com.jh.sgs.core.data;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
+import com.jh.sgs.base.pojo.Card;
+import com.jh.sgs.base.pojo.General;
+import com.jh.sgs.base.pojo.Skill;
 import com.jh.sgs.core.interfaces.BasicData;
-import com.jh.sgs.core.pojo.Card;
-import com.jh.sgs.core.pojo.General;
-import com.jh.sgs.core.pojo.Skill;
 
 import java.util.*;
 

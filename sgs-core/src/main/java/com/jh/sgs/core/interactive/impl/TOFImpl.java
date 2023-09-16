@@ -1,8 +1,7 @@
 package com.jh.sgs.core.interactive.impl;
 
-import com.jh.sgs.core.InteractiveEvent;
-import com.jh.sgs.core.enums.InteractiveEnum;
-import com.jh.sgs.core.interactive.Interactiveable;
+import com.jh.sgs.base.enums.InteractiveEnum;
+import com.jh.sgs.base.interactive.Interactiveable;
 import com.jh.sgs.core.pool.BooleanPool;
 
 public class TOFImpl implements Interactiveable {
@@ -31,7 +30,7 @@ public class TOFImpl implements Interactiveable {
     }
 
     @Override
-    public InteractiveEvent.CompleteEnum complete() {
-        return a ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
+    public CompleteEnum complete() {
+        return a ? CompleteEnum.COMPLETE : CompleteEnum.NOEXECUTE;
     }
 }

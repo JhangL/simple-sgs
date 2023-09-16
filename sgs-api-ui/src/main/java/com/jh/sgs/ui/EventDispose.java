@@ -1,9 +1,9 @@
 package com.jh.sgs.ui;
 
+import com.jh.sgs.base.enums.InteractiveEnum;
+import com.jh.sgs.base.exception.SgsApiException;
+import com.jh.sgs.base.interactive.*;
 import com.jh.sgs.core.InteractiveEvent;
-import com.jh.sgs.core.enums.InteractiveEnum;
-import com.jh.sgs.core.exception.SgsApiException;
-import com.jh.sgs.core.interactive.*;
 
 /**
  * 〈功能概述〉<br>

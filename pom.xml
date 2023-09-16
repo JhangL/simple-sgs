@@ -12,6 +12,7 @@
         <module>sgs-core</module>
         <module>sgs-api-console</module>
         <module>sgs-api-ui</module>
+        <module>sgs-base</module>
     </modules>
 
     <properties>

@@ -1,9 +1,9 @@
 package com.jh.sgs.core.general;
 
+import com.jh.sgs.base.pojo.Card;
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.enums.IdentityEnum;
 import com.jh.sgs.core.pojo.Ability;
-import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pool.TPool;
 import com.jh.sgs.core.roundevent.AbilityEvent;

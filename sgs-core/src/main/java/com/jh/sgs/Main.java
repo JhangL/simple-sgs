@@ -1,8 +1,8 @@
 package com.jh.sgs;
 
+import com.jh.sgs.base.exception.SgsApiException;
 import com.jh.sgs.core.GameLauncher;
 import com.jh.sgs.core.InteractiveEvent;
-import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.interfaces.MessageRequest;
 import lombok.extern.log4j.Log4j2;

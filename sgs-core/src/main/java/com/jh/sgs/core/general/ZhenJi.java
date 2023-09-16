@@ -1,15 +1,15 @@
 package com.jh.sgs.core.general;
 
+import com.jh.sgs.base.enums.SuitEnum;
+import com.jh.sgs.base.exception.SgsApiException;
+import com.jh.sgs.base.pojo.Card;
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.enums.CardEnum;
-import com.jh.sgs.core.enums.SuitEnum;
-import com.jh.sgs.core.exception.SgsApiException;
 import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.interactive.impl.JNXZPImpl;
 import com.jh.sgs.core.interactive.impl.TOFImpl;
 import com.jh.sgs.core.pojo.Ability;
-import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pool.BooleanPool;
 import com.jh.sgs.core.pool.TPool;

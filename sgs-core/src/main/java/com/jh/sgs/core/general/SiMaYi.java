@@ -1,11 +1,14 @@
 package com.jh.sgs.core.general;
 
-import com.jh.sgs.core.*;
-import com.jh.sgs.core.enums.InteractiveEnum;
-import com.jh.sgs.core.interactive.Interactiveable;
+import com.jh.sgs.base.enums.InteractiveEnum;
+import com.jh.sgs.base.interactive.Interactiveable;
+import com.jh.sgs.base.pojo.Card;
+import com.jh.sgs.core.ContextManage;
+import com.jh.sgs.core.InteractiveMachine;
+import com.jh.sgs.core.RoundManage;
+import com.jh.sgs.core.Util;
 import com.jh.sgs.core.interactive.impl.JNXZPImpl;
 import com.jh.sgs.core.interactive.impl.TOFImpl;
-import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pool.BooleanPool;
 import com.jh.sgs.core.pool.TPool;
@@ -13,7 +16,6 @@ import com.jh.sgs.core.roundevent.BeSubBloodEvent;
 import com.jh.sgs.core.roundevent.DecideInvadeEvent;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Log4j2
@@ -116,8 +118,8 @@ public class SiMaYi extends BaseGeneral {
                     }
 
                     @Override
-                    public InteractiveEvent.CompleteEnum complete() {
-                        return a ? InteractiveEvent.CompleteEnum.COMPLETE : InteractiveEvent.CompleteEnum.NOEXECUTE;
+                    public CompleteEnum complete() {
+                        return a ? CompleteEnum.COMPLETE : CompleteEnum.NOEXECUTE;
                     }
                 }).lock();
                 //执行失牌，获得牌操作

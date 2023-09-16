@@ -4,8 +4,8 @@
 
 package com.jh.sgs.ui;
 
-import com.jh.sgs.core.enums.SuitEnum;
-import com.jh.sgs.core.pojo.Card;
+import com.jh.sgs.base.enums.SuitEnum;
+import com.jh.sgs.base.pojo.Card;
 
 import javax.swing.*;
 import java.awt.*;

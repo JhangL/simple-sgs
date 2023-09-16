@@ -1,15 +1,15 @@
 package com.jh.sgs.text;
 
 import com.jh.sgs.StartGame;
+import com.jh.sgs.base.enums.InteractiveEnum;
+import com.jh.sgs.base.exception.SgsApiException;
+import com.jh.sgs.base.interactive.*;
+import com.jh.sgs.base.pojo.Card;
+import com.jh.sgs.base.pojo.General;
 import com.jh.sgs.core.InteractiveEvent;
 import com.jh.sgs.core.enums.IdentityEnum;
-import com.jh.sgs.core.enums.InteractiveEnum;
-import com.jh.sgs.core.exception.SgsApiException;
-import com.jh.sgs.core.interactive.*;
-import com.jh.sgs.core.pojo.Card;
 import com.jh.sgs.core.pojo.CompleteGeneral;
 import com.jh.sgs.core.pojo.CompletePlayer;
-import com.jh.sgs.core.pojo.General;
 
 import java.util.Arrays;
 import java.util.List;
