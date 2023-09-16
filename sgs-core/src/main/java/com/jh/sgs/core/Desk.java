@@ -92,7 +92,7 @@ public class Desk implements ShowStatus {
         for (int i = 0, intsLength = ints.length; i < intsLength; i++) {
             if (i == playerIndex) continue;
             //公式（a查询玩家，b被查询玩家，s人数）：b>a: b-a,a-(b-c)找最小，b<a: a-b,b+c-a 找最小
-            action.accept(i > playerIndex ? Math.min(i - playerIndex, playerIndex - (i - ints.length)) : Math.min(playerIndex - i, i + i - ints.length - playerIndex), chair[ints[i]]);
+            action.accept(i > playerIndex ? Math.min(i - playerIndex, playerIndex - (i - ints.length)) : Math.min(playerIndex - i, i +  ints.length - playerIndex), chair[ints[i]]);
         }
 
     }
