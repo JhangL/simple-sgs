@@ -3,13 +3,13 @@ package com.jh.sgs.core.general;
 import com.jh.sgs.base.enums.InteractiveEnum;
 import com.jh.sgs.base.interactive.Interactiveable;
 import com.jh.sgs.base.pojo.Card;
+import com.jh.sgs.base.pool.BooleanPool;
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.interactive.impl.TOFImpl;
 import com.jh.sgs.core.pojo.CompletePlayer;
-import com.jh.sgs.core.pool.BooleanPool;
 import com.jh.sgs.core.roundevent.CardTargetHideEvent;
 
 import java.util.ArrayList;

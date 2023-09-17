@@ -72,7 +72,7 @@ public class DataBaseBasicData implements BasicData {
 
     @Override
     public List<Card> getCards() {
-        try (ResultSet resultSet = statement.executeQuery("select * from card where name_id")) {
+        try (ResultSet resultSet = statement.executeQuery("select * from card ")) {
             ArrayList<Card> cards = new ArrayList<>();
             while (resultSet.next()) {
                 Card card = new Card();

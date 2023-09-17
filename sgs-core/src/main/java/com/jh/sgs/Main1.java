@@ -1,10 +1,10 @@
 package com.jh.sgs;
 
 import com.jh.sgs.base.exception.SgsApiException;
+import com.jh.sgs.base.interfaces.InteractiveEvent;
+import com.jh.sgs.base.interfaces.MessageReceipt;
+import com.jh.sgs.base.interfaces.MessageRequest;
 import com.jh.sgs.core.GameLauncher;
-import com.jh.sgs.core.InteractiveEvent;
-import com.jh.sgs.core.interfaces.MessageReceipt;
-import com.jh.sgs.core.interfaces.MessageRequest;
 import lombok.extern.log4j.Log4j2;
 
 import java.io.FileWriter;
@@ -36,8 +36,8 @@ public class Main1 {
                     } catch (InterruptedException ignored) {
 
                     }
-                    System.out.println(interactiveEvent.getMessage());
-                    if (!"请出牌".equals(interactiveEvent.getMessage())) {
+                    System.out.println(interactiveEvent.message());
+                    if (!"请出牌".equals(interactiveEvent.message())) {
                         interactiveEvent.cancel();
                         continue;
                     }

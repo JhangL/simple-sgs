@@ -4,15 +4,16 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.jh</groupId>
+    <groupId>com.jh.sgs</groupId>
     <artifactId>sgs</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
         <module>sgs-core</module>
-        <module>sgs-api-console</module>
-        <module>sgs-api-ui</module>
-        <module>sgs-base</module>
+        <module>sgs-run-console</module>
+        <module>sgs-run-ui-client</module>
+        <module>sgs-api</module>
+        <module>sgs-run-ui-server</module>
     </modules>
 
     <properties>

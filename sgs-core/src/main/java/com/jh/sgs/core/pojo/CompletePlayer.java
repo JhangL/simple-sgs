@@ -1,8 +1,8 @@
 package com.jh.sgs.core.pojo;
 
+import com.jh.sgs.base.enums.IdentityEnum;
 import com.jh.sgs.base.pojo.Card;
 import com.jh.sgs.base.pojo.ID;
-import com.jh.sgs.core.enums.IdentityEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

@@ -3,6 +3,8 @@ package com.jh.sgs.core.card;
 import com.jh.sgs.base.enums.InteractiveEnum;
 import com.jh.sgs.base.interactive.Interactiveable;
 import com.jh.sgs.base.pojo.Card;
+import com.jh.sgs.base.pool.BooleanPool;
+import com.jh.sgs.base.pool.TPool;
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.RoundManage;
@@ -10,8 +12,6 @@ import com.jh.sgs.core.Util;
 import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.interactive.impl.TOFImpl;
 import com.jh.sgs.core.pojo.CompletePlayer;
-import com.jh.sgs.core.pool.BooleanPool;
-import com.jh.sgs.core.pool.TPool;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -97,7 +97,7 @@ public class QiLinGong extends WeaponCard {
 
     @Override
     public int shaDistance() {
-        return 0;
+        return 5;
     }
 
     @Override

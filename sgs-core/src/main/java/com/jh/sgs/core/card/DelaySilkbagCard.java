@@ -6,8 +6,8 @@ import com.jh.sgs.core.Util;
 import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.exception.DesktopException;
 import com.jh.sgs.core.exception.DesktopRefuseException;
-import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.pojo.CompletePlayer;
+import com.jh.sgs.core.pojo.MessageReceipter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -43,9 +43,9 @@ public abstract class DelaySilkbagCard extends OneSilkbagCard implements Decidab
     @Override
     public void effect() throws DesktopException {
         int player = getPlayer();
-        MessageReceipt.globalInContext(CardDesktop.playerInContext() + "将对" + player + "使用" + CardDesktop.cardInContext());
+        MessageReceipter.globalInContext(CardDesktop.playerInContext() + "将对" + player + "使用" + CardDesktop.cardInContext());
         effect(player);
-        MessageReceipt.globalInContext(CardDesktop.playerInContext() + "完成对" + player + "使用" + CardDesktop.cardInContext());
+        MessageReceipter.globalInContext(CardDesktop.playerInContext() + "完成对" + player + "使用" + CardDesktop.cardInContext());
     }
 
     @Override

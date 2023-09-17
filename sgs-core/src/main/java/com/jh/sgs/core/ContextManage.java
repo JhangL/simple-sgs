@@ -1,11 +1,11 @@
 package com.jh.sgs.core;
 
+import com.jh.sgs.base.interfaces.MessageReceipt;
 import com.jh.sgs.core.desktop.DecideCardDesktop;
 import com.jh.sgs.core.desktop.Desktop;
 import com.jh.sgs.core.desktop.ExecuteCardDesktop;
 import com.jh.sgs.core.desktop.ShaCardDesktop;
 import com.jh.sgs.core.exception.SgsRuntimeException;
-import com.jh.sgs.core.interfaces.MessageReceipt;
 
 public class ContextManage {
     private static final ThreadLocal<GameEngine> gameEngineThreadLocal = new ThreadLocal<>();

@@ -4,16 +4,16 @@ import com.jh.sgs.base.enums.InteractiveEnum;
 import com.jh.sgs.base.exception.SgsApiException;
 import com.jh.sgs.base.interactive.Interactiveable;
 import com.jh.sgs.base.pojo.Card;
+import com.jh.sgs.base.pool.TPool;
 import com.jh.sgs.core.desktop.DecideCardDesktop;
 import com.jh.sgs.core.desktop.ExecuteCardDesktop;
 import com.jh.sgs.core.desktop.ShaCardDesktop;
 import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.exception.DesktopException;
 import com.jh.sgs.core.exception.DesktopRefuseException;
-import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.EventLock;
-import com.jh.sgs.core.pool.TPool;
+import com.jh.sgs.core.pojo.MessageReceipter;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.log4j.Log4j2;
@@ -104,8 +104,8 @@ public class RoundProcess {
     public void obtainCard() {
         List<Card> cards = cardManage().obtainCard(2);
         completePlayer.getHandCard().addAll(cards);
-        MessageReceipt.personalInContext(getPlayerIndex(),"从牌堆摸取牌{}",cards);
-        MessageReceipt.globalInContext("{}从牌堆摸取{}张牌",getPlayerIndex(),cards.size());
+        MessageReceipter.personalInContext(getPlayerIndex(),"从牌堆摸取牌{}",cards);
+        MessageReceipter.globalInContext("{}从牌堆摸取{}张牌",getPlayerIndex(),cards.size());
     }
 
     public void playCard() {
@@ -136,7 +136,7 @@ public class RoundProcess {
                 }
             }
         } while (cards.getPool() != null);
-        MessageReceipt.globalInContext("{}取消出牌",getPlayerIndex());
+        MessageReceipter.globalInContext("{}取消出牌",getPlayerIndex());
     }
 
     public void disCard() {
@@ -188,7 +188,8 @@ public class RoundProcess {
                     return c ? CompleteEnum.COMPLETE : CompleteEnum.NOEXECUTE;
                 }
             }).lock();
-            MessageReceipt.globalInContext("{}弃牌{}",getPlayerIndex(),dis);
+            MessageReceipter.globalInContext("{}弃牌{}",getPlayerIndex(),dis);
+            MessageReceipter.personalInContext(getPlayerIndex(),"你弃牌{}",dis);
             ContextManage.cardManage().recoveryCard(dis);
         }
     }

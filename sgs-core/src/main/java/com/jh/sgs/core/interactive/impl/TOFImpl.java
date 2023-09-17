@@ -2,7 +2,7 @@ package com.jh.sgs.core.interactive.impl;
 
 import com.jh.sgs.base.enums.InteractiveEnum;
 import com.jh.sgs.base.interactive.Interactiveable;
-import com.jh.sgs.core.pool.BooleanPool;
+import com.jh.sgs.base.pool.BooleanPool;
 
 public class TOFImpl implements Interactiveable {
     boolean a;

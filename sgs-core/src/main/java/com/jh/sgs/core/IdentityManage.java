@@ -1,7 +1,7 @@
 package com.jh.sgs.core;
 
 import com.alibaba.fastjson2.JSON;
-import com.jh.sgs.core.enums.IdentityEnum;
+import com.jh.sgs.base.enums.IdentityEnum;
 import com.jh.sgs.core.interfaces.ShowStatus;
 
 import java.util.ArrayList;

@@ -1,10 +1,11 @@
 package com.jh.sgs.core;
 
 import com.jh.sgs.base.interactive.Interactiveable;
+import com.jh.sgs.base.interfaces.MessageReceipt;
 import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.interfaces.InteractiveSubmit;
-import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.interfaces.ShowStatus;
+import com.jh.sgs.core.pojo.MessageReceipter;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -17,35 +18,35 @@ public class InteractiveMachine implements ShowStatus, InteractiveSubmit {
     private AtomicInteger lockNum = new AtomicInteger();
     @Getter
     private boolean bockBool;
-    private List<InteractiveEvent> interactiveEvents = new LinkedList<>();
+    private List<InteractiveEventer> interactiveEventers = new LinkedList<>();
 
     InteractiveMachine() {
     }
 
     public InteractiveMachine addEvent(int player, String message, Interactiveable interactiveable) {
-        MessageReceipt.personalInContext(player,"请处理请求");
-        return addEvent(new InteractiveEvent(player, message, interactiveable,this));
+        MessageReceipter.personalInContext(player,"请处理请求");
+        return addEvent(new InteractiveEventer(player, message, interactiveable,this));
     }
 
-    private InteractiveMachine addEvent(InteractiveEvent interactiveEvent) {
+    private InteractiveMachine addEvent(InteractiveEventer interactiveEventer) {
         if (Thread.currentThread().getThreadGroup() != GameEngine.threadGroup)
             throw new SgsRuntimeException("非游戏组线程调用");
         lockNum.getAndIncrement();
-        interactiveEvents.add(interactiveEvent);
+        interactiveEventers.add(interactiveEventer);
         return this;
     }
 
-    void subEvent(InteractiveEvent event) {
+    void subEvent(InteractiveEventer event) {
         if (Thread.currentThread().getThreadGroup() == GameEngine.threadGroup)
             throw new SgsRuntimeException("游戏组线程调用");
-        interactiveEvents.remove(event);
+        interactiveEventers.remove(event);
         lockNum.getAndDecrement();
     }
 
     @Override
-    public void submit(InteractiveEvent interactiveEvent) {
+    public void submit(InteractiveEventer interactiveEventer) {
         try {
-            subEvent(interactiveEvent);
+            subEvent(interactiveEventer);
         } catch (Exception e) {
             throw new SgsRuntimeException(e.getMessage());
         }
@@ -57,7 +58,7 @@ public class InteractiveMachine implements ShowStatus, InteractiveSubmit {
         bockBool = true;
         MessageReceipt messageReceipt = ContextManage.messageReceipt();
         new Thread(GameEngine.threadGroupPlayer, () -> {
-            messageReceipt.system(new ArrayList<>(interactiveEvents));
+            messageReceipt.system(new ArrayList<>(interactiveEventers));
         }).start();
         while (lockNum.get() != 0) {
             try {

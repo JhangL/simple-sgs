@@ -1,8 +1,8 @@
 package com.jh.sgs.core.interfaces;
 
-import com.jh.sgs.core.InteractiveEvent;
+import com.jh.sgs.core.InteractiveEventer;
 
 public interface InteractiveSubmit {
 
-    public void submit(InteractiveEvent interactiveEvent);
+    public void submit(InteractiveEventer interactiveEventer);
 }

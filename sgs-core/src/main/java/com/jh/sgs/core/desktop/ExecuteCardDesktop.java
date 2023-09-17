@@ -6,7 +6,7 @@ import com.jh.sgs.core.CardManage;
 import com.jh.sgs.core.card.BaseCard;
 import com.jh.sgs.core.card.Executable;
 import com.jh.sgs.core.exception.DesktopException;
-import com.jh.sgs.core.interfaces.MessageReceipt;
+import com.jh.sgs.core.pojo.MessageReceipter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -27,7 +27,7 @@ public class ExecuteCardDesktop extends CardDesktop {
 
     @Override
     protected void execute() throws DesktopException {
-        MessageReceipt.globalInContext(getPlayer() + "出牌" + getCard());
+        MessageReceipter.globalInContext(getPlayer() + "出牌" + getCard());
         executable.execute();
     }
 

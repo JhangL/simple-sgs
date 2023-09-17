@@ -1,8 +1,8 @@
 package com.jh.sgs.core;
 
+import com.jh.sgs.base.interfaces.MessageReceipt;
+import com.jh.sgs.base.interfaces.MessageRequest;
 import com.jh.sgs.core.interfaces.GameConfig;
-import com.jh.sgs.core.interfaces.MessageReceipt;
-import com.jh.sgs.core.interfaces.MessageRequest;
 import lombok.Getter;
 
 import static com.jh.sgs.core.GameEngine.threadGroup;

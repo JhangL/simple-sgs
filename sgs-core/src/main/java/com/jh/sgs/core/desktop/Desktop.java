@@ -5,7 +5,7 @@ import com.jh.sgs.core.exception.DesktopErrorException;
 import com.jh.sgs.core.exception.DesktopException;
 import com.jh.sgs.core.exception.DesktopRefuseException;
 import com.jh.sgs.core.exception.DesktopRelationalException;
-import com.jh.sgs.core.interfaces.MessageReceipt;
+import com.jh.sgs.core.pojo.MessageReceipter;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
@@ -28,14 +28,14 @@ public abstract class Desktop {
         } catch (DesktopException e) {
             if (e instanceof DesktopRelationalException) {
                 log.debug("{} 执行发出关联阻挡", player);
-                MessageReceipt.globalInContext(player + "完成阻挡" );
+                MessageReceipter.globalInContext(player + "完成阻挡" );
                 end();
                 throw new DesktopRefuseException(e.getMessage());
             } else if (e instanceof DesktopRefuseException) {
                 log.debug("{} 执行阻挡", player);
-                MessageReceipt.globalInContext(player + "被阻挡" );
+                MessageReceipter.globalInContext(player + "被阻挡" );
             } else if (e instanceof DesktopErrorException) {
-                MessageReceipt.globalInContext(player + "执行错误" );
+                MessageReceipter.globalInContext(player + "执行错误" );
                 error();
                 return;
             }

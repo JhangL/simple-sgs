@@ -5,6 +5,7 @@ import com.jh.sgs.base.exception.SgsApiException;
 import com.jh.sgs.base.interactive.Interactiveable;
 import com.jh.sgs.base.pojo.Card;
 import com.jh.sgs.base.pojo.ShowPlayCardAbility;
+import com.jh.sgs.base.pool.TPool;
 import com.jh.sgs.core.card.BaseCard;
 import com.jh.sgs.core.card.Loseable;
 import com.jh.sgs.core.desktop.Desktop;
@@ -12,11 +13,10 @@ import com.jh.sgs.core.desktop.ExecuteCardDesktop;
 import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.exception.DesktopRefuseException;
 import com.jh.sgs.core.general.BaseGeneral;
-import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.interfaces.RoundEvent;
 import com.jh.sgs.core.pojo.Ability;
 import com.jh.sgs.core.pojo.CompletePlayer;
-import com.jh.sgs.core.pool.TPool;
+import com.jh.sgs.core.pojo.MessageReceipter;
 import com.jh.sgs.core.roundevent.*;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
@@ -188,26 +188,31 @@ public class RoundManage {
                 }
             };
             InteractiveMachine.addEventInContext(player, message, interactiveable).lock();
+
             //处理技能
             if (abilty[0] != null) {
 
                 if (abilty[0].getType() == Ability.PLAY_CARD) {
+                    MessageReceipter.personalInContext(player,"你使用牌技能{}",abilty[0].getName());
                     //使用了牌技能
                     cards.setPool(((Ability.PlayCardAbilityable) abilty[0].getAbilityable()).playCardAbility(abilty[0], action));
                     //若牌技能未返回牌，循环重新询问
+
                 } else if (abilty[0].getType() == Ability.SINGLE) {
                     //使用了独立技能
+                    MessageReceipter.personalInContext(player,"你使用独立技能{}",abilty[0].getName());
                     ((Ability.SingleAbilityable) abilty[0].getAbilityable()).singleAbility(abilty[0]);
                     //重新询问出牌
                 }
-
             } else {
                 //没使用牌技能
                 if (cards.getPool() == null) {
                     //没用技能没出牌，，退出循环
                     break;
                 }
+
             }
+            if (cards.getPool() !=null) MessageReceipter.personalInContext(player,"你出牌{}",cards.getPool());
         }
 
     }
@@ -244,7 +249,7 @@ public class RoundManage {
                 completePlayers.add(completePlayer);
 
         });
-        if (!completePlayers.isEmpty()) MessageReceipt.globalInContext("等待使用无懈可击");
+        if (!completePlayers.isEmpty()) MessageReceipter.globalInContext("等待使用无懈可击");
         //无懈可击出牌
         TPool<Card> playWhile = new TPool<>();
         for (CompletePlayer completePlayer : completePlayers) {
@@ -254,14 +259,14 @@ public class RoundManage {
             }, false);
             //新增desktop（无懈可击使用desktop传递异常）
             if (playWhile.getPool() != null) {
-                if (!completePlayers.isEmpty()) MessageReceipt.globalInContext("使用无懈可击");
+                if (!completePlayers.isEmpty()) MessageReceipter.globalInContext("使用无懈可击");
                 desktopStack.create(new ExecuteCardDesktop(completePlayer.getId(), playWhile.getPool()));
                 desktopStack.remove();
                 break;
             }
         }
         if (playWhile.getPool() == null)
-            if (!completePlayers.isEmpty()) MessageReceipt.globalInContext("不使用无懈可击");
+            if (!completePlayers.isEmpty()) MessageReceipter.globalInContext("不使用无懈可击");
     }
 
 
@@ -343,10 +348,13 @@ public class RoundManage {
      * @param lossLocation 失去位置
      */
     public void loseCard(int operatePlayer, int lossCardPlayer, Card lossCard, int lossLocation) {
+
         switch (lossLocation) {
             case HAND_CARD:
+                MessageReceipter.personalInContext(lossCardPlayer,"你失去手牌{}",lossCard);
                 break;
             case EQUIP_CARD:
+                MessageReceipter.personalInContext(lossCardPlayer,"你失去装备牌{}",lossCard);
                 //去掉装备牌的特殊效果
                 BaseCard baseCard = CardEnum.getById(lossCard.getNameId()).getBaseCard();
                 if (baseCard instanceof Loseable) ((Loseable) baseCard).lose(lossCardPlayer);

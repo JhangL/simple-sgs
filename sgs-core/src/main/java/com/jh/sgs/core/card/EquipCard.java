@@ -6,8 +6,8 @@ import com.jh.sgs.core.RoundManage;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.enums.EquipCardEnum;
-import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.pojo.CompletePlayer;
+import com.jh.sgs.core.pojo.MessageReceipter;
 import lombok.extern.log4j.Log4j2;
 
 @Log4j2
@@ -16,7 +16,7 @@ public abstract class EquipCard extends BaseCard implements Executable{
     @Override
     public void execute() {
         log.debug("执行{}-->",getName());
-        MessageReceipt.globalInContext(CardDesktop.playerInContext() +"装备"+ CardDesktop.cardInContext());
+        MessageReceipter.globalInContext(CardDesktop.playerInContext() +"装备"+ CardDesktop.cardInContext());
         CompletePlayer completePlayer = Util.getDesktopMainPlayer();
         int id = completePlayer.getId();
         Card card = completePlayer.getEquipCard()[equipType().ordinal()];
@@ -31,7 +31,7 @@ public abstract class EquipCard extends BaseCard implements Executable{
         ContextManage.executeCardDesktop().useCard();
         ContextManage.roundManage().statusRefresh(CardDesktop.playerInContext(),CardDesktop.playerInContext());
         log.debug(id + "装备装备牌" + CardDesktop.cardInContext());
-        MessageReceipt.globalInContext(CardDesktop.playerInContext() +"完成装备"+CardDesktop.cardInContext());
+        MessageReceipter.globalInContext(CardDesktop.playerInContext() +"完成装备"+CardDesktop.cardInContext());
     }
 
     abstract EquipCardEnum equipType();

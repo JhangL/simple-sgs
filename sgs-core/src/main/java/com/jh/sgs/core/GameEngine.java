@@ -1,13 +1,15 @@
 package com.jh.sgs.core;
 
 
+import com.jh.sgs.base.interfaces.MessageReceipt;
+import com.jh.sgs.base.interfaces.MessageRequest;
+import com.jh.sgs.base.pojo.ShowCompletePlayer;
 import com.jh.sgs.base.pojo.ShowPlayer;
 import com.jh.sgs.core.data.DataBaseBasicData;
 import com.jh.sgs.core.interfaces.BasicData;
 import com.jh.sgs.core.interfaces.GameConfig;
-import com.jh.sgs.core.interfaces.MessageReceipt;
-import com.jh.sgs.core.interfaces.MessageRequest;
 import com.jh.sgs.core.pojo.CompletePlayer;
+import com.jh.sgs.core.pojo.MessageReceipter;
 import com.jh.sgs.core.pojo.OriginalPlayer;
 import lombok.Getter;
 import lombok.Setter;
@@ -68,13 +70,13 @@ public class GameEngine implements Runnable, MessageRequest {
         init();
         log.info("系统初始化完成");
         log.info("开局");
-        MessageReceipt.globalInContext("开始游戏");
+        MessageReceipter.globalInContext("开始游戏");
         gameProcess = new GameProcess(playerManage.players.values());
         gameProcess.begin();
         log.info("回合前置完成，进入回合");
         roundMange = new RoundManage(gameProcess.getDesk());
         roundMange.init();
-        MessageReceipt.globalInContext("开始回合");
+        MessageReceipter.globalInContext("开始回合");
         roundMange.begin();
     }
 
@@ -82,7 +84,7 @@ public class GameEngine implements Runnable, MessageRequest {
     private void check() {
         if (messageReceipt == null) log.warn("回调消息：无");
         else log.info("回调消息：" + messageReceipt.name());
-        if (playerNum != 2 && (playerNum < 4 || playerNum > 10)) {
+        if (playerNum != 1 &&playerNum != 2 && (playerNum < 4 || playerNum > 10)) {
             log.warn(playerNum + "人数不支持");
             shutDown();
         } else log.info("人数：" + playerNum);
@@ -134,8 +136,22 @@ public class GameEngine implements Runnable, MessageRequest {
     }
 
     @Override
-    public CompletePlayer getPlayer(int id) {
-        return gameProcess.getDesk().get(id);
+    public ShowCompletePlayer getPlayer(int id) {
+        CompletePlayer completePlayer = gameProcess.getDesk().get(id);
+        ShowCompletePlayer showCompletePlayer = new ShowCompletePlayer();
+        showCompletePlayer.setId(completePlayer.getId());
+        if (completePlayer.getCompleteGeneral() != null && completePlayer.getCompleteGeneral().getGeneral() != null) {
+            showCompletePlayer.setName(completePlayer.getCompleteGeneral().getGeneral().getName());
+            showCompletePlayer.setCountry(completePlayer.getCompleteGeneral().getGeneral().getCountry());
+            showCompletePlayer.setSkills(completePlayer.getCompleteGeneral().getGeneral().getSkills());
+        }
+        showCompletePlayer.setIdentity(completePlayer.getIdentity());
+        showCompletePlayer.setBlood(completePlayer.getBlood());
+        showCompletePlayer.setMaxBlood(completePlayer.getMaxBlood());
+        showCompletePlayer.setHandCard(completePlayer.getHandCard());
+        showCompletePlayer.setDecideCard(completePlayer.getDecideCard());
+        showCompletePlayer.setEquipCard(completePlayer.getEquipCard());
+        return showCompletePlayer;
     }
 
     @Override

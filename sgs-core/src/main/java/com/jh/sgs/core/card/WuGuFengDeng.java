@@ -7,8 +7,8 @@ import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.desktop.CardDesktop;
-import com.jh.sgs.core.interfaces.MessageReceipt;
 import com.jh.sgs.core.pojo.CompletePlayer;
+import com.jh.sgs.core.pojo.MessageReceipter;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
@@ -26,12 +26,12 @@ public class WuGuFengDeng extends MoreSilkbagCard {
     @Override
     public void begin() {
         cards = ContextManage.cardManage().obtainCard(ContextManage.desk().sizeOnDesk());
-        MessageReceipt.globalInContext(getName() + ":获取的牌" + cards);
+        MessageReceipter.globalInContext(getName() + ":获取的牌" + cards);
     }
 
     @Override
     public void end() {
-        MessageReceipt.globalInContext(getName() + ":剩余的牌" + cards);
+        MessageReceipter.globalInContext(getName() + ":剩余的牌" + cards);
         ContextManage.executeCardDesktop().getProcessCards().addAll(cards);
     }
 
@@ -79,7 +79,7 @@ public class WuGuFengDeng extends MoreSilkbagCard {
         }).lock();
         cards.remove(card[0]);
         completePlayer.getHandCard().add(card[0]);
-        MessageReceipt.globalInContext(getName() + ":" + completePlayer.getId() + "选择了" + card[0]);
+        MessageReceipter.globalInContext(getName() + ":" + completePlayer.getId() + "选择了" + card[0]);
         log.debug("{}完成：执行玩家：{}，被执行玩家：{}，选择的卡牌：{}", getName(), mainPlayer, completePlayer, card[0]);
     }
 }
