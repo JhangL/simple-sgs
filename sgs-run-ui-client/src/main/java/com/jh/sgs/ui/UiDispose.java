@@ -42,6 +42,9 @@ public class UiDispose {
                             case TcpObject.O_HANDCARD:
                                 player.handCard();
                                 break;
+                            case TcpObject.O_EQUIPCARD:
+                                player.equipCard();
+                                break;
                             case TcpObject.O_ABILITY:
                                 player.ability(tcpObject.getShowPlayCardAbility());
                                 break;
@@ -62,7 +65,13 @@ public class UiDispose {
                                 uiClient.request(tcpObject12);
                                 break;
                             case TcpObject.O_CHOOSE:
-                                player.choose(tcpObject.getChoose());
+                                player.choose(tcpObject.getChoose(), null, null);
+                                break;
+                            case TcpObject.O_CHOOSEGENERAL:
+                                player.choose(null, tcpObject.getGenerals(), null);
+                                break;
+                            case TcpObject.O_CHOOSETAR:
+                                player.choose(null,null, tcpObject.getShowPlayers());
                                 break;
                         }
                         break;

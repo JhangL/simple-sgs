@@ -5,6 +5,8 @@
 package com.jh.sgs.ui;
 
 import com.jh.sgs.base.pojo.Card;
+import com.jh.sgs.base.pojo.General;
+import com.jh.sgs.base.pojo.ShowPlayer;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -17,20 +19,37 @@ import java.util.List;
  */
 public class Choose extends JDialog {
     Player player;
-    public Choose(Window owner, Player player, List<Card> cards) {
+
+    public Choose(Window owner, Player player, List<Card> cards, List<General> generals, List<ShowPlayer> showPlayers) {
         super(owner);
         setTitle("选择牌");
-        this.player=player;
+        this.player = player;
         initComponents();
-        for (Card card : cards) {
-            CardButton cardButton = new CardButton(player, card);
-            cardButton.setEnabled(true);
-            panel1.add(cardButton);
+        if (cards != null) {
+            for (Card card : cards) {
+                CardButton cardButton = new CardButton(player, card);
+                cardButton.setEnabled(true);
+                panel1.add(cardButton);
+            }
+        } else if (generals!=null){
+            for (General general : generals) {
+                CardButton cardButton = new CardButton(player, general);
+                cardButton.setEnabled(true);
+                panel1.add(cardButton);
+            }
+        }else {
+            for (ShowPlayer showPlayer : showPlayers) {
+                CardButton cardButton = new CardButton(player, showPlayer);
+                cardButton.setEnabled(true);
+                panel1.add(cardButton);
+            }
         }
+
         panel1.revalidate();
     }
 
     private void ok(ActionEvent e) {
+        if ("".equals(player.input.getText())) return;
         player.submit(e);
         this.dispose();
     }
@@ -66,13 +85,15 @@ public class Choose extends JDialog {
                 //======== scrollPane1 ========
                 {
                     scrollPane1.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_ALWAYS);
-                    scrollPane1.setMinimumSize(new Dimension(500, 110));
-                    scrollPane1.setPreferredSize(new Dimension(500, 110));
+                    scrollPane1.setMinimumSize(new Dimension(500, 114));
+                    scrollPane1.setPreferredSize(new Dimension(500, 114));
+                    scrollPane1.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
 
                     //======== panel1 ========
                     {
-                        panel1.setMinimumSize(new Dimension(500, 100));
-                        panel1.setPreferredSize(new Dimension(500, 100));
+                        panel1.setMinimumSize(new Dimension(500, 110));
+                        panel1.setPreferredSize(null);
+                        panel1.setMaximumSize(null);
                         panel1.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
                     }
                     scrollPane1.setViewportView(panel1);

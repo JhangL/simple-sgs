@@ -1,9 +1,6 @@
 package com.jh.sgs.ui;
 
-import com.jh.sgs.base.pojo.Card;
-import com.jh.sgs.base.pojo.ShowCompletePlayer;
-import com.jh.sgs.base.pojo.ShowPlayCardAbility;
-import com.jh.sgs.base.pojo.ShowPlayer;
+import com.jh.sgs.base.pojo.*;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -29,6 +26,9 @@ public class TcpObject implements Serializable {
     public static final int O_WAITS = 6;
     public static final int O_ABILITY = 7;
     public static final int O_CHOOSE = 8;
+    public static final int O_EQUIPCARD = 9;
+    public static final int O_CHOOSEGENERAL = 10;
+    public static final int O_CHOOSETAR= 11;
 
     private int source;
     private int type;
@@ -36,6 +36,8 @@ public class TcpObject implements Serializable {
     private String playerMessage;
     private String message;
     private ShowPlayer showPlayer;
+    private List<General> generals;
+    private List<ShowPlayer> showPlayers;
     private ShowCompletePlayer showCompletePlayer;
     private List<ShowPlayCardAbility> showPlayCardAbility;
     private List<Card> choose;

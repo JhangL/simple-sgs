@@ -6,7 +6,9 @@ import com.jh.sgs.base.exception.SgsApiException;
 import com.jh.sgs.base.interactive.*;
 import com.jh.sgs.base.interfaces.InteractiveEvent;
 import com.jh.sgs.base.pojo.Card;
+import com.jh.sgs.base.pojo.General;
 import com.jh.sgs.base.pojo.ShowPlayCardAbility;
+import com.jh.sgs.base.pojo.ShowPlayer;
 import com.jh.sgs.ui.TcpObject;
 
 import java.util.ArrayList;
@@ -118,9 +120,7 @@ public class EventDispose {
     private boolean jnxzp(JNXZP jnxzp) {
         handCard();
         cancel();
-        println("装备牌：" + jnxzp.equipCard());
-        input();
-        println("输入对应牌id（-1取消选择）");
+        equipCard();
         int i = waitValue();
         if (i == -1) jnxzp.cancelPlayCard();
         else jnxzp.setCard(i);
@@ -157,9 +157,7 @@ public class EventDispose {
     }
 
     private boolean xzyx(XZYX xzyx) {
-        println("可选择武将：" + xzyx.selectableGeneral());
-        println("输入对应武将id");
-        input();
+        selectableGeneral(xzyx.selectableGeneral());
         int i = waitValue();
         xzyx.setGeneral(i);
         return true;
@@ -189,19 +187,13 @@ public class EventDispose {
         cards.addAll(ghcqssqyxzp.equipCard());
         cards.addAll(ghcqssqyxzp.decideCard());
         choose(cards);
-        println("手牌：" + ghcqssqyxzp.handCard());
-        println("装备牌：" + ghcqssqyxzp.equipCard());
-        println("判定牌：" + ghcqssqyxzp.decideCard());
-        println("输入对应牌id");
         int i = waitValue();
         ghcqssqyxzp.setCard(i);
         return true;
     }
 
     private boolean xzmb(XZMB xzmb) {
-        println("可选择目标：" + xzmb.targetPlayer());
-        println("输入对应目标id（-1取消选择目标）");
-        input();
+        targetPlayer(xzmb.targetPlayer());
         int i = waitValue();
         if (i == -1) xzmb.cancelTargetPlayer();
         else xzmb.setTargetPlayer(i);
@@ -259,6 +251,12 @@ public class EventDispose {
         tcpObject.setOperate(TcpObject.O_HANDCARD);
         uiServer.request(playerIndex, tcpObject);
     }
+    private void equipCard() {
+        TcpObject tcpObject = new TcpObject();
+        tcpObject.setType(TcpObject.T_OP);
+        tcpObject.setOperate(TcpObject.O_EQUIPCARD);
+        uiServer.request(playerIndex, tcpObject);
+    }
     private void ability(List<ShowPlayCardAbility> abilities) {
         TcpObject tcpObject = new TcpObject();
         tcpObject.setType(TcpObject.T_OP);
@@ -284,6 +282,20 @@ public class EventDispose {
         tcpObject.setType(TcpObject.T_OP);
         tcpObject.setOperate(TcpObject.O_CHOOSE);
         tcpObject.setChoose(cards);
+        uiServer.request(playerIndex, tcpObject);
+    }
+    private void selectableGeneral(List<General> generals) {
+        TcpObject tcpObject = new TcpObject();
+        tcpObject.setType(TcpObject.T_OP);
+        tcpObject.setOperate(TcpObject.O_CHOOSEGENERAL);
+        tcpObject.setGenerals(generals);
+        uiServer.request(playerIndex, tcpObject);
+    }
+    private void targetPlayer(List<ShowPlayer> showPlayers) {
+        TcpObject tcpObject = new TcpObject();
+        tcpObject.setType(TcpObject.T_OP);
+        tcpObject.setOperate(TcpObject.O_CHOOSETAR);
+        tcpObject.setShowPlayers(showPlayers);
         uiServer.request(playerIndex, tcpObject);
     }
 }

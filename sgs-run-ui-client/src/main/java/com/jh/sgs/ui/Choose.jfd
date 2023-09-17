@@ -13,16 +13,18 @@ new FormModel {
 					add( new FormContainer( "javax.swing.JScrollPane", new FormLayoutManager( class javax.swing.JScrollPane ) ) {
 						name: "scrollPane1"
 						"horizontalScrollBarPolicy": 32
-						"minimumSize": new java.awt.Dimension( 500, 110 )
-						"preferredSize": new java.awt.Dimension( 500, 110 )
+						"minimumSize": new java.awt.Dimension( 500, 114 )
+						"preferredSize": new java.awt.Dimension( 500, 114 )
+						"verticalScrollBarPolicy": 21
 						add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
 							"alignment": 0
 							"hgap": 0
 							"vgap": 0
 						} ) {
 							name: "panel1"
-							"minimumSize": new java.awt.Dimension( 500, 100 )
-							"preferredSize": new java.awt.Dimension( 500, 100 )
+							"minimumSize": new java.awt.Dimension( 500, 110 )
+							"preferredSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
+							"maximumSize": sfield com.jformdesigner.model.FormObject NULL_VALUE
 							auxiliary() {
 								"JavaCodeGenerator.variableModifiers": 1
 							}

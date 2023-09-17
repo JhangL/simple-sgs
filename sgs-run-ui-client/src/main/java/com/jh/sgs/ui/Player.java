@@ -6,10 +6,7 @@ package com.jh.sgs.ui;
 
 import com.jh.sgs.base.enums.IdentityEnum;
 import com.jh.sgs.base.enums.SuitEnum;
-import com.jh.sgs.base.pojo.Card;
-import com.jh.sgs.base.pojo.ShowCompletePlayer;
-import com.jh.sgs.base.pojo.ShowPlayCardAbility;
-import com.jh.sgs.base.pojo.Skill;
+import com.jh.sgs.base.pojo.*;
 import com.jh.sgs.base.pool.TPool;
 
 import javax.swing.*;
@@ -29,16 +26,16 @@ public class Player extends JPanel {
     public TPool<String> pool = new TPool<>();
 
     public boolean handBool = false;
-    public List<ShowPlayCardAbility> abilityPool ;
+    public boolean equipBool = false;
+    public List<ShowPlayCardAbility> abilityPool;
     private int playerId;
     private Main main;
 
     public Player(int i, Main main) {
         playerId = i;
-        this.main=main;
+        this.main = main;
         initComponents();
         closeInPut();
-
     }
 
     public void flushData(ShowCompletePlayer showCompletePlayer) {
@@ -63,13 +60,13 @@ public class Player extends JPanel {
                 jButton.setName("");
                 jButton.setEnabled(false);
             } else {
-                jButton.setEnabled(false);
+                jButton.setEnabled(equipBool);
                 jButton.setText(Util.toHtml(card.getNum() + "\n" + SuitEnum.getByIndex(card.getSuit()).getName() + "\n\n" + card.getName()));
                 jButton.setToolTipText(card.getRemark());
-                jButton.setName(String.valueOf(2000+card.getNameId()));
-                if (abilityPool!=null){
+                jButton.setName(String.valueOf(2000 + card.getNameId()+card.getId()*10000));
+                if (abilityPool != null&&!equipBool) {
                     for (ShowPlayCardAbility showPlayCardAbility : abilityPool) {
-                        if (showPlayCardAbility.getId()==card.getNameId()){
+                        if (showPlayCardAbility.getId() == card.getNameId()) {
                             jButton.setEnabled(true);
                             break;
                         }
@@ -88,10 +85,10 @@ public class Player extends JPanel {
                 JButton jButton = v[i];
                 jButton.setText(Util.toHtml(skill.getId() + "\n" + skill.getName()));
                 jButton.setEnabled(false);
-                jButton.setName(String.valueOf(1000+skill.getId()));
-                if (abilityPool!=null){
+                jButton.setName(String.valueOf(1000 + skill.getId()));
+                if (abilityPool != null) {
                     for (ShowPlayCardAbility showPlayCardAbility : abilityPool) {
-                        if (showPlayCardAbility.getId()==skill.getId()){
+                        if (showPlayCardAbility.getId() == skill.getId()) {
                             jButton.setEnabled(true);
                             break;
                         }
@@ -114,7 +111,8 @@ public class Player extends JPanel {
             submit2.setEnabled(false);
             label1.setText("");
             handBool = false;
-            abilityPool=null;
+            equipBool = false;
+            abilityPool = null;
         }
     }
 
@@ -136,6 +134,12 @@ public class Player extends JPanel {
             handBool = true;
         }
     }
+    public void equipCard() {
+        synchronized (this) {
+            equipBool = true;
+        }
+    }
+
     public void ability(List<ShowPlayCardAbility> showPlayCardAbility) {
         synchronized (this) {
             abilityPool = showPlayCardAbility;
@@ -216,7 +220,7 @@ public class Player extends JPanel {
         if (!waitints) input.setText(v + "");
         else {
             String text = input.getText();
-            if ("".equals(text)){
+            if ("".equals(text)) {
                 input.setText(v + "");
                 return;
             }
@@ -266,17 +270,22 @@ public class Player extends JPanel {
 
     public void submit2(ActionEvent e) {
         input.setText(-1 + "");
+        submit(e);
     }
 
     private void skill1(ActionEvent e) {
-        input.setText(((JButton)e.getSource()).getName());
+        String name1 = ((JButton) e.getSource()).getName();
+        if (equipBool){
+            input.setText(name1.substring(0,name1.length()-4));
+        }else {
+            input.setText(name1.substring(name1.length()-4));
+        }
     }
 
-    public void choose(List<Card> cards){
-        Choose choose = new Choose(main,this,cards);
+    public void choose(List<Card> cards, List<General> generals, List<ShowPlayer>  showPlayers) {
+        Choose choose = new Choose(main, this, cards,generals,showPlayers);
         choose.setVisible(true);
     }
-
     private void initComponents() {
         // JFormDesigner - Component initialization - DO NOT MODIFY  //GEN-BEGIN:initComponents  @formatter:off
         name = new JLabel();
