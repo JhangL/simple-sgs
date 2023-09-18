@@ -70,13 +70,13 @@ public class JsonBasicData implements BasicData {
             general.setBlood(jsonObject1.getIntValue("blood"));
             String[] skillIds = jsonObject1.getString("skill_ids").split(",");
             general.setSkillIds(Arrays.stream(skillIds).mapToInt(Integer::parseInt).toArray());
-            general.setSkills(Arrays.stream(skillIds).map(s -> {
-                Skill skill = new Skill();
-                skill.setId(Integer.parseInt(s));
-                return skill;
-            }).toArray(value -> new Skill[skillIds.length]));
             generals.add(general);
         }
         return generals;
+    }
+
+    @Override
+    public Map<Integer, Skill> getSkill() {
+        return null;
     }
 }

@@ -8,6 +8,7 @@ import com.jh.sgs.base.enums.SuitEnum;
 import com.jh.sgs.base.pojo.Card;
 import com.jh.sgs.base.pojo.General;
 import com.jh.sgs.base.pojo.ShowPlayer;
+import com.jh.sgs.base.pojo.Skill;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,7 +44,13 @@ public class CardButton extends JButton {
         this.general = general;
         initComponents();
         setPreferredSize(new Dimension(80, 95));
-        setText(Util.toHtml(general.getName()));
+        setText(Util.toHtml(general.getCountry()+"\n"+general.getName()+"\n"+general.getBlood()));
+        Skill[] skills = general.getSkills();
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Skill skill : skills) {
+            stringBuilder.append(skill.getName()).append(":").append(skill.getRemake()).append("\n");
+        }
+        setToolTipText(Util.toHtml(stringBuilder.toString()));
     }
 
     public CardButton(Player player, ShowPlayer showPlayer) {
@@ -51,7 +58,7 @@ public class CardButton extends JButton {
         this.showPlayer = showPlayer;
         initComponents();
         setPreferredSize(new Dimension(80, 95));
-        setText(Util.toHtml(showPlayer.getName()));
+        setText(Util.toHtml(showPlayer.getId()+"\n"+showPlayer.getCountry()+"\n"+showPlayer.getName()+"\n"+showPlayer.getBlood()+"/"+showPlayer.getMaxBlood()));
     }
 
     private void initComponents() {
@@ -66,5 +73,26 @@ public class CardButton extends JButton {
         } else if (showPlayer != null) {
             player.click(showPlayer.getId());
         }
+        if (!player.waitints){
+            for (Component component : getParent().getComponents() ){
+                ((CardButton)component).setLight(false);
+            }
+            setLight(true);
+        }else {
+            if (getBackground()==Color.CYAN){
+                setLight(false);
+            }else {
+                setLight(true);
+            }
+        }
+    }
+
+    public void setLight(boolean d){
+        if (d){
+            this.setBackground(Color.CYAN);
+        }else {
+            this.setBackground(null);
+        }
+
     }
 }

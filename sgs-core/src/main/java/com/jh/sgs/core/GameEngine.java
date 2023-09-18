@@ -94,7 +94,7 @@ public class GameEngine implements Runnable, MessageRequest {
         playerManage = new PlayerManage();
         interactiveMachine = new InteractiveMachine();
         identityManage = new IdentityManage(basicData.getIdentity(playerNum));
-        generalManage = new GeneralManage(basicData.getGenerals());
+        generalManage = new GeneralManage(basicData.getGenerals(),basicData.getSkill());
         cardManage = new CardManage(new ArrayList<>(basicData.getCards()), basicData.getCardParameter());
     }
 

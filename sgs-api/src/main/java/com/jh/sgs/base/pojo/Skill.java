@@ -12,5 +12,6 @@ import java.io.Serializable;
 public class Skill extends ID implements Serializable {
 
     private String name;
+    private String remake;
 
 }

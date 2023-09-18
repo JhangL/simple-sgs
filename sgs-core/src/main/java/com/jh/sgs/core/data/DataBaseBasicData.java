@@ -135,14 +135,26 @@ public class DataBaseBasicData implements BasicData {
                 general.setBlood(resultSet.getInt("blood"));
                 String[] skillIds = resultSet.getString("skill_ids").split(",");
                 general.setSkillIds(Arrays.stream(skillIds).mapToInt(Integer::parseInt).toArray());
-                general.setSkills(Arrays.stream(skillIds).map(s -> {
-                    Skill skill = new Skill();
-                    skill.setId(Integer.parseInt(s));
-                    return skill;
-                }).toArray(value -> new Skill[skillIds.length]));
                 generals.add(general);
             }
             return generals;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public Map<Integer, Skill> getSkill() {
+        try (ResultSet resultSet = statement.executeQuery("select * from skill  ")) {
+            Map<Integer, Skill> map = new HashMap<>();
+            while (resultSet.next()) {
+                Skill skill = new Skill();
+                skill.setId(resultSet.getInt("id"));
+                skill.setName(resultSet.getString("name"));
+                skill.setRemake(resultSet.getString("remake"));
+                map.put(skill.getId(), skill);
+            }
+            return map;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

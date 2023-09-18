@@ -10,11 +10,13 @@ import com.jh.sgs.core.exception.DesktopErrorException;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import lombok.extern.log4j.Log4j2;
 
+import java.util.List;
+
 @Log4j2
 public class ShanDian extends DelaySilkbagCard {
     @Override
     boolean decideTerm(Card card) {
-        if (SuitEnum.HEIT==SuitEnum.getByIndex(card.getSuit())) {
+        if (SuitEnum.HEIT == SuitEnum.getByIndex(card.getSuit())) {
             switch (card.getNum()) {
                 case "2":
                 case "3":
@@ -38,15 +40,27 @@ public class ShanDian extends DelaySilkbagCard {
         player.setBlood(player.getBlood() - 3);
         TPool<Card> cardTPool = new TPool<>(ContextManage.decideCardDesktop().getCard());
         ContextManage.roundManage().subBlood(-1, player.getId(), cardTPool, 3);
-        if (cardTPool.isEmpty())ContextManage.decideCardDesktop().useCard();
+        if (cardTPool.isEmpty()) ContextManage.decideCardDesktop().useCard();
     }
 
     @Override
     void decideFalse() {
         Card card = ContextManage.decideCardDesktop().getCard();
-        int i = ContextManage.desk().nextOnDesk(ContextManage.decideCardDesktop().getPlayer());
+        int i = ContextManage.decideCardDesktop().getPlayer();
+        T:
+        do {
+            i = ContextManage.desk().nextOnDesk(i);
+            List<Card> decideCard = Util.getPlayer(i).getDecideCard();
+            for (int j = 0; j < decideCard.size(); j++) {
+                Card card1 = decideCard.get(j);
+                if ("闪电".equals(card1.getName())) {
+                    continue T;
+                }
+            }
+            break;
+        } while (true);
         Util.getPlayer(i).getDecideCard().add(0, card);
-        ContextManage.roundManage().statusRefresh(-1,i);
+        ContextManage.roundManage().statusRefresh(-1, i);
         ContextManage.decideCardDesktop().useCard();
     }
 

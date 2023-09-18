@@ -40,7 +40,7 @@ public class ZhuGeLiang extends BaseGeneral implements CardTargetHideEvent {
     public void start() {
         super.start();
         BooleanPool pool = new BooleanPool();
-        InteractiveMachine.addEventInContext(getPlayerIndex(), "是否使用空城", new TOFImpl(pool)).lock();
+        InteractiveMachine.addEventInContext(getPlayerIndex(), "是否使用观星", new TOFImpl(pool)).lock();
         if (!pool.isPool()) return;
         //空城
         int i = ContextManage.desk().sizeOnDesk();

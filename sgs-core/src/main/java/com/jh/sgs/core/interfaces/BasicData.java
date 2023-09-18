@@ -2,6 +2,7 @@ package com.jh.sgs.core.interfaces;
 
 import com.jh.sgs.base.pojo.Card;
 import com.jh.sgs.base.pojo.General;
+import com.jh.sgs.base.pojo.Skill;
 
 import java.util.List;
 import java.util.Map;
@@ -31,4 +32,5 @@ public interface BasicData {
      * @return 武将
      */
     List<General> getGenerals();
+    Map<Integer, Skill> getSkill();
 }

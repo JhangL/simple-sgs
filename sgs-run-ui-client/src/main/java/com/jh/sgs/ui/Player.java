@@ -83,9 +83,10 @@ public class Player extends JPanel {
             for (int i = 0; i < skills.length; i++) {
                 Skill skill = skills[i];
                 JButton jButton = v[i];
-                jButton.setText(Util.toHtml(skill.getId() + "\n" + skill.getName()));
+                jButton.setText(Util.toHtml( skill.getName()));
                 jButton.setEnabled(false);
                 jButton.setName(String.valueOf(1000 + skill.getId()));
+                jButton.setToolTipText(skill.getRemake());
                 if (abilityPool != null) {
                     for (ShowPlayCardAbility showPlayCardAbility : abilityPool) {
                         if (showPlayCardAbility.getId() == skill.getId()) {
@@ -95,12 +96,21 @@ public class Player extends JPanel {
                     }
                 }
             }
+            if (skills.length==1)skill2.setVisible(false);
         }
         IdentityEnum identity = player1.getIdentity();
         if (identity != null) stringBuilder.append(identity.name()).append("\n");
         stringBuilder.append(player1.getBlood()).append("/").append(player1.getMaxBlood());
         name.setText(Util.toHtml(stringBuilder.toString()));
         List<Card> decideCard = player1.getDecideCard();
+        panel1.removeAll();
+        panel1.updateUI();
+        for (Card card : decideCard) {
+            JLabel jLabel = new JLabel(card.getName());
+            jLabel.setToolTipText(card.getRemark());
+            panel1.add(jLabel);
+        }
+        panel1.revalidate();
     }
 
     private void closeInPut() {
@@ -262,10 +272,12 @@ public class Player extends JPanel {
 
     private void tofT(ActionEvent e) {
         input.setText(1 + "");
+        submit(e);
     }
 
     private void tofF(ActionEvent e) {
         input.setText(0 + "");
+        submit(e);
     }
 
     public void submit2(ActionEvent e) {
@@ -310,18 +322,18 @@ public class Player extends JPanel {
         submit = new JButton();
         label1 = new JLabel();
         submit2 = new JButton();
+        panel1 = new JPanel();
+        label4 = new JLabel();
 
         //======== this ========
         setLayout(null);
 
         //---- name ----
-        name.setText("text");
         name.setHorizontalAlignment(SwingConstants.CENTER);
         add(name);
         name.setBounds(540, 320, 104, 140);
 
         //---- equip1 ----
-        equip1.setText("text");
         equip1.addActionListener(e -> skill1(e));
         add(equip1);
         equip1.setBounds(0, 355, 85, 105);
@@ -335,7 +347,7 @@ public class Player extends JPanel {
             {
                 handcards.setMaximumSize(null);
                 handcards.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-                handcards.setLayout(new FlowLayout(FlowLayout.LEFT, 0, 0));
+                handcards.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 0));
             }
             scrollPane1.setViewportView(handcards);
         }
@@ -378,13 +390,13 @@ public class Player extends JPanel {
             panel2.setLayout(null);
 
             //---- tofT ----
-            tofT.setText("yes");
+            tofT.setText("\u662f");
             tofT.addActionListener(e -> tofT(e));
             panel2.add(tofT);
             tofT.setBounds(5, 0, 80, 45);
 
             //---- tofF ----
-            tofF.setText("no");
+            tofF.setText("\u5426");
             tofF.addActionListener(e -> tofF(e));
             panel2.add(tofF);
             tofF.setBounds(5, 55, 80, 45);
@@ -408,53 +420,60 @@ public class Player extends JPanel {
         panel2.setBounds(340, 355, 90, 105);
 
         //---- equip2 ----
-        equip2.setText("text");
         equip2.addActionListener(e -> skill1(e));
         add(equip2);
         equip2.setBounds(85, 355, 85, 105);
 
         //---- equip3 ----
-        equip3.setText("text");
         equip3.addActionListener(e -> skill1(e));
         add(equip3);
         equip3.setBounds(170, 355, 85, 105);
 
         //---- equip4 ----
-        equip4.setText("text");
         equip4.addActionListener(e -> skill1(e));
         add(equip4);
         equip4.setBounds(255, 355, 85, 105);
 
         //---- skill2 ----
-        skill2.setText("text");
         skill2.addActionListener(e -> skill1(e));
         add(skill2);
         skill2.setBounds(445, 415, 90, 45);
 
         //---- skill1 ----
-        skill1.setText("text");
         skill1.addActionListener(e -> skill1(e));
         add(skill1);
         skill1.setBounds(445, 355, 90, 43);
         add(input);
-        input.setBounds(290, 320, 110, 35);
+        input.setBounds(295, 320, 110, 35);
 
         //---- submit ----
         submit.setText("\u63d0\u4ea4");
         submit.addActionListener(e -> submit(e));
         add(submit);
-        submit.setBounds(400, 320, 65, 35);
+        submit.setBounds(405, 320, 65, 35);
 
         //---- label1 ----
         label1.setForeground(new Color(0x3333ff));
         add(label1);
-        label1.setBounds(10, 320, 275, 35);
+        label1.setBounds(175, 320, 120, 35);
 
         //---- submit2 ----
         submit2.setText("\u53d6\u6d88");
         submit2.addActionListener(e -> submit2(e));
         add(submit2);
         submit2.setBounds(470, 320, 65, 35);
+
+        //======== panel1 ========
+        {
+            panel1.setLayout(new FlowLayout(FlowLayout.LEFT));
+        }
+        add(panel1);
+        panel1.setBounds(30, 325, 140, 30);
+
+        //---- label4 ----
+        label4.setText("\u5224\uff1a");
+        add(label4);
+        label4.setBounds(5, 320, 30, 30);
 
         {
             // compute preferred size
@@ -496,5 +515,7 @@ public class Player extends JPanel {
     public JButton submit;
     public JLabel label1;
     public JButton submit2;
+    public JPanel panel1;
+    private JLabel label4;
     // JFormDesigner - End of variables declaration  //GEN-END:variables  @formatter:on
 }

@@ -11,7 +11,6 @@ new FormModel {
 			}
 			add( new FormComponent( "javax.swing.JLabel" ) {
 				name: "name"
-				"text": "text"
 				"horizontalAlignment": 0
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 1
@@ -24,7 +23,6 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "equip1"
-				"text": "text"
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 1
 				}
@@ -44,7 +42,6 @@ new FormModel {
 				}
 				add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
 					"alignment": 0
-					"hgap": 0
 					"vgap": 0
 				} ) {
 					name: "handcards"
@@ -128,7 +125,7 @@ new FormModel {
 				}
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "tofT"
-					"text": "yes"
+					"text": "是"
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 1
 					}
@@ -141,7 +138,7 @@ new FormModel {
 				} )
 				add( new FormComponent( "javax.swing.JButton" ) {
 					name: "tofF"
-					"text": "no"
+					"text": "否"
 					auxiliary() {
 						"JavaCodeGenerator.variableModifiers": 1
 					}
@@ -160,7 +157,6 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "equip2"
-				"text": "text"
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 1
 				}
@@ -173,7 +169,6 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "equip3"
-				"text": "text"
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 1
 				}
@@ -186,7 +181,6 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "equip4"
-				"text": "text"
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 1
 				}
@@ -199,7 +193,6 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "skill2"
-				"text": "text"
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 1
 				}
@@ -212,7 +205,6 @@ new FormModel {
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
 				name: "skill1"
-				"text": "text"
 				auxiliary() {
 					"JavaCodeGenerator.variableModifiers": 1
 				}
@@ -229,7 +221,7 @@ new FormModel {
 					"JavaCodeGenerator.variableModifiers": 1
 				}
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 290
+				"x": 295
 				"y": 320
 				"height": 35
 				"width": 110
@@ -242,7 +234,7 @@ new FormModel {
 				}
 				addEvent( new FormEvent( "java.awt.event.ActionListener", "actionPerformed", "submit", true ) )
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 400
+				"x": 405
 				"y": 320
 				"height": 35
 				"width": 65
@@ -254,9 +246,9 @@ new FormModel {
 					"JavaCodeGenerator.variableModifiers": 1
 				}
 			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
-				"x": 10
+				"x": 175
 				"y": 320
-				"width": 275
+				"width": 120
 				"height": 35
 			} )
 			add( new FormComponent( "javax.swing.JButton" ) {
@@ -271,6 +263,28 @@ new FormModel {
 				"height": 35
 				"x": 470
 				"y": 320
+			} )
+			add( new FormContainer( "javax.swing.JPanel", new FormLayoutManager( class java.awt.FlowLayout ) {
+				"alignment": 0
+			} ) {
+				name: "panel1"
+				auxiliary() {
+					"JavaCodeGenerator.variableModifiers": 1
+				}
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 30
+				"y": 325
+				"width": 140
+				"height": 30
+			} )
+			add( new FormComponent( "javax.swing.JLabel" ) {
+				name: "label4"
+				"text": "判："
+			}, new FormLayoutConstraints( class com.jformdesigner.runtime.NullConstraints ) {
+				"x": 5
+				"y": 320
+				"width": 30
+				"height": 30
 			} )
 		}, new FormLayoutConstraints( null ) {
 			"location": new java.awt.Point( 30, 20 )

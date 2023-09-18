@@ -45,6 +45,8 @@ public abstract class DelaySilkbagCard extends OneSilkbagCard implements Decidab
         int player = getPlayer();
         MessageReceipter.globalInContext(CardDesktop.playerInContext() + "将对" + player + "使用" + CardDesktop.cardInContext());
         effect(player);
+        MessageReceipter.personalInContext(player,"{}对你使用{}",CardDesktop.playerInContext(),CardDesktop.cardInContext());
+        MessageReceipter.personalInContext(CardDesktop.playerInContext(),"你对{}使用{}",player,CardDesktop.cardInContext());
         MessageReceipter.globalInContext(CardDesktop.playerInContext() + "完成对" + player + "使用" + CardDesktop.cardInContext());
     }
 

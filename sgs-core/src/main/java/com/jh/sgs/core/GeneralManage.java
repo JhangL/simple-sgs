@@ -1,6 +1,7 @@
 package com.jh.sgs.core;
 
 import com.jh.sgs.base.pojo.General;
+import com.jh.sgs.base.pojo.Skill;
 import com.jh.sgs.core.enums.GeneralEnum;
 import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.general.BaseGeneral;
@@ -17,8 +18,22 @@ public class GeneralManage {
     @Getter
     Map<GeneralEnum, BaseGeneral> baseGeneralMap = new HashMap<>();
 
-    GeneralManage(List<General> allGeneral) {
+    Map<Integer,Skill> skillMap;
+
+    GeneralManage(List<General> allGeneral, Map<Integer, Skill> skill) {
         this.allGeneral = allGeneral;
+        this.skillMap=skill;
+        for (General general : allGeneral) {
+            int[] skillIds = general.getSkillIds();
+            Skill[] skills = new Skill[skillIds.length];
+            for (int i = 0; i < skillIds.length; i++) {
+                int skillId = skillIds[i];
+                Skill skill1 = skillMap.get(skillId);
+                skills[i]=skill1;
+
+            }
+            general.setSkills(skills);
+        }
     }
 
     public List<General> getAll() {
