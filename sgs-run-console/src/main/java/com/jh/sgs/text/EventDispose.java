@@ -1,6 +1,6 @@
 package com.jh.sgs.text;
 
-import com.jh.sgs.StartGame;
+import com.jh.sgs.StartGameInConsole;
 import com.jh.sgs.base.enums.IdentityEnum;
 import com.jh.sgs.base.enums.InteractiveEnum;
 import com.jh.sgs.base.exception.SgsApiException;
@@ -28,7 +28,7 @@ public class EventDispose {
         String message = interactiveEventer.message();
         player = interactiveEventer.player();
         {
-            ShowCompletePlayer player1 = StartGame.messageRequest.getPlayer(player);
+            ShowCompletePlayer player1 = StartGameInConsole.messageRequest.getPlayer(player);
             IdentityEnum identity = player1.getIdentity();
             int blood = player1.getBlood();
             int maxBlood = player1.getMaxBlood();
@@ -104,11 +104,11 @@ public class EventDispose {
         while (true) {
             println("牌：" + gx.targetCard());
             println("输入位置(0顶  !0底)（-1完成操作）");
-            int i = StartGame.inputer.inputInt();
+            int i = StartGameInConsole.inputer.inputInt();
             if (i == Inputer.CANCAL) return false;
             if (i == -1) break;
             println("按顺序输入对应牌id");
-            int[] i1 = StartGame.inputer.inputInts();
+            int[] i1 = StartGameInConsole.inputer.inputInts();
             if (i == 0) {
                 gx.putCardsTop(i1);
             } else {
@@ -122,7 +122,7 @@ public class EventDispose {
         println("手牌：" + jnxzp.handCard());
         println("装备牌：" + jnxzp.equipCard());
         println("输入对应牌id（-1取消选择）");
-        int i = StartGame.inputer.inputInt();
+        int i = StartGameInConsole.inputer.inputInt();
         if (i == Inputer.CANCAL) return false;
         if (i == -1) jnxzp.cancelPlayCard();
         else jnxzp.setCard(i);
@@ -131,7 +131,7 @@ public class EventDispose {
 
     private boolean tof(TOF tof) {
         println("输入是或否（0否  !0是）");
-        int i = StartGame.inputer.inputInt();
+        int i = StartGameInConsole.inputer.inputInt();
         if (i == Inputer.CANCAL) return false;
         tof.trueOrFalse(i != 0);
         return true;
@@ -140,7 +140,7 @@ public class EventDispose {
     private boolean xzp(XZP xzp) {
         println("可选择牌:" + xzp.targetCard());
         println("输入对应牌id（-1取消选择）");
-        int i = StartGame.inputer.inputInt();
+        int i = StartGameInConsole.inputer.inputInt();
         if (i == Inputer.CANCAL) return false;
         if (i == -1) {
             xzp.cancelPlayCard();
@@ -154,7 +154,7 @@ public class EventDispose {
         println("手牌：" + jncp.handCard());
         println("技能：" + jncp.showAbility());
         println("输入对应手牌id,1000+技能id" + "（-1取消出牌）");
-        int i = StartGame.inputer.inputInt();
+        int i = StartGameInConsole.inputer.inputInt();
         if (i == Inputer.CANCAL) return false;
         if (i == -1) jncp.cancelPlayCard();
         else if (i >= 1000) jncp.setAbility(i - 1000);
@@ -165,7 +165,7 @@ public class EventDispose {
     private boolean xzyx(XZYX xzyx) {
         println("可选择武将：" + xzyx.selectableGeneral());
         println("输入对应武将id");
-        int i = StartGame.inputer.inputInt();
+        int i = StartGameInConsole.inputer.inputInt();
         if (i == Inputer.CANCAL) return false;
         else xzyx.setGeneral(i);
         return true;
@@ -174,7 +174,7 @@ public class EventDispose {
     private boolean cp(CP cp) {
         println("手牌：" + cp.handCard());
         println("输入对应手牌id（-1取消出牌）");
-        int i = StartGame.inputer.inputInt();
+        int i = StartGameInConsole.inputer.inputInt();
         if (i == Inputer.CANCAL) return false;
         if (i == -1) cp.cancelPlayCard();
         else cp.playCard(i);
@@ -187,7 +187,7 @@ public class EventDispose {
         int[] a = new int[i1];
         while (i1 != 0) {
             println("输入第" + (qp.discardNum() - i1 + 1) + "张对应手牌id");
-            int i = StartGame.inputer.inputInt();
+            int i = StartGameInConsole.inputer.inputInt();
             if (i == Inputer.CANCAL) return false;
             else {
                 a[qp.discardNum() - i1] = i;
@@ -203,7 +203,7 @@ public class EventDispose {
         println("装备牌：" + ghcqssqyxzp.equipCard());
         println("判定牌：" + ghcqssqyxzp.decideCard());
         println("输入对应牌id");
-        int i = StartGame.inputer.inputInt();
+        int i = StartGameInConsole.inputer.inputInt();
         if (i == Inputer.CANCAL) return false;
         ghcqssqyxzp.setCard(i);
         return true;
@@ -212,7 +212,7 @@ public class EventDispose {
     private boolean xzmb(XZMB xzmb) {
         println("可选择目标：" + xzmb.targetPlayer());
         println("输入对应目标id（-1取消选择目标）");
-        int i = StartGame.inputer.inputInt();
+        int i = StartGameInConsole.inputer.inputInt();
         if (i == Inputer.CANCAL) return false;
         if (i == -1) xzmb.cancelTargetPlayer();
         else xzmb.setTargetPlayer(i);
@@ -222,7 +222,7 @@ public class EventDispose {
     private boolean wgfdxzp(WGFDXZP wgfdxzp) {
         println("可选择牌:" + wgfdxzp.targetCard());
         println("输入对应牌id");
-        int i = StartGame.inputer.inputInt();
+        int i = StartGameInConsole.inputer.inputInt();
         if (i == Inputer.CANCAL) return false;
         wgfdxzp.setCard(i);
         return true;

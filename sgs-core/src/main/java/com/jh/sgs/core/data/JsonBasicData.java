@@ -77,6 +77,16 @@ public class JsonBasicData implements BasicData {
 
     @Override
     public Map<Integer, Skill> getSkill() {
-        return null;
+        JSONArray jsonArray = jsonObject.getJSONArray("skill");
+        HashMap<Integer, Skill> integerSkillHashMap = new HashMap<>();
+        for (int i = 0; i < jsonArray.size(); i++) {
+            JSONObject jsonObject1 = jsonArray.getJSONObject(i);
+            Skill skill = new Skill();
+            skill.setId(jsonObject1.getIntValue("id"));
+            skill.setName(jsonObject1.getString("name"));
+            skill.setRemake(jsonObject1.getString("remake"));
+            integerSkillHashMap.put(skill.getId(),skill);
+        }
+        return integerSkillHashMap;
     }
 }

@@ -50,7 +50,7 @@
                         <archive>
                             <manifest>
                                 <mainClass>
-                                    com.jh.sgs.StartGame
+                                    com.jh.sgs.StartGameInConsole
                                 </mainClass>
                             </manifest>
                         </archive>

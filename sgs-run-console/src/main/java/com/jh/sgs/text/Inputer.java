@@ -1,6 +1,6 @@
 package com.jh.sgs.text;
 
-import com.jh.sgs.StartGame;
+import com.jh.sgs.StartGameInConsole;
 import com.jh.sgs.base.pojo.Card;
 import com.jh.sgs.base.pojo.ShowPlayer;
 
@@ -123,20 +123,20 @@ public class Inputer {
             int i = Integer.parseInt(scanner.nextLine());
             switch (i) {
                 case 1:
-                    Util.printlnColor(32, 0, "剩余牌数:" + StartGame.messageRequest.getUsingCardNum());
+                    Util.printlnColor(32, 0, "剩余牌数:" + StartGameInConsole.messageRequest.getUsingCardNum());
                     break;
                 case 2:
-                    Util.printlnColor(32, 0, "牌数:" + StartGame.messageRequest.getUsedCardNum());
+                    Util.printlnColor(32, 0, "牌数:" + StartGameInConsole.messageRequest.getUsedCardNum());
                     break;
                 case 3:
-                    Util.printlnColor(32, 4, "选择玩家id(0<=id<" + StartGame.playerNum + ") " + CANCAL + "返回");
+                    Util.printlnColor(32, 4, "选择玩家id(0<=id<" + StartGameInConsole.playerNum + ") " + CANCAL + "返回");
                     int i1 = Integer.parseInt(scanner.nextLine());
                     if (i1 == CANCAL) break;
-                    if (i1 < 0 || i1 >= StartGame.playerNum) {
+                    if (i1 < 0 || i1 >= StartGameInConsole.playerNum) {
                         Util.printlnColor(32, 6, "超出范围");
                         break;
                     }
-                    ShowPlayer player1 = StartGame.messageRequest.getShowPlayer(i1);
+                    ShowPlayer player1 = StartGameInConsole.messageRequest.getShowPlayer(i1);
                     int blood = player1.getBlood();
                     int maxBlood = player1.getMaxBlood();
                     List<Card> equipCard = player1.getEquipCard();

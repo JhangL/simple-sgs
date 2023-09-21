@@ -3,9 +3,10 @@ package com.jh.sgs;
 import com.jh.sgs.base.interfaces.MessageReceipt;
 import com.jh.sgs.base.interfaces.MessageRequest;
 import com.jh.sgs.core.GameLauncher;
-import com.jh.sgs.core.data.DataBaseBasicData;
+import com.jh.sgs.core.data.JsonBasicData;
 import com.jh.sgs.core.interfaces.BasicData;
 import com.jh.sgs.core.interfaces.GameConfig;
+import com.jh.sgs.ui.Util;
 import com.jh.sgs.uiServer.UiMessageReceipt;
 import com.jh.sgs.uiServer.UiServer;
 
@@ -36,8 +37,8 @@ public class StartGameInUIServer {
 
             @Override
             public BasicData basicData() {
-//                return new JsonBasicData(Util.read("classpath:data.json"));
-                return new DataBaseBasicData("classpath:dataBase.properties");
+                return new JsonBasicData(Util.read("classpath:data.json"));
+//                return new DataBaseBasicData("classpath:dataBase.properties");
             }
         })).start();
         if (args.length == 1) {

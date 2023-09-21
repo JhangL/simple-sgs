@@ -46,8 +46,11 @@ public class Choose extends JDialog {
                 panel1.add(cardButton);
             }
         }
-
         panel1.revalidate();
+        Component[] components = panel1.getComponents();
+        if (components.length==1){
+            ((CardButton)components[0]).click(null);
+        }
     }
 
     private void ok(ActionEvent e) {

@@ -18,7 +18,7 @@ import java.awt.event.ActionEvent;
  * @author jh
  */
 public class CardButton extends JButton {
-    private  ShowPlayer showPlayer;
+    private ShowPlayer showPlayer;
     private Player player;
 
     private Card card;

@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Scanner;
 
-public class StartGame {
+public class StartGameInConsole {
     public static Inputer inputer = new Inputer(System.in, -1);
     public static MessageRequest messageRequest;
     public static int playerNum=2;
