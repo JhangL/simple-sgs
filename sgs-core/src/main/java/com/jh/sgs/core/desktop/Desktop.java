@@ -37,10 +37,11 @@ public abstract class Desktop {
             } else if (e instanceof DesktopErrorException) {
                 MessageReceipter.globalInContext(player + "执行错误" );
                 error();
-                return;
             }
+        }finally {
+            end();
         }
-        end();
+
     }
 
     protected abstract void initCheck();

@@ -46,6 +46,7 @@ public abstract class CardDesktop extends Desktop{
         log.debug("{} {}执行出错，退牌", getPlayer(), getCard());
         if (card.isFalsed())card.backTrue();
         Util.getPlayer(getPlayer()).getHandCard().add(getCard());
+        useCard();
     }
 
     public static Card cardInContext(){

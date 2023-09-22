@@ -4,6 +4,7 @@ import com.alibaba.fastjson2.JSON;
 import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.interfaces.ShowStatus;
 import com.jh.sgs.core.pojo.CompletePlayer;
+import lombok.Getter;
 
 import java.util.Arrays;
 import java.util.function.BiConsumer;
@@ -13,6 +14,7 @@ public class Desk implements ShowStatus {
 
     private CompletePlayer[] chair;
 
+    @Getter
     private boolean[] onDesk;
 
     private int index;

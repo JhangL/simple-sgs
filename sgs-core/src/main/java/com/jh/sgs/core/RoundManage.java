@@ -1,5 +1,6 @@
 package com.jh.sgs.core;
 
+import com.jh.sgs.base.enums.IdentityEnum;
 import com.jh.sgs.base.enums.InteractiveEnum;
 import com.jh.sgs.base.exception.SgsApiException;
 import com.jh.sgs.base.interactive.Interactiveable;
@@ -13,6 +14,7 @@ import com.jh.sgs.core.desktop.ExecuteCardDesktop;
 import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.exception.DesktopRefuseException;
 import com.jh.sgs.core.exception.PlayerDieException;
+import com.jh.sgs.core.exception.RoundErrorException;
 import com.jh.sgs.core.general.BaseGeneral;
 import com.jh.sgs.core.interfaces.RoundEvent;
 import com.jh.sgs.core.pojo.Ability;
@@ -23,7 +25,9 @@ import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -68,7 +72,7 @@ public class RoundManage {
             while (true) {
                 try {
                     roundProcesses[index].process();
-                } catch (Exception e) {
+                } catch (RoundErrorException e) {
                     e.printStackTrace();
                 }
                 index = desk.nextOnDesk();
@@ -204,10 +208,9 @@ public class RoundManage {
                 } else if (abilty[0].getType() == Ability.SINGLE) {
                     //使用了独立技能
                     MessageReceipter.personalInContext(player, "你使用独立技能{}", abilty[0].getName());
-                    try {
-                        ((Ability.SingleAbilityable) abilty[0].getAbilityable()).singleAbility(abilty[0]);
-                    } catch (PlayerDieException e) {
-                    }
+
+                    ((Ability.SingleAbilityable) abilty[0].getAbilityable()).singleAbility(abilty[0]);
+
                     //重新询问出牌
                 }
             } else {
@@ -400,8 +403,9 @@ public class RoundManage {
      * @param subBloodNum    减血数
      */
     public void subBlood(int operatePlayer, int subBloodPlayer, TPool<Card> subBloodCard, int subBloodNum){
+        MessageReceipter.personalInContext(subBloodPlayer,"受到来自{}的{}点伤害",operatePlayer,subBloodNum);
         if (Util.getPlayer(subBloodPlayer).getBlood() <= 0) {
-            dying(subBloodPlayer);
+            dying(subBloodPlayer,operatePlayer);
         }
         //通知受伤注册器
         roundRegistrarPool.getRegistrar(BeSubBloodEvent.class).handlePlayer(subBloodPlayer, beSubBloodEvent -> beSubBloodEvent.beSubBlood(operatePlayer, subBloodCard));
@@ -417,7 +421,7 @@ public class RoundManage {
         Util.getPlayer(refreshPlayer).getCompleteGeneral().getBaseGeneral().statusRefresh();
     }
 
-    public void dying(int player) {
+    public void dying(int player,int operatePlayer) {
         CompletePlayer player1 = Util.getPlayer(player);
         TPool<Card> cardTPool = new TPool<>();
         playCard(player, "请出桃", cardTPool, card -> {
@@ -427,7 +431,7 @@ public class RoundManage {
         if (player1.getBlood() <= 0) {
             for (CompletePlayer completePlayer : findTarget(player, null)) {
                 cardTPool.setPool(null);
-                playCard(player, "请为" + player + "出桃", cardTPool, card -> {
+                playCard(completePlayer.getId(), "请为" + player + "出桃", cardTPool, card -> {
                     if (card.getNameId() != CardEnum.TAO.getId()) throw new SgsApiException("不为桃");
                 }, false);
                 if (!cardTPool.isEmpty()) player1.setBlood(player1.getBlood() + 1);
@@ -435,15 +439,79 @@ public class RoundManage {
             }
         }
         if (player1.getBlood() <= 0) {
-            desk.getoffDesk(player);
-
-            if (index==player){
-
-            }else {
-                throw new PlayerDieException("目标已阵亡");
-            }
+          rewardAndSettlement(player,operatePlayer);
         }
     }
 
+    private void rewardAndSettlement(int diePlayer,int operatePlayer){
+        CompletePlayer player1 = Util.getPlayer(diePlayer);
+        MessageReceipter.globalInContext("{}死亡,是{}",diePlayer,player1.getIdentity());
+        boolean[] onDesk = desk.getOnDesk();
+        if (player1.getIdentity()== IdentityEnum.ZG){
+            //主公死了
+            ArrayList<Integer> integers = new ArrayList<>();
+            for (int i = 0; i < onDesk.length; i++) {
+                if (diePlayer==i)continue;
+                if (onDesk[i])integers.add(i);
+            }
+            if (integers.size()==1&&Util.getPlayer(integers.get(0)).getIdentity()==IdentityEnum.NJ){
+                //内奸获胜
+                MessageReceipter.globalInContext("内奸获胜");
+                ContextManage.gameEngine().shutDown();
+            }else {
+                //反贼获胜
+                MessageReceipter.globalInContext("反贼获胜");
+                ContextManage.gameEngine().shutDown();
+            }
+        }int i = 0;
+        for (; i < onDesk.length; i++) {
+            if (diePlayer==i)continue;
+            if (onDesk[i]){
+                CompletePlayer completePlayer = Util.getPlayer(i);
+                if (completePlayer.getIdentity()==IdentityEnum.FZ||completePlayer.getIdentity()==IdentityEnum.NJ){
+                    break;
+                }
+            }
+        }
+        if (i== onDesk.length){
+            //主公和忠臣获胜
+            MessageReceipter.globalInContext("主公和忠臣获胜");
+            ContextManage.gameEngine().shutDown();
+        }
+        desk.getoffDesk(diePlayer);
+        //回收牌
+        List<Card> handCard = player1.getHandCard();
+        List<Card> decideCard = player1.getDecideCard();
+        Card[] equipCard = player1.getEquipCard();
+        List<Card> collect = Arrays.stream(equipCard).filter(Objects::nonNull).collect(Collectors.toList());
+        ContextManage.cardManage().recoveryCard(handCard);
+        ContextManage.cardManage().recoveryCard(decideCard);
+        ContextManage.cardManage().recoveryCard(collect);
+
+        //死的反贼
+        if (player1.getIdentity()==IdentityEnum.FZ){
+            CompletePlayer completePlayer = Util.getPlayer(operatePlayer);
+            List<Card> cards = ContextManage.cardManage().obtainCard(3);
+            completePlayer.getHandCard().addAll(cards);
+            statusRefresh(operatePlayer,operatePlayer);
+        }else {
+            if (player1.getIdentity()==IdentityEnum.ZC){
+                CompletePlayer completePlayer = Util.getPlayer(operatePlayer);
+                if (completePlayer.getIdentity()==IdentityEnum.ZG){
+                    List<Card> handCard1 = completePlayer.getHandCard();
+                    Card[] equipCard1 = completePlayer.getEquipCard();
+                    List<Card> collect1 = Arrays.stream(equipCard1).filter(Objects::nonNull).collect(Collectors.toList());
+                    ContextManage.cardManage().recoveryCard(handCard1);
+                    ContextManage.cardManage().recoveryCard(collect1);
+                }
+            }
+        }
+        if (index==diePlayer){
+            throw new RoundErrorException("已阵亡");
+        }else {
+            throw new PlayerDieException("目标已阵亡");
+        }
+
+    }
 
 }

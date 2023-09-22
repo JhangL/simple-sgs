@@ -11,6 +11,7 @@ import com.jh.sgs.core.desktop.ShaCardDesktop;
 import com.jh.sgs.core.enums.CardEnum;
 import com.jh.sgs.core.exception.DesktopException;
 import com.jh.sgs.core.exception.DesktopRefuseException;
+import com.jh.sgs.core.exception.PlayerDieException;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.EventLock;
 import com.jh.sgs.core.pojo.MessageReceipter;
@@ -133,6 +134,8 @@ public class RoundProcess {
                     desktopStack().remove();
                 } catch (DesktopException e) {
                     throw new RuntimeException("系统错误");
+                }catch (PlayerDieException e){
+
                 }
             }
         } while (cards.getPool() != null);
