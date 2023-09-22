@@ -24,6 +24,10 @@ public class Desk implements ShowStatus {
         Arrays.fill(onDesk, true);
     }
 
+    public void getoffDesk(int player){
+        onDesk[player]=false;
+    }
+
     public int size() {
         return chair.length;
     }

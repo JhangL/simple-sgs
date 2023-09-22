@@ -11,6 +11,7 @@ import com.jh.sgs.core.card.Loseable;
 import com.jh.sgs.core.desktop.Desktop;
 import com.jh.sgs.core.desktop.ExecuteCardDesktop;
 import com.jh.sgs.core.enums.CardEnum;
+import com.jh.sgs.core.exception.DesktopPlayerDieException;
 import com.jh.sgs.core.exception.DesktopRefuseException;
 import com.jh.sgs.core.general.BaseGeneral;
 import com.jh.sgs.core.interfaces.RoundEvent;
@@ -35,6 +36,7 @@ public class RoundManage {
     private RoundProcess[] roundProcesses;
 
     private RoundRegistrarPool roundRegistrarPool;
+    private int index;
 
     RoundManage(Desk desk) {
         this.desk = desk;
@@ -60,7 +62,8 @@ public class RoundManage {
     }
 
     public void begin() {
-        int index = desk.index();
+
+        index = desk.index();
         try {
             while (true) {
                 try {
@@ -193,14 +196,14 @@ public class RoundManage {
             if (abilty[0] != null) {
 
                 if (abilty[0].getType() == Ability.PLAY_CARD) {
-                    MessageReceipter.personalInContext(player,"你使用牌技能{}",abilty[0].getName());
+                    MessageReceipter.personalInContext(player, "你使用牌技能{}", abilty[0].getName());
                     //使用了牌技能
                     cards.setPool(((Ability.PlayCardAbilityable) abilty[0].getAbilityable()).playCardAbility(abilty[0], action));
                     //若牌技能未返回牌，循环重新询问
 
                 } else if (abilty[0].getType() == Ability.SINGLE) {
                     //使用了独立技能
-                    MessageReceipter.personalInContext(player,"你使用独立技能{}",abilty[0].getName());
+                    MessageReceipter.personalInContext(player, "你使用独立技能{}", abilty[0].getName());
                     ((Ability.SingleAbilityable) abilty[0].getAbilityable()).singleAbility(abilty[0]);
                     //重新询问出牌
                 }
@@ -212,17 +215,18 @@ public class RoundManage {
                 }
 
             }
-            if (cards.getPool() !=null) MessageReceipter.personalInContext(player,"你出牌{}",cards.getPool());
+            if (cards.getPool() != null) MessageReceipter.personalInContext(player, "你出牌{}", cards.getPool());
         }
 
     }
 
     /**
-     *  执行杀，仅仅只是反映执行的结果，不执行结果的处理（处理闪牌，杀成功掉血操作），需调用方处理
+     * 执行杀，仅仅只是反映执行的结果，不执行结果的处理（处理闪牌，杀成功掉血操作），需调用方处理
+     *
      * @param operatePlayer 操作人
-     * @param beShaPlayer 被杀玩家
-     * @param shaCard 杀牌
-     * @param shan 闪牌（被杀玩家所出的牌）
+     * @param beShaPlayer   被杀玩家
+     * @param shaCard       杀牌
+     * @param shan          闪牌（被杀玩家所出的牌）
      * @return T杀成功（未被闪避）  F杀失败（被闪避，出闪闪避及其他闪避）
      */
     public boolean playSha(int operatePlayer, int beShaPlayer, Card shaCard, TPool<Card> shan) {
@@ -238,6 +242,7 @@ public class RoundManage {
 
     /**
      * 全局无懈可击检查，当锦囊牌对人生效前，执行此方法。通过此方法来阻断锦囊牌的生效。
+     *
      * @throws DesktopRefuseException 无懈可击生效时，抛出此异常。
      */
     public void wxkjCheck() throws DesktopRefuseException {
@@ -272,6 +277,7 @@ public class RoundManage {
 
     /**
      * 判定事件，获取判定牌
+     *
      * @param operatePlayer 操作人
      * @return 判定牌
      */
@@ -296,8 +302,9 @@ public class RoundManage {
 
     /**
      * 查找目标事件，获取特定距离内的目标。在查找时，获取到的目标是处理监听事件（进攻事件，防御事件）后的目标。
-     * @param player 要查找玩家
-     * @param card 触发牌
+     *
+     * @param player       要查找玩家
+     * @param card         触发牌
      * @param findDistance 查找距离
      * @return 目标玩家
      */
@@ -315,6 +322,7 @@ public class RoundManage {
             //比较距离；
             if (distance <= offenseDistance[0]) completePlayers.add(player1);
         });
+        if (card == null) return completePlayers;
         // 查找目标时的特殊事件处理(针对牌隐藏)
         List<CompletePlayer> collect = completePlayers.stream().filter(completePlayer -> !roundRegistrarPool.getRegistrar(CardTargetHideEvent.class).handlePlayer(completePlayer.getId()).anyMatch(cardTargetHideEvent -> cardTargetHideEvent.hide(card))).collect(Collectors.toList());
         return collect;
@@ -322,13 +330,15 @@ public class RoundManage {
 
     /**
      * 查找目标事件，获取除自身以外的目标。
+     *
      * @param player 要查找玩家
-     * @param card 触发牌
+     * @param card   触发牌
      * @return 目标玩家
      */
     public List<CompletePlayer> findTarget(int player, Card card) {
         ArrayList<CompletePlayer> completePlayers = new ArrayList<>();
         desk.foreachOnDeskNoPlayer(player, completePlayers::add);
+        if (card == null) return completePlayers;
         List<CompletePlayer> collect = completePlayers.stream().filter(completePlayer -> !roundRegistrarPool.getRegistrar(CardTargetHideEvent.class).handlePlayer(completePlayer.getId()).anyMatch(cardTargetHideEvent -> cardTargetHideEvent.hide(card))).collect(Collectors.toList());
         return collect;
     }
@@ -342,19 +352,20 @@ public class RoundManage {
 
     /**
      * 牌失去事件，当牌失去时，请求此事件。（此方法无实际效果，仅调用使用）
-     * @param operatePlayer 操作玩家
+     *
+     * @param operatePlayer  操作玩家
      * @param lossCardPlayer 失牌玩家
-     * @param lossCard 失去牌
-     * @param lossLocation 失去位置
+     * @param lossCard       失去牌
+     * @param lossLocation   失去位置
      */
     public void loseCard(int operatePlayer, int lossCardPlayer, Card lossCard, int lossLocation) {
 
         switch (lossLocation) {
             case HAND_CARD:
-                MessageReceipter.personalInContext(lossCardPlayer,"你失去手牌{}",lossCard);
+                MessageReceipter.personalInContext(lossCardPlayer, "你失去手牌{}", lossCard);
                 break;
             case EQUIP_CARD:
-                MessageReceipter.personalInContext(lossCardPlayer,"你失去装备牌{}",lossCard);
+                MessageReceipter.personalInContext(lossCardPlayer, "你失去装备牌{}", lossCard);
                 //去掉装备牌的特殊效果
                 BaseCard baseCard = CardEnum.getById(lossCard.getNameId()).getBaseCard();
                 if (baseCard instanceof Loseable) ((Loseable) baseCard).lose(lossCardPlayer);
@@ -368,9 +379,10 @@ public class RoundManage {
 
     /**
      * 加血事件，当加血时，请求此事件。（此方法无实际效果，仅调用使用）
-     * @param operatePlayer 操作玩家
+     *
+     * @param operatePlayer  操作玩家
      * @param addBloodPlayer 加血玩家
-     * @param addBloodCard 加血牌
+     * @param addBloodCard   加血牌
      */
     public void addBlood(int operatePlayer, int addBloodPlayer, Card addBloodCard) {
 
@@ -378,23 +390,54 @@ public class RoundManage {
 
     /**
      * 减血事件，当减血时，请求此事件。（此方法无实际效果，仅调用使用）
-     * @param operatePlayer 操作玩家
+     *
+     * @param operatePlayer  操作玩家
      * @param subBloodPlayer 减血玩家
-     * @param subBloodCard 减血牌(可使用，可能为空)
-     * @param subBloodNum 减血数
+     * @param subBloodCard   减血牌(可使用，可能为空)
+     * @param subBloodNum    减血数
      */
-    public void subBlood(int operatePlayer, int subBloodPlayer, TPool<Card> subBloodCard, int subBloodNum) {
+    public void subBlood(int operatePlayer, int subBloodPlayer, TPool<Card> subBloodCard, int subBloodNum) throws DesktopPlayerDieException {
+        if (Util.getPlayer(subBloodPlayer).getBlood() <= 0) {
+            dying(subBloodPlayer);
+        }
         //通知受伤注册器
         roundRegistrarPool.getRegistrar(BeSubBloodEvent.class).handlePlayer(subBloodPlayer, beSubBloodEvent -> beSubBloodEvent.beSubBlood(operatePlayer, subBloodCard));
     }
 
     /**
      * 状态刷新事件，当状态刷新时，请求此事件。只关注非关键状态，主要根据状态更新关联值（此方法无实际效果，仅调用使用）
+     *
      * @param operatePlayer 操作玩家
      * @param refreshPlayer 刷新玩家
      */
     public void statusRefresh(int operatePlayer, int refreshPlayer) {
         Util.getPlayer(refreshPlayer).getCompleteGeneral().getBaseGeneral().statusRefresh();
+    }
+
+    public void dying(int player) throws DesktopPlayerDieException {
+        CompletePlayer player1 = Util.getPlayer(player);
+        TPool<Card> cardTPool = new TPool<>();
+        playCard(player, "请出桃", cardTPool, card -> {
+            if (card.getNameId() != CardEnum.TAO.getId()) throw new SgsApiException("不为桃");
+        }, false);
+        if (!cardTPool.isEmpty()) player1.setBlood(player1.getBlood() + 1);
+        if (player1.getBlood() <= 0) {
+            for (CompletePlayer completePlayer : findTarget(player, null)) {
+                cardTPool.setPool(null);
+                playCard(player, "请为" + player + "出桃", cardTPool, card -> {
+                    if (card.getNameId() != CardEnum.TAO.getId()) throw new SgsApiException("不为桃");
+                }, false);
+                if (!cardTPool.isEmpty()) player1.setBlood(player1.getBlood() + 1);
+                if (player1.getBlood() > 0) break;
+            }
+        }
+        if (player1.getBlood() <= 0) {
+            desk.getoffDesk(player);
+            throw new DesktopPlayerDieException("目标已阵亡");
+            if (index==player){
+
+            }
+        }
     }
 
 

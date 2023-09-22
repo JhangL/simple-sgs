@@ -6,6 +6,7 @@ import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.exception.DesktopErrorException;
 import com.jh.sgs.core.exception.DesktopException;
+import com.jh.sgs.core.exception.DesktopPlayerDieException;
 import com.jh.sgs.core.interactive.impl.XZMBImpl;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.MessageReceipter;
@@ -30,6 +31,6 @@ public interface Shaable {
         return targetPlayer.getPool();
     };
 
-    void shaExecute(int player);
+    void shaExecute(int player) throws DesktopPlayerDieException;
     int shaDistance();
 }

@@ -10,6 +10,7 @@ import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.RoundManage;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.desktop.CardDesktop;
+import com.jh.sgs.core.exception.DesktopPlayerDieException;
 import com.jh.sgs.core.interactive.impl.TOFImpl;
 import com.jh.sgs.core.pojo.CompletePlayer;
 
@@ -18,7 +19,7 @@ import java.util.List;
 
 public class QiLinGong extends WeaponCard {
     @Override
-    public void shaExecute(int player) {
+    public void shaExecute(int player) throws DesktopPlayerDieException {
         CompletePlayer player1 = Util.getPlayer(player);
         int mainplayer = CardDesktop.playerInContext();
         CompletePlayer maincompletePlayer = Util.getPlayer(mainplayer);
