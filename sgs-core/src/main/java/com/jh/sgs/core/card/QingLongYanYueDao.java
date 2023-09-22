@@ -9,7 +9,6 @@ import com.jh.sgs.core.InteractiveMachine;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.enums.CardEnum;
-import com.jh.sgs.core.exception.DesktopPlayerDieException;
 import com.jh.sgs.core.interactive.impl.TOFImpl;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import lombok.extern.log4j.Log4j2;
@@ -17,7 +16,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public class QingLongYanYueDao extends WeaponCard{
     @Override
-    public void shaExecute(int player) throws DesktopPlayerDieException {
+    public void shaExecute(int player){
         CompletePlayer player1 = Util.getPlayer(player);
         int mainplayer = CardDesktop.playerInContext();
         CompletePlayer maincompletePlayer = Util.getPlayer(mainplayer);

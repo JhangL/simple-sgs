@@ -5,7 +5,6 @@ import com.jh.sgs.base.pool.TPool;
 import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.desktop.CardDesktop;
-import com.jh.sgs.core.exception.DesktopPlayerDieException;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import lombok.extern.log4j.Log4j2;
 
@@ -14,7 +13,7 @@ import lombok.extern.log4j.Log4j2;
 public class Sha extends BaseCard implements Shaable{
 
     @Override
-    public void shaExecute(int player) throws DesktopPlayerDieException {
+    public void shaExecute(int player)  {
         TPool<Card> card = new TPool<>();
         boolean b = ContextManage.roundManage().playSha(CardDesktop.playerInContext(), player, CardDesktop.cardInContext(), card);
         if (card.getPool()!=null) ContextManage.shaCardDesktop().getProcessCards().add(card.getPool());

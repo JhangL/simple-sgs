@@ -5,7 +5,6 @@ import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.exception.DesktopException;
-import com.jh.sgs.core.exception.DesktopPlayerDieException;
 import com.jh.sgs.core.exception.DesktopRefuseException;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import com.jh.sgs.core.pojo.MessageReceipter;
@@ -14,7 +13,7 @@ import lombok.extern.log4j.Log4j2;
 @Log4j2
 public abstract class DelaySilkbagCard extends OneSilkbagCard implements Decidable {
     @Override
-    public void decide() {
+    public void decide(){
         log.debug("{}执行判定-->", getName());
         try {
             ContextManage.roundManage().wxkjCheck();
@@ -37,7 +36,7 @@ public abstract class DelaySilkbagCard extends OneSilkbagCard implements Decidab
 
     abstract boolean decideTerm(Card card);
 
-    abstract void decideTrue() throws DesktopPlayerDieException;
+    abstract void decideTrue();
 
     abstract void decideFalse();
 

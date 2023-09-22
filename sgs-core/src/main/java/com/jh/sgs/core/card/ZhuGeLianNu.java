@@ -11,7 +11,7 @@ import lombok.extern.log4j.Log4j2;
 public class ZhuGeLianNu extends WeaponCard implements Loseable{
 
     @Override
-    public void sha() throws DesktopException {
+    public void sha() throws DesktopException{
         //调用杀方法
         Shaable shaable = (Shaable) CardEnum.SHA.getBaseCard();
         shaable.sha();

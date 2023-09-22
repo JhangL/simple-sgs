@@ -29,7 +29,7 @@ public class ShaCardDesktop extends CardDesktop {
     }
 
     @Override
-    protected void execute() throws DesktopException {
+    protected void execute() throws DesktopException{
         MessageReceipter.globalInContext(getPlayer() + "出牌" + getCard());
         RoundProcess roundProcess = ContextManage.roundProcess(getPlayer());
         roundProcess.setUseSha(roundProcess.getUseSha()+1);

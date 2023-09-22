@@ -11,8 +11,8 @@ import com.jh.sgs.core.card.Loseable;
 import com.jh.sgs.core.desktop.Desktop;
 import com.jh.sgs.core.desktop.ExecuteCardDesktop;
 import com.jh.sgs.core.enums.CardEnum;
-import com.jh.sgs.core.exception.DesktopPlayerDieException;
 import com.jh.sgs.core.exception.DesktopRefuseException;
+import com.jh.sgs.core.exception.PlayerDieException;
 import com.jh.sgs.core.general.BaseGeneral;
 import com.jh.sgs.core.interfaces.RoundEvent;
 import com.jh.sgs.core.pojo.Ability;
@@ -204,7 +204,10 @@ public class RoundManage {
                 } else if (abilty[0].getType() == Ability.SINGLE) {
                     //使用了独立技能
                     MessageReceipter.personalInContext(player, "你使用独立技能{}", abilty[0].getName());
-                    ((Ability.SingleAbilityable) abilty[0].getAbilityable()).singleAbility(abilty[0]);
+                    try {
+                        ((Ability.SingleAbilityable) abilty[0].getAbilityable()).singleAbility(abilty[0]);
+                    } catch (PlayerDieException e) {
+                    }
                     //重新询问出牌
                 }
             } else {
@@ -396,7 +399,7 @@ public class RoundManage {
      * @param subBloodCard   减血牌(可使用，可能为空)
      * @param subBloodNum    减血数
      */
-    public void subBlood(int operatePlayer, int subBloodPlayer, TPool<Card> subBloodCard, int subBloodNum) throws DesktopPlayerDieException {
+    public void subBlood(int operatePlayer, int subBloodPlayer, TPool<Card> subBloodCard, int subBloodNum){
         if (Util.getPlayer(subBloodPlayer).getBlood() <= 0) {
             dying(subBloodPlayer);
         }
@@ -414,7 +417,7 @@ public class RoundManage {
         Util.getPlayer(refreshPlayer).getCompleteGeneral().getBaseGeneral().statusRefresh();
     }
 
-    public void dying(int player) throws DesktopPlayerDieException {
+    public void dying(int player) {
         CompletePlayer player1 = Util.getPlayer(player);
         TPool<Card> cardTPool = new TPool<>();
         playCard(player, "请出桃", cardTPool, card -> {
@@ -433,9 +436,11 @@ public class RoundManage {
         }
         if (player1.getBlood() <= 0) {
             desk.getoffDesk(player);
-            throw new DesktopPlayerDieException("目标已阵亡");
+
             if (index==player){
 
+            }else {
+                throw new PlayerDieException("目标已阵亡");
             }
         }
     }

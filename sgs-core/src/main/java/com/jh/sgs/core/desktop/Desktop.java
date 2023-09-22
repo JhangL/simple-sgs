@@ -22,7 +22,7 @@ public abstract class Desktop {
     /**
      * 执行操作
      */
-    private void start() throws DesktopRefuseException {
+    private void start() throws DesktopRefuseException{
         try {
             execute();
         } catch (DesktopException e) {
@@ -57,7 +57,7 @@ public abstract class Desktop {
             push(desktop);
         }
 
-        public void start() throws DesktopRefuseException {
+        public void start() throws DesktopRefuseException{
             peek().start();
         }
 

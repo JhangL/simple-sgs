@@ -7,7 +7,6 @@ import com.jh.sgs.core.ContextManage;
 import com.jh.sgs.core.Util;
 import com.jh.sgs.core.desktop.CardDesktop;
 import com.jh.sgs.core.exception.DesktopErrorException;
-import com.jh.sgs.core.exception.DesktopPlayerDieException;
 import com.jh.sgs.core.pojo.CompletePlayer;
 import lombok.extern.log4j.Log4j2;
 
@@ -36,7 +35,7 @@ public class ShanDian extends DelaySilkbagCard {
     }
 
     @Override
-    void decideTrue() throws DesktopPlayerDieException {
+    void decideTrue() {
         CompletePlayer player = Util.getPlayer(ContextManage.decideCardDesktop().getPlayer());
         player.setBlood(player.getBlood() - 3);
         TPool<Card> cardTPool = new TPool<>(ContextManage.decideCardDesktop().getCard());

@@ -2,7 +2,6 @@ package com.jh.sgs.core.general;
 
 import com.jh.sgs.base.pojo.Card;
 import com.jh.sgs.core.ContextManage;
-import com.jh.sgs.core.exception.DesktopPlayerDieException;
 import com.jh.sgs.core.exception.SgsRuntimeException;
 import com.jh.sgs.core.pojo.Ability;
 import com.jh.sgs.core.pojo.CompletePlayer;
@@ -26,7 +25,7 @@ public class HuangGai extends BaseGeneral implements AbilityEvent, Ability.Singl
     }
 
     @Override
-    public void singleAbility(Ability ability) {
+    public void singleAbility(Ability ability){
         if (ability == kuRou) {
             kuRou();
         } else {
@@ -34,7 +33,7 @@ public class HuangGai extends BaseGeneral implements AbilityEvent, Ability.Singl
         }
     }
 
-    private void kuRou() throws DesktopPlayerDieException {
+    private void kuRou(){
         getCompletePlayer().setBlood(getCompletePlayer().getBlood() - 1);
         ContextManage.roundManage().subBlood(getPlayerIndex(), getPlayerIndex(), null, 1);
         List<Card> cards = ContextManage.cardManage().obtainCard(2);
