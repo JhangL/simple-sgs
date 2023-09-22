@@ -37,7 +37,7 @@ public class QiLinGong extends WeaponCard {
             //检查目标坐骑牌是否为空
             if (!cards.isEmpty()) {
                 BooleanPool tofs = new BooleanPool();
-                InteractiveMachine.addEventInContext(mainplayer, "是否使用" + getName(), new TOFImpl(tofs));
+                InteractiveMachine.addEventInContext(mainplayer, "是否使用" + getName(), new TOFImpl(tofs)).lock();
                 if (tofs.isPool()) {
                     if (cards.size() == 1) {
                         //一个坐骑直接弃掉
@@ -82,7 +82,7 @@ public class QiLinGong extends WeaponCard {
                             public InteractiveEnum type() {
                                 return InteractiveEnum.XZP;
                             }
-                        });
+                        }).lock();
                         if (cards1[0] != null) {
                             if (player1.getEquipCard()[2] == cards1[0]) player1.getEquipCard()[2] = null;
                             else if (player1.getEquipCard()[3] == cards1[0]) player1.getEquipCard()[3] = null;
